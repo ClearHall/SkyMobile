@@ -1,16 +1,16 @@
-# skymobile
+# SkyMobile 2.0
 
-SkyMobile
 
-## Getting Started
 
-This project is a starting point for a Flutter application.
+## Getting Started with Documentation
 
-A few resources to get you started if this is your first Flutter project:
+To use this API, you must take the package SkywardScraperAPI. I have not made this implementable with pubspec.yaml.
 
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
+```
+    var skywardBaseURL = 'https://skyward-fbprod.iscorp.com/scripts/wsisa.dll/WService=wsedufortbendtx/';
+    var skywardAPI = SkywardAPICore(skywardBaseURL);
+    await skywardAPI.getSkywardAuthenticationCodes({username}, {password});
+```
 
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+The code above demonstrates the creation of a SkywardAPI instance and initializing it. The URL provided by the developer must be the base URL of the district's skyward website without 'seplog01.w'.
+
