@@ -43,7 +43,7 @@ class GradebookAccessor {
     List<GradeBox> gradeBoxes = [];
     for (var sffBrak in gradesElements) {
       for(var c in sffBrak['c']){
-        
+
         var cDoc = DocumentFragment.html(c['h']);
         Element gradeElem = cDoc.querySelector('#showGradeInfo');
         if(gradeElem != null){
