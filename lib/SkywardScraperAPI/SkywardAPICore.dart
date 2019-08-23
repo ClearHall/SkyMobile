@@ -1,11 +1,13 @@
 import 'SkywardAuthenticator.dart';
 import 'GradebookAccessor.dart';
 import 'AssignmentAccessor.dart';
+import 'SkywardAPITypes.dart';
 
 class SkywardAPICore {
   Map<String, String> loginSessionRequiredBodyElements;
   final String _baseURL;
   String _gradebookHTML;
+  GradebookAccessor gradebookAccessor = GradebookAccessor();
 
   SkywardAPICore(this._baseURL) {
     if (_verifyBaseURL(this._baseURL)) {
@@ -31,19 +33,19 @@ class SkywardAPICore {
 
   _initGradebook() async{
     if(_gradebookHTML == null) {
-      _gradebookHTML = await GradebookAccessor.getGradebookHTML(
+      _gradebookHTML = await gradebookAccessor.getGradebookHTML(
           loginSessionRequiredBodyElements, _baseURL);
     }
   }
 
   getGradeBookTerms() async{
     await _initGradebook();
-    return GradebookAccessor.getTermsFromDocCode();
+    return gradebookAccessor.getTermsFromDocCode();
   }
 
-  getGradeBookGrades() async{
+  getGradeBookGrades(List<Term> terms) async{
     await _initGradebook();
-    return GradebookAccessor.getGradeBoxesFromDocCode();
+    return gradebookAccessor.getGradeBoxesFromDocCode(_gradebookHTML, terms);
   }
 
   getAssignmentsFromCourseAndTerm(GradeBox gradeBox) async{

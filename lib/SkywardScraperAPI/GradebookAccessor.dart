@@ -2,24 +2,25 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:html/parser.dart' show parse;
 import 'package:html/dom.dart';
+import 'SkywardAPITypes.dart';
 
 class GradebookAccessor {
-  static List<String> sffData = [];
+  List<String> sffData = [];
   /*
   This decoded json string is super weird. Look at initGradebookHTML if you need to understand it.
    */
-  static List termElements = [];
-  static List gradesElements = [];
+  List termElements = [];
+  List gradesElements = [];
   static final _termJsonDeliminater = "sff.sv('sf_gridObjects',\$.extend((sff.getValue('sf_gridObjects') ";
 
-  static getGradebookHTML(Map<String, String> codes, String baseURL) async {
+  getGradebookHTML(Map<String, String> codes, String baseURL) async {
     final String gradebookURL = baseURL + 'sfgradebook001.w';
     final postReq = await http.post(gradebookURL, body: codes);
     initGradebookAndGradesHTML(postReq.body);
     return postReq.body;
   }
 
-  static getTermsFromDocCode() {
+  getTermsFromDocCode() {
     var terms = [];
     terms = _detectTermsFromScriptByParsing();
     if (terms != null)
@@ -30,33 +31,40 @@ class GradebookAccessor {
 
   //TODO: Implement server quick scrape assignments algorithm from sff.sv() script code.
 
-  static getGradeBoxesFromDocCode(){
+  getGradeBoxesFromDocCode(String docHtml, List<Term> terms){
     var gradeBoxes = [];
-    gradeBoxes = _scrapeGradeBoxesFromSff();
+    gradeBoxes = _scrapeGradeBoxesFromSff(docHtml, terms);
     if (gradeBoxes != null)
       return gradeBoxes;
     else
       return null;
   }
 
-  static List<GradeBox> _scrapeGradeBoxesFromSff() {
-    List<GradeBox> gradeBoxes = [];
+  List<GradeboxGridBox> _scrapeGradeBoxesFromSff(String docHtml, List<Term> terms) {
+    List<GradeboxGridBox> gradeBoxes = [];
+    var parsedHTML = parse(docHtml);
     for (var sffBrak in gradesElements) {
-      for(var c in sffBrak['c']){
-
+      for(var i = 0; i < sffBrak['c'].length; i++){
+        var c = sffBrak['c'][i];
         var cDoc = DocumentFragment.html(c['h']);
-        Element gradeElem = cDoc.querySelector('#showGradeInfo');
+        Element gradeElem = cDoc.getElementById('showGradeInfo');
         if(gradeElem != null){
-          gradeBoxes.add(GradeBox(gradeElem.attributes['data-cni'], Term(gradeElem.attributes['data-lit'], gradeElem.attributes['data-bkt']), gradeElem.text, gradeElem.attributes['data-sid']));
-        }else if (cDoc.text != ''){
-
+          GradeBox x = GradeBox(gradeElem.attributes['data-cni'], Term(gradeElem.attributes['data-lit'], gradeElem.attributes['data-bkt']), gradeElem.text, gradeElem.attributes['data-sid']);
+          x.clickable = true;
+          gradeBoxes.add(x);
+        }else if (c['cId'] != null){
+          var tdElement = parsedHTML.getElementById(c['cId']);
+          var tdElements = (tdElement.children[0].querySelectorAll('td'));
+          gradeBoxes.add(TeacherIDBox(tdElements[3].text, tdElements[1].text, tdElements[2].text));
+        }else if(cDoc.text.trim().isNotEmpty && cDoc.getElementById('showAssignmentInfo') == null){
+          gradeBoxes.add(LessInfoBox(terms[i-1], cDoc.text));
         }
       }
     }
     return gradeBoxes;
   }
 
-  static void initGradebookAndGradesHTML(String html){
+  void initGradebookAndGradesHTML(String html){
     Document doc = parse(html);
 
     List<Element> elems = doc.querySelectorAll("script");
@@ -84,7 +92,7 @@ class GradebookAccessor {
 
   }
 
-  static List<Term> _detectTermsFromScriptByParsing() {
+  List<Term> _detectTermsFromScriptByParsing() {
     List<Term> terms = [];
     for (var termHTMLA in termElements) {
       String termHTML = termHTMLA['h'];
@@ -101,32 +109,4 @@ class GradebookAccessor {
 
   
 
-}
-
-class Term {
-  String termCode;
-  String termName;
-
-  Term(this.termCode, this.termName);
-
-  //For debugging only.
-  @override
-  String toString() {
-    return termCode + ":" + termName;
-  }
-}
-
-class GradeBox {
-  String courseNumber;
-  Term term;
-  String grade;
-  String studentID;
-
-  GradeBox(this.courseNumber, this.term, this.grade, this.studentID);
-
-  //For debugging only.
-  @override
-  String toString() {
-    return "${this.term.toString()} for ${this.grade} for course # ${this.courseNumber} for student ${this.studentID}";
-  }
 }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'SkywardScraperAPI/SkywardAPICore.dart';
+import 'SkywardScraperAPI/SkywardAPITypes.dart';
 import 'dart:convert';
 
 void main() => runApp(MyApp());
@@ -50,12 +51,12 @@ class _MyHomePageState extends State<MyHomePage> {
 
   void _incrementCounter() async {
     var skywardAPI = SkywardAPICore('https://skyward-fbprod.iscorp.com/scripts/wsisa.dll/WService=wsedufortbendtx/');
-    await skywardAPI.getSkywardAuthenticationCodes('602353', '009372');
-    print(await skywardAPI.getGradeBookTerms());
-    var gradeBoxes = await skywardAPI.getGradeBookGrades();
+    await skywardAPI.getSkywardAuthenticationCodes('711741', 'baofa0607');
+    var terms = (await skywardAPI.getGradeBookTerms());
+    var gradeBoxes = await skywardAPI.getGradeBookGrades(terms);
+    debugPrint(terms.toString());
     print(gradeBoxes);
-    //debugPrint(utf8.decode(await skywardAPI.getAssignmentsFromCourseAndTerm(gradeBoxes[1])));
-    debugPrint(await skywardAPI.getAssignmentsFromCourseAndTerm(gradeBoxes[0]));
+    //debugPrint(await skywardAPI.getAssignmentsFromCourseAndTerm(gradeBoxes[1]));
   }
 
   WebViewController _controller;
