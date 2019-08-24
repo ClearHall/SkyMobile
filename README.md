@@ -27,40 +27,51 @@ Some important functions to know that'll help you use the API.
 ### Getting the available grading terms 
 
 ```
-    Map<String, String> gradingTerms = await skywardAPI.getGradeBookTerms();
+    List<Term> gradingTerms = await skywardAPI.getGradeBookTerms();
 ```
 
-This function returns a map of strings and allows you to get the abbreviated and full name of terms. Note: This function **IS ASYNC** and will take a little more time to run. **CALL AWAIT** so your program will wait for this line of code to finish.
+This function returns a list of terms and allows you to get the abbreviated and full name of terms. Note: This function **IS ASYNC** and will take a little more time to run. **CALL AWAIT** so your program will wait for this line of code to finish.
 
 ### Getting the available gradebook grades 
 
 ```
-    List grades = await skywardAPI.getGradeBookGrades();
+    List grades = await skywardAPI.getGradeBookGrades(gradingTerms);
 ```
 
-This function returns a list of GradeBox. Note: This function **IS ASYNC** and will take a little more time to run. **CALL AWAIT** so your program will wait for this line of code to finish.
+This function returns a list of GradeBox. It takes in ONE parameter from the function getGradeBookTerms() or custom terms. Note: This function **IS ASYNC** and will take a little more time to run. **CALL AWAIT** so your program will wait for this line of code to finish.
 
-## Types to Know
+## Types
 
-Some types to know to help you better understand the API.
+The following types are the only types you will need to know about.
 
-### Term
+#### Term
+- String termCode: The term code such as PR1.
+- String termName: The term name such as TERM 1.
 
-```
-Term term = Term({Term Code ex. PR1}, {Term Name ex. TERM 1});
-```
+#### GradeboxGridBox
+- bool clickable: If the box is clickable and has another dialog. **NOTE: Default value is false**
 
-The term type allows you to store the correlating term name with term code. To get any of these attributes, just access their names:
+#### TeacherIDBox
 
-```
-print('Term Code: ${term.termCode}');
-print('Term Name: ${term.termName}');
-```
+Inherits GradeboxGridBox.
 
-### GradeBox
+- String teacherName: The teacher name such as BOB PHILLIPS.
+- String timePeriod: The period time and period number such as Period1(7:30-8:30AM).
+- String courseName: The course name such as Biology AP.
 
-```
-GradeBox({Course ID}, {Term}, {Grade as a String}, {Student ID (Not neccesarily login username});
-```
+#### LessInfoBox
 
-The GradeBox allows you to store many elements of a clickable term grade. Attributes include: courseNumber, term, grade, studentID.
+Inherits GradeboxGridBox.
+
+- Term term: The term type that contains code and name.
+- String behavior: The extra text associated such as E.
+
+
+#### GradeBox
+
+Inherits GradeboxGridBox.
+
+- String courseNumber: Course ID used to identify the course.
+- Term term: Term used to identify the term.
+- String grade: Your grade for that Term such as 75.
+- String studentID: **NOT YOUR USERNAME** Your student ID to identify your session such as 33198.
