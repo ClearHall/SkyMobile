@@ -11,11 +11,11 @@ class Term {
   }
 }
 
-class GradeboxGridBox{
+class GridBox{
   bool clickable = false;
 }
 
-class TeacherIDBox extends GradeboxGridBox{
+class TeacherIDBox extends GridBox{
   String teacherName;
   String timePeriod;
   String courseName;
@@ -28,7 +28,7 @@ class TeacherIDBox extends GradeboxGridBox{
   }
 }
 
-class LessInfoBox extends GradeboxGridBox{
+class LessInfoBox extends GridBox{
   Term term;
   String behavior;
 
@@ -40,7 +40,7 @@ class LessInfoBox extends GradeboxGridBox{
   }
 }
 
-class GradeBox extends GradeboxGridBox{
+class GradeBox extends GridBox{
   String courseNumber;
   Term term;
   String grade;
@@ -52,5 +52,45 @@ class GradeBox extends GradeboxGridBox{
   @override
   String toString() {
     return "${this.term.toString()} for ${this.grade} for course # ${this.courseNumber} for student ${this.studentID}";
+  }
+}
+
+class AssignmentsGridBox extends GridBox{
+  String grade;
+  String decimalGrade;
+  String gradeOutOfMax;
+
+  AssignmentsGridBox(this.grade, this.decimalGrade, this.gradeOutOfMax);
+
+  @override
+  String toString() {
+    return 'AssignmentsGridBox{grade: $grade, decimalGrade: $decimalGrade, gradeOutOfMax: $gradeOutOfMax';
+  }
+
+}
+
+class Assignment extends AssignmentsGridBox{
+  String studentID;
+  String assignmentID;
+  String assignmentName;
+  String dateDue;
+
+  Assignment(this.studentID, this.assignmentID, this.dateDue, this.assignmentName, String grade, String gradeOutOfMax, String decimalGrade):super(grade, decimalGrade, gradeOutOfMax);
+
+  @override
+  String toString() {
+    return 'Assignment{studentID: $studentID, assignmentID: $assignmentID, assignmentName: $assignmentName, grade: $grade, decimalGrade: $decimalGrade, gradeOutOfMax: $gradeOutOfMax, dateDue: $dateDue}';
+  }
+}
+
+class CategoryHeader extends AssignmentsGridBox{
+  String catName;
+  String weight;
+
+  CategoryHeader(this.catName, this.weight, String grade, String gradeOutOfMax, String decimalGrade):super(grade, decimalGrade, gradeOutOfMax);
+
+  @override
+  String toString() {
+    return 'CategoryHeader{catName: $catName,weight: $weight grade: $grade, decimalGrade: $decimalGrade, gradeOutOfMax: $gradeOutOfMax}';
   }
 }

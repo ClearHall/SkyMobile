@@ -51,12 +51,12 @@ class _MyHomePageState extends State<MyHomePage> {
 
   void _incrementCounter() async {
     var skywardAPI = SkywardAPICore('https://skyward-fbprod.iscorp.com/scripts/wsisa.dll/WService=wsedufortbendtx/');
-    await skywardAPI.getSkywardAuthenticationCodes('711741', 'baofa0607');
+    await skywardAPI.getSkywardAuthenticationCodes('753495', 'ym040722');
     var terms = (await skywardAPI.getGradeBookTerms());
     var gradeBoxes = await skywardAPI.getGradeBookGrades(terms);
-    debugPrint(terms.toString());
     print(gradeBoxes);
-    //debugPrint(await skywardAPI.getAssignmentsFromCourseAndTerm(gradeBoxes[1]));
+    //debugPrint(await skywardAPI.initAssignmentsHTML(gradeBoxes[1]));
+    print(await skywardAPI.getAssignmentsFromGradeBox(gradeBoxes[1]));
   }
 
   WebViewController _controller;

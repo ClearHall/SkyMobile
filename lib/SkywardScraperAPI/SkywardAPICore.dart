@@ -48,7 +48,7 @@ class SkywardAPICore {
     return gradebookAccessor.getGradeBoxesFromDocCode(_gradebookHTML, terms);
   }
 
-  getAssignmentsFromCourseAndTerm(GradeBox gradeBox) async{
+  _initAssignmentsHTML(GradeBox gradeBox) async{
     Map<String, String> assignmentsPostCodes = Map.from(loginSessionRequiredBodyElements);
     assignmentsPostCodes['action'] = 'viewGradeInfoDialog';
     assignmentsPostCodes['fromHttp'] = 'yes';
@@ -56,9 +56,11 @@ class SkywardAPICore {
     assignmentsPostCodes['corNumId'] = gradeBox.courseNumber;
     assignmentsPostCodes['bucket'] = gradeBox.term.termName;
 
-    print(assignmentsPostCodes);
-
     return await AssignmentAccessor.getAssignmentsHTML(assignmentsPostCodes, _baseURL);
+  }
+
+  getAssignmentsFromGradeBox(GradeBox gradeBox) async{
+    return AssignmentAccessor.getAssignmentsDialog(await _initAssignmentsHTML(gradeBox));
   }
 
 }

@@ -40,8 +40,8 @@ class GradebookAccessor {
       return null;
   }
 
-  List<GradeboxGridBox> _scrapeGradeBoxesFromSff(String docHtml, List<Term> terms) {
-    List<GradeboxGridBox> gradeBoxes = [];
+  List<GridBox> _scrapeGradeBoxesFromSff(String docHtml, List<Term> terms) {
+    List<GridBox> gradeBoxes = [];
     var parsedHTML = parse(docHtml);
     for (var sffBrak in gradesElements) {
       for(var i = 0; i < sffBrak['c'].length; i++){
