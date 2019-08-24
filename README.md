@@ -35,10 +35,18 @@ This function returns a list of terms and allows you to get the abbreviated and 
 ### Getting the available gradebook grades 
 
 ```
-    List grades = await skywardAPI.getGradeBookGrades(gradingTerms);
+    List<GradeboxGridBox> grades = await skywardAPI.getGradeBookGrades(gradingTerms);
 ```
 
 This function returns a list of GradeBox. It takes in ONE parameter from the function getGradeBookTerms() or custom terms. Note: This function **IS ASYNC** and will take a little more time to run. **CALL AWAIT** so your program will wait for this line of code to finish.
+
+### Getting the assignments in a term and course
+
+```
+    List<AssignmentsGridBox> assignmentBoxes = await skywardAPI.getAssignmentsFromGradeBox(gradeboxGridBox);
+```
+
+This function returns a list of AssignmentsGridBox. It takes in ONE parameter from the function getGradeBookGrades() or custom grade boxes *not recommended*. Note: This function **IS ASYNC** and will take a little more time to run. **CALL AWAIT** so your program will wait for this line of code to finish.
 
 ## Types
 
@@ -75,3 +83,27 @@ Inherits GradeboxGridBox.
 - Term term: Term used to identify the term.
 - String grade: Your grade for that Term such as 75.
 - String studentID: **NOT YOUR USERNAME** Your student ID to identify your session such as 33198.
+
+#### AssignmentsGridBox
+
+Inherits GradeboxGridBox.
+
+- String grade: Your grade such as 95.
+- String decimalGrade: Your grade down to the decimal such as 94.5.
+- String gradeOutOfMax: Your grade out of the maximum points such as 94.5 out of 100. (* out of 100) if no grade.
+
+#### Assignment
+
+Inherits AssignmentsGridBox.
+
+- String studentID: **NOT YOUR USERNAME** Your student ID to identify your session such as 33198.
+- String assignmentID: Assignment ID used to get more assignment details.
+- String assignmentName: The assignment name.
+- String dateDue: Due date of the assignment.
+
+#### CategoryHeader
+
+Inherits AssignmentsGridBox.
+
+- String catName: Category name such as DAILY.
+- String weight: Weight of category such as 50.00%.
