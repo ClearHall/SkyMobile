@@ -1,7 +1,13 @@
+/*
+  SkyScrapeAPI Version 1.0
+  © Hunter Han
+ */
+
 import 'SkywardAuthenticator.dart';
 import 'GradebookAccessor.dart';
 import 'AssignmentAccessor.dart';
 import 'SkywardAPITypes.dart';
+import 'AssignmentInfoAccessor.dart';
 
 class SkywardAPICore {
   Map<String, String> loginSessionRequiredBodyElements;
@@ -48,19 +54,15 @@ class SkywardAPICore {
     return gradebookAccessor.getGradeBoxesFromDocCode(_gradebookHTML, terms);
   }
 
-  _initAssignmentsHTML(GradeBox gradeBox) async{
+  getAssignmentsFromGradeBox(GradeBox gradeBox) async{
     Map<String, String> assignmentsPostCodes = Map.from(loginSessionRequiredBodyElements);
-    assignmentsPostCodes['action'] = 'viewGradeInfoDialog';
-    assignmentsPostCodes['fromHttp'] = 'yes';
-    assignmentsPostCodes['ishttp'] = 'true';
-    assignmentsPostCodes['corNumId'] = gradeBox.courseNumber;
-    assignmentsPostCodes['bucket'] = gradeBox.term.termName;
-
-    return await AssignmentAccessor.getAssignmentsHTML(assignmentsPostCodes, _baseURL);
+    String html = await AssignmentAccessor.getAssignmentsHTML(assignmentsPostCodes, _baseURL, gradeBox.courseNumber, gradeBox.term.termName);
+    return AssignmentAccessor.getAssignmentsDialog(html);
   }
 
-  getAssignmentsFromGradeBox(GradeBox gradeBox) async{
-    return AssignmentAccessor.getAssignmentsDialog(await _initAssignmentsHTML(gradeBox));
+  getAssignmentInfoFromAssignment(Assignment assignment) async{
+    Map<String, String> assignmentsPostCodes = Map.from(loginSessionRequiredBodyElements);
+    return AssignmentInfoAccessor.getAssignmentInfoBoxesFromHTML(await AssignmentInfoAccessor.getAssignmentsDialogHTML(assignmentsPostCodes, _baseURL, assignment));
   }
 
 }

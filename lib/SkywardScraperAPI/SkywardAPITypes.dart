@@ -72,14 +72,15 @@ class AssignmentsGridBox extends GridBox{
 class Assignment extends AssignmentsGridBox{
   String studentID;
   String assignmentID;
+  String gbID;
   String assignmentName;
   String dateDue;
 
-  Assignment(this.studentID, this.assignmentID, this.dateDue, this.assignmentName, String grade, String gradeOutOfMax, String decimalGrade):super(grade, decimalGrade, gradeOutOfMax);
+  Assignment(this.studentID, this.assignmentID,this.gbID, this.dateDue, this.assignmentName, String grade, String gradeOutOfMax, String decimalGrade):super(grade, decimalGrade, gradeOutOfMax);
 
   @override
   String toString() {
-    return 'Assignment{studentID: $studentID, assignmentID: $assignmentID, assignmentName: $assignmentName, grade: $grade, decimalGrade: $decimalGrade, gradeOutOfMax: $gradeOutOfMax, dateDue: $dateDue}';
+    return 'Assignment{studentID: $studentID, assignmentID: $assignmentID,gbID: $gbID, assignmentName: $assignmentName, grade: $grade, decimalGrade: $decimalGrade, gradeOutOfMax: $gradeOutOfMax, dateDue: $dateDue}';
   }
 }
 
@@ -92,5 +93,21 @@ class CategoryHeader extends AssignmentsGridBox{
   @override
   String toString() {
     return 'CategoryHeader{catName: $catName,weight: $weight grade: $grade, decimalGrade: $decimalGrade, gradeOutOfMax: $gradeOutOfMax}';
+  }
+}
+
+class AssignmentInfoBox{
+  String infoName;
+  String info;
+
+  String getUIMessage(){
+    return infoName + info != null ? info : "";
+  }
+
+  AssignmentInfoBox(this.infoName, this.info);
+
+  @override
+  String toString() {
+    return 'AssignmentInfoBox{infoName: $infoName, info: $info}';
   }
 }
