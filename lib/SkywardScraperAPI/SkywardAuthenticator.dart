@@ -10,7 +10,8 @@ class SkywardAuthenticator{
 
   static Map<String, String> parsePostResponse(String postResponse){
     String dissectedString = postResponse.substring(4, postResponse.length - 5);
-    if(dissectedString.contains('Invalid login or password.')){
+    print(dissectedString);
+    if(dissectedString.contains('Invalid login or password.') || dissectedString.contains("doesn't have any access")){
       return null;
     }else{
       var toks = dissectedString.split('^');

@@ -9,6 +9,15 @@ class Term {
   String toString() {
     return termCode + ":" + termName;
   }
+
+  @override
+  bool operator ==(other) {
+    if(other is Term){
+      return (other).termCode == this.termCode;
+    }else{
+      return false;
+    }
+  }
 }
 
 class GridBox{

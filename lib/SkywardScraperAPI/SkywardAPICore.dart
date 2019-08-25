@@ -37,34 +37,49 @@ class SkywardAPICore {
     }
   }
 
-  _initGradebook() async{
-    if(_gradebookHTML == null) {
+  _initGradebook() async {
+    if (_gradebookHTML == null) {
       _gradebookHTML = await gradebookAccessor.getGradebookHTML(
           loginSessionRequiredBodyElements, _baseURL);
     }
   }
 
-  getGradeBookTerms() async{
+  getGradeBookTerms() async {
     await _initGradebook();
     return gradebookAccessor.getTermsFromDocCode();
   }
 
-  getGradeBookGrades(List<Term> terms) async{
-    await _initGradebook();
-    return gradebookAccessor.getGradeBoxesFromDocCode(_gradebookHTML, terms);
+  getGradeBookGrades(List<Term> terms) async {
+    try {
+      await _initGradebook();
+      return gradebookAccessor.getGradeBoxesFromDocCode(_gradebookHTML, terms);
+    } catch (e) {
+      return SkywardAPICodes.CouldNotScrapeGradeBook;
+    }
   }
 
-  getAssignmentsFromGradeBox(GradeBox gradeBox) async{
-    Map<String, String> assignmentsPostCodes = Map.from(loginSessionRequiredBodyElements);
-    String html = await AssignmentAccessor.getAssignmentsHTML(assignmentsPostCodes, _baseURL, gradeBox.courseNumber, gradeBox.term.termName);
+  getAssignmentsFromGradeBox(GradeBox gradeBox) async {
+    Map<String, String> assignmentsPostCodes =
+        Map.from(loginSessionRequiredBodyElements);
+    String html = await AssignmentAccessor.getAssignmentsHTML(
+        assignmentsPostCodes,
+        _baseURL,
+        gradeBox.courseNumber,
+        gradeBox.term.termName);
     return AssignmentAccessor.getAssignmentsDialog(html);
   }
 
-  getAssignmentInfoFromAssignment(Assignment assignment) async{
-    Map<String, String> assignmentsPostCodes = Map.from(loginSessionRequiredBodyElements);
-    return AssignmentInfoAccessor.getAssignmentInfoBoxesFromHTML(await AssignmentInfoAccessor.getAssignmentsDialogHTML(assignmentsPostCodes, _baseURL, assignment));
+  getAssignmentInfoFromAssignment(Assignment assignment) async {
+    Map<String, String> assignmentsPostCodes =
+        Map.from(loginSessionRequiredBodyElements);
+    return AssignmentInfoAccessor.getAssignmentInfoBoxesFromHTML(
+        await AssignmentInfoAccessor.getAssignmentsDialogHTML(
+            assignmentsPostCodes, _baseURL, assignment));
   }
-
 }
 
-enum SkywardAPICodes { LoginFailed, LoginCodesReceived, CouldNotScrapeGradeBook }
+enum SkywardAPICodes {
+  LoginFailed,
+  LoginCodesReceived,
+  CouldNotScrapeGradeBook
+}
