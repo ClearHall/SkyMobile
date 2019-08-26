@@ -20,7 +20,7 @@ class AssignmentAccessor {
 
   static getAssignmentsDialog(String assignmentPageHTML) {
     String newString =
-        assignmentPageHTML.split("</script>\n</td")[1].split("]]>")[0];
+        assignmentPageHTML.split("<![CDATA[")[1].split("]]>")[0];
     var doc = DocumentFragment.html(newString);
     List<AssignmentsGridBox> gridBoxes = [];
     List<Element> tdElems = doc.querySelectorAll('td');
@@ -29,9 +29,9 @@ class AssignmentAccessor {
     for (int i = 0; i < tdElems.length; i++) {
       Element tdElem = tdElems[i];
       if (tdElem.classes.contains('nWp') && tdElem.classes.contains('noLBdr')) {
-        String weightedText = tdElem.children[1].text;
+        String weightedText = tdElem.children.isNotEmpty ? tdElem.children[1].text : null;
         gridBoxes.add(CategoryHeader(
-            tdElem.text.substring(0, tdElem.text.indexOf(weightedText)),
+            tdElem.text.substring(0, weightedText != null ? tdElem.text.indexOf(weightedText) : tdElem.text.length),
             weightedText,
             tdElems[i + 1].text,
             tdElems[i + 3].text,
@@ -39,10 +39,13 @@ class AssignmentAccessor {
         i = i + 4;
       } else if (tdElem.attributes['scope'] == 'row' &&
           tdElem.text.trim().isNotEmpty) {
-        if (tdElem.text.contains('There are')) {
-          gridBoxes
-              .add(Assignment(null, null, null, null, tdElem.text, null, null, null));
-        } else {
+          if(tdElem.attributes.containsKey('nPtb')) {
+          gridBoxes.add(CategoryHeader(tdElem.text, null, null, null, tdElems[i+1].text));
+          i = i + 2;
+        }else if(tdElem.classes.contains('aTop')){
+          gridBoxes.add(CategoryHeader(tdElem.children[0].text, null, tdElems[i+1].text, null, tdElems[i+2].text));
+          i = i + 3;
+        }else if(tdElem.classes.isEmpty && !tdElem.attributes.containsKey('style') && tdElem.attributes['style'] != 'padding-right:4px'){
           int ind = _getIndexOfAssignmentFromNameAndElement(
               showAssignmentIDVal, tdElems[i + 1].text);
           gridBoxes.add(Assignment(

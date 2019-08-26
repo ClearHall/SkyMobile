@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'SkywardScraperAPI/SkywardAPITypes.dart';
 import 'customDialogOptions.dart';
 import 'globalVariables.dart';
+import 'assignmentsViewer.dart';
 
 class TermViewerPage extends StatefulWidget {
   MaterialColor secondColor;
@@ -15,26 +16,19 @@ class TermViewerPage extends StatefulWidget {
 class _TermViewer extends State<TermViewerPage> {
   int currentTermIndex = 0;
 
-  void _getGradeTerms(String user, String pass, BuildContext context) async {
-    if (await skywardAPI.getSkywardAuthenticationCodes(user, pass) ==
-        SkywardAPICodes.LoginFailed) {
-      showDialog(
-          context: context,
-          builder: (BuildContext) {
-            return HuntyDialog(
-                title: 'Uh-Oh',
-                description:
-                    'Invalid Credentials or Internet Failure. Please check your username and password and your internet connection.',
-                buttonText: 'Ok');
-          });
-    } else {
-      print(await skywardAPI
-          .getGradeBookGrades(await skywardAPI.getGradeBookTerms()));
-    }
+  _goToAssignmentsViewer(GradeBox gradeBox, String courseName) async{
+    assignmentsGridBoxes =
+        await skywardAPI.getAssignmentsFromGradeBox(gradeBox);
+    debugPrint(assignmentsGridBoxes.toString());
+    var tm = AssignmentsViewer(courseName: courseName,);
+    Navigator.push(context, MaterialPageRoute(builder: (context) => (tm)));
   }
 
   @override
   Widget build(BuildContext context) {
+    final FixedExtentScrollController scrollController =
+        FixedExtentScrollController(initialItem: currentTermIndex);
+
     List<Widget> cupPickerWid = [];
     for (Term term in terms) {
       cupPickerWid.add(Container(
@@ -47,32 +41,34 @@ class _TermViewer extends State<TermViewerPage> {
 
     List<Widget> body = [
       Container(
-        child: Card(
-          color: Colors.blue,
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
-          child: Container(
-            child: InkWell(
+        child: InkWell(
+          child: Card(
+            color: Colors.orangeAccent,
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
+            child: Container(
               child: Text(
                 'Term: ${terms[currentTermIndex].termCode} / ${terms[currentTermIndex].termName}',
-                style: TextStyle(fontSize: 15),
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700),
+                textAlign: TextAlign.center,
               ),
-              onTap: () {
-                showModalBottomSheet(
-                    context: context,
-                    builder: (BuildContext context) => CupertinoPicker(
-                        backgroundColor: Colors.black,
-                        children: cupPickerWid,
-                        itemExtent: 50,
-                        onSelectedItemChanged: (int changeTo) {
-                          setState(() {
-                            currentTermIndex = changeTo;
-                          });
-                        }));
-              },
+              padding: EdgeInsets.all(20),
             ),
-            padding: EdgeInsets.all(10),
           ),
+          onTap: () {
+            showModalBottomSheet(
+                context: context,
+                builder: (BuildContext context) => CupertinoPicker(
+                    scrollController: scrollController,
+                    backgroundColor: Colors.black,
+                    children: cupPickerWid,
+                    itemExtent: 50,
+                    onSelectedItemChanged: (int changeTo) {
+                      setState(() {
+                        currentTermIndex = changeTo;
+                      });
+                    }));
+          },
         ),
         padding: EdgeInsets.all(10),
       ),
@@ -82,20 +78,32 @@ class _TermViewer extends State<TermViewerPage> {
       if (gradeBoxes[i] is TeacherIDBox) {
         int indexOfTermGrade = -1;
         for (int j = i + 1; j < gradeBoxes.length; j++) {
-          if (gradeBoxes[j] is GradeBox &&
-              (gradeBoxes[j] as GradeBox).term == terms[currentTermIndex]) {
+          if (gradeBoxes[j] is GradeTextBox &&
+              (gradeBoxes[j] as GradeTextBox).term == terms[currentTermIndex]) {
             indexOfTermGrade = j;
             break;
           }
+          if (gradeBoxes[j] is TeacherIDBox) break;
         }
         TeacherIDBox teacherIDBox = gradeBoxes[i] as TeacherIDBox;
-        GradeBox gradeBox;
+        GradeTextBox gradeBox;
         if (indexOfTermGrade != -1) {
-          gradeBox = gradeBoxes[indexOfTermGrade] as GradeBox;
+          gradeBox = gradeBoxes[indexOfTermGrade] as GradeTextBox;
         }
 
+        String grade = gradeBox != null
+            ? (gradeBox is GradeBox)
+                ? gradeBox.grade
+                : (gradeBox as LessInfoBox).behavior
+            : '';
+
         body.add(Card(
-          child: Row(
+          child: InkWell(
+            onTap: (){
+              if(gradeBox != null && gradeBox is GradeBox)
+                _goToAssignmentsViewer(gradeBox, teacherIDBox.courseName);
+            },
+              child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
               Container(
@@ -104,7 +112,8 @@ class _TermViewer extends State<TermViewerPage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     Container(
-                      constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width/6 * 4),
+                      constraints: BoxConstraints(
+                          maxWidth: MediaQuery.of(context).size.width / 6 * 4),
                       padding: EdgeInsets.only(
                           top: 10, left: 10, right: 10, bottom: 0),
                       alignment: Alignment.centerLeft,
@@ -112,7 +121,7 @@ class _TermViewer extends State<TermViewerPage> {
                         teacherIDBox.courseName,
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
-                        style: TextStyle(color: Colors.white, fontSize: 20),
+                        style: TextStyle(color: Colors.orange, fontSize: 20, fontWeight: FontWeight.w700),
                         textAlign: TextAlign.start,
                       ),
                     ),
@@ -136,12 +145,18 @@ class _TermViewer extends State<TermViewerPage> {
               ),
               Container(
                 constraints: BoxConstraints(minHeight: 60),
-                padding: EdgeInsets.all(10),
+                padding: EdgeInsets.only(right: 20),
                 alignment: Alignment.centerRight,
-                child: Text('TEST', style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700, color: Colors.lightGreen),),
+                child: Text(
+                  grade,
+                  style: TextStyle(
+                      fontSize: 25,
+                      fontWeight: FontWeight.w700,
+                      color: getColorFrom(grade)),
+                ),
               ),
             ],
-          ),
+          )),
           color: Colors.white12,
         ));
       }
@@ -149,7 +164,7 @@ class _TermViewer extends State<TermViewerPage> {
 
     return Scaffold(
         appBar: AppBar(
-          backgroundColor: Colors.blueAccent,
+          backgroundColor: Colors.lightBlue,
           title: Text('Gradebook',
               textAlign: TextAlign.center,
               style: TextStyle(
@@ -157,6 +172,21 @@ class _TermViewer extends State<TermViewerPage> {
                   fontSize: 30,
                   fontWeight: FontWeight.w700,
                   letterSpacing: 2)),
+          actions: <Widget>[
+            Theme(
+                data: Theme.of(context).copyWith(
+                  cardColor: Colors.black87,
+                ),
+                child: PopupMenuButton(
+
+                  itemBuilder: (_) => <PopupMenuItem<String>>[
+                    PopupMenuItem<String>(
+                        child: const Text('Settings', style: TextStyle(color: Colors.white),), value: 'settings'),
+                    PopupMenuItem<String>(
+                        child: const Text('GPA Calculator', style: TextStyle(color: Colors.white),), value: 'gpaCalc'),
+                  ],
+                ))
+          ],
         ),
         backgroundColor: Colors.black,
         body: Center(

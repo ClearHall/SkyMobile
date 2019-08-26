@@ -28,31 +28,51 @@ class MyHomePage extends StatefulWidget {
 }
 
 class MyHomePageState extends State<MyHomePage> {
+  Stream<List> dataSub;
 
   void _incrementCounter() async {
-      var terms = (await skywardAPI.getGradeBookTerms());
-      var gradeBoxes = await skywardAPI.getGradeBookGrades(terms);
-      var assignmentBoxes =
-          await skywardAPI.getAssignmentsFromGradeBox(gradeBoxes[1]);
-      print(gradeBoxes);
-      print(assignmentBoxes);
-      print(
-          await skywardAPI.getAssignmentInfoFromAssignment(assignmentBoxes[1]));
+    var terms = (await skywardAPI.getGradeBookTerms());
+    var gradeBoxes = await skywardAPI.getGradeBookGrades(terms);
+    var assignmentBoxes =
+        await skywardAPI.getAssignmentsFromGradeBox(gradeBoxes[1]);
+    print(gradeBoxes);
+    print(assignmentBoxes);
+    print(await skywardAPI.getAssignmentInfoFromAssignment(assignmentBoxes[1]));
   }
 
-  void _getGradeTerms(String user, String pass, BuildContext context) async{
+  void _getGradeTerms(String user, String pass, BuildContext context) async {
+    bool isCancelled = false;
+    var dialog = HuntyDialogLoading('Cancel', () {
+      isCancelled = true;
+    }, title: 'Loading', description: ('Getting your grades..'));
+
+    showDialog(
+        context: context,
+        builder: (BuildContext context) => dialog);
+
     skywardAPI = SkywardAPICore(
         'https://skyward-fbprod.iscorp.com/scripts/wsisa.dll/WService=wsedufortbendtx/');
     if (await skywardAPI.getSkywardAuthenticationCodes(user, pass) ==
-    SkywardAPICodes.LoginFailed) {
-      showDialog(context: context, builder: (BuildContext) {
-        return HuntyDialog(title: 'Uh-Oh',description: 'Invalid Credentials or Internet Failure. Please check your username and password and your internet connection.',buttonText: 'Ok');
-      });
+        SkywardAPICodes.LoginFailed) {
+      showDialog(
+          context: context,
+          builder: (BuildContext) {
+            return HuntyDialog(
+                title: 'Uh-Oh',
+                description:
+                    'Invalid Credentials or Internet Failure. Please check your username and password and your internet connection.',
+                buttonText: 'Ok');
+          });
     } else {
       terms = await skywardAPI.getGradeBookTerms();
       gradeBoxes = (await skywardAPI.getGradeBookGrades(terms));
       var tm = TermViewerPage();
-      Navigator.push(context, MaterialPageRoute(builder: (context) => (tm)));
+      if(!isCancelled) {
+        Navigator.of(context, rootNavigator: true).popUntil((result){
+          return result.settings.name == '/';
+        });
+        Navigator.push(context, MaterialPageRoute(builder: (context) => (tm)));
+      }
     }
   }
 
@@ -151,21 +171,32 @@ class MyHomePageState extends State<MyHomePage> {
                         new Container(
                             padding: EdgeInsets.only(
                                 top: 20, left: 30, right: 30, bottom: 20),
-                            child: Material(color: Colors.transparent, child: InkWell(
-                              splashColor: Colors.orangeAccent,
-                                borderRadius: BorderRadius.circular(16),
-                                onTap: () => {_getGradeTerms(_controllerUsername.text, _controllerPassword.text, context)},
-                                child: Container(
-                                  alignment: Alignment.center,
-                                  padding: EdgeInsets.all(10),
-                                  decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(16.0),border: Border.all(color: Colors.orangeAccent, width: 2)),
-                                  child: new Text(
-                                    'Submit',
-                                    style: new TextStyle(
-                                        fontSize: 20.0, color: Colors.orangeAccent),
-                                  ),
-                                )),) ),
+                            child: Material(
+                              color: Colors.transparent,
+                              child: InkWell(
+                                  splashColor: Colors.orangeAccent,
+                                  borderRadius: BorderRadius.circular(16),
+                                  onTap: () => {
+                                        _getGradeTerms(_controllerUsername.text,
+                                            _controllerPassword.text, context)
+                                      },
+                                  child: Container(
+                                    alignment: Alignment.center,
+                                    padding: EdgeInsets.all(10),
+                                    decoration: BoxDecoration(
+                                        borderRadius:
+                                            BorderRadius.circular(16.0),
+                                        border: Border.all(
+                                            color: Colors.orangeAccent,
+                                            width: 2)),
+                                    child: new Text(
+                                      'Submit',
+                                      style: new TextStyle(
+                                          fontSize: 20.0,
+                                          color: Colors.orangeAccent),
+                                    ),
+                                  )),
+                            )),
                       ]))
                 ]))));
   }

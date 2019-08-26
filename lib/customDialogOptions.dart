@@ -77,6 +77,48 @@ class HuntyDialog extends StatelessWidget {
   }
 }
 
+class HuntyDialogLoading extends HuntyDialog {
+  final String cancelText;
+  final Function runWhenCancelled;
+  HuntyDialogLoading( this.cancelText, this.runWhenCancelled,
+      {@required title, @required description})
+      : super(title: title, description: description, buttonText: null);
+
+  @override
+  createDialogBoxContents(BuildContext context) {
+    return <Widget>[
+      Text(
+        title,
+        style: TextStyle(
+          fontSize: 24.0,
+          fontWeight: FontWeight.w700,
+        ),
+      ),
+      SizedBox(height: 16.0),
+      Text(
+        description,
+        textAlign: TextAlign.center,
+        style: TextStyle(
+          fontSize: 16.0,
+        ),
+      ),
+      SizedBox(height: 24.0),
+      CircularProgressIndicator(),
+      SizedBox(height: 24.0),
+      Align(
+        alignment: Alignment.bottomRight,
+        child: FlatButton(
+          onPressed: () {
+            Navigator.of(context).pop();
+            runWhenCancelled();
+          },
+          child: Text(cancelText, style: TextStyle(color: Colors.red),),
+        ),
+      ),
+    ];
+  }
+}
+
 class HuntyDialogForConfirmation extends HuntyDialog {
   Function() runIfUserConfirms;
   String btnTextForConfirmation;

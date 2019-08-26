@@ -57,7 +57,7 @@ class GradebookAccessor {
           var tdElements = (tdElement.children[0].querySelectorAll('td'));
           gradeBoxes.add(TeacherIDBox(tdElements[3].text, tdElements[1].text, tdElements[2].text));
         }else if(cDoc.text.trim().isNotEmpty && cDoc.getElementById('showAssignmentInfo') == null){
-          gradeBoxes.add(LessInfoBox(terms[i-1], cDoc.text));
+          gradeBoxes.add(LessInfoBox(cDoc.text, terms[i-1]));
         }
       }
     }

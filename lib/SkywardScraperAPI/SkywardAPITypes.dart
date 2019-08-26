@@ -37,11 +37,16 @@ class TeacherIDBox extends GridBox{
   }
 }
 
-class LessInfoBox extends GridBox{
+class GradeTextBox extends GridBox{
   Term term;
+
+  GradeTextBox(this.term);
+}
+
+class LessInfoBox extends GradeTextBox{
   String behavior;
 
-  LessInfoBox(this.term, this.behavior);
+  LessInfoBox(this.behavior, Term term):super(term);
 
   @override
   String toString() {
@@ -49,13 +54,12 @@ class LessInfoBox extends GridBox{
   }
 }
 
-class GradeBox extends GridBox{
+class GradeBox extends GradeTextBox{
   String courseNumber;
-  Term term;
   String grade;
   String studentID;
 
-  GradeBox(this.courseNumber, this.term, this.grade, this.studentID);
+  GradeBox(this.courseNumber, Term term, this.grade, this.studentID):super(term);
 
   //For debugging only.
   @override
@@ -75,7 +79,6 @@ class AssignmentsGridBox extends GridBox{
   String toString() {
     return 'AssignmentsGridBox{grade: $grade, decimalGrade: $decimalGrade, gradeOutOfMax: $gradeOutOfMax';
   }
-
 }
 
 class Assignment extends AssignmentsGridBox{
@@ -110,7 +113,7 @@ class AssignmentInfoBox{
   String info;
 
   String getUIMessage(){
-    return infoName + info != null ? info : "";
+    return infoName + ' ' + (info != null ? info : "");
   }
 
   AssignmentInfoBox(this.infoName, this.info);
