@@ -2,7 +2,9 @@
 
 Cross platform SkyMobile with API.
 
-## Getting Started with Documentation
+Documentation is currently outdated on version 1.0. Newest version is 1.2.
+
+## Getting Started with Documentation 
 
 To use this API, you must take the package SkywardScraperAPI. I have not made this implementable with pubspec.yaml.
 
