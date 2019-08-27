@@ -17,7 +17,7 @@ class AssignmentAccessor {
 
     return response.body;
   }
-
+  
   static getAssignmentsDialog(String assignmentPageHTML) {
     String newString =
         assignmentPageHTML.split("<![CDATA[")[1].split("]]>")[0];
@@ -48,6 +48,7 @@ class AssignmentAccessor {
         }else if(tdElem.classes.isEmpty && !tdElem.attributes.containsKey('style') && tdElem.attributes['style'] != 'padding-right:4px'){
           int ind = _getIndexOfAssignmentFromNameAndElement(
               showAssignmentIDVal, tdElems[i + 1].text);
+          print(showAssignmentIDVal[ind].attributes);
           gridBoxes.add(Assignment(
               showAssignmentIDVal[ind].attributes['data-sid'],
               showAssignmentIDVal[ind].attributes['data-aid'],
@@ -67,7 +68,7 @@ class AssignmentAccessor {
   static _getIndexOfAssignmentFromNameAndElement(
       List<Element> elems, String name) {
     for (int i = 0; i < elems.length; i++) {
-      if (elems[i].text == name) return i;
+      if (elems[i].text == name){ return i; }
     }
   }
 }
