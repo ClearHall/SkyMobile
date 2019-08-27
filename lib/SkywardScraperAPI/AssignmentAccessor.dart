@@ -17,7 +17,7 @@ class AssignmentAccessor {
 
     return response.body;
   }
-  
+
   static getAssignmentsDialog(String assignmentPageHTML) {
     String newString =
         assignmentPageHTML.split("<![CDATA[")[1].split("]]>")[0];

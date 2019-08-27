@@ -54,6 +54,7 @@ class MyHomePageState extends State<MyHomePage> {
         'https://skyward-fbprod.iscorp.com/scripts/wsisa.dll/WService=wsedufortbendtx/');
     if (await skywardAPI.getSkywardAuthenticationCodes(user, pass) ==
         SkywardAPICodes.LoginFailed) {
+      Navigator.of(context).pop(dialog);
       showDialog(
           context: context,
           builder: (BuildContext) {
