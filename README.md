@@ -2,24 +2,51 @@
 
 Cross platform SkyMobile with API.
 
-Documentation is currently outdated on version 1.0. Newest version is 1.2.
+# Changelog
 
-## Getting Started with Documentation 
+Changelog for SKYSCRAPEAPI and SkyMobile.
+
+## SKYSCRAPEAPI
+
+### V1.2.1
+
+- Fixed bug where assignments with the same name would display the same details: *THIS BUG AFFECTS SKYMOBILE iOS AND WILL NOT BE FIXED FOR SKYMOBILE iOS*
+
+### V1.2
+
+- Can scrape assignment details.
+
+### V1
+
+- Build the basic foundation. Initial release.
+- Can scrape gradebook and assignments.
+
+## SkyMobile
+
+### V1.0.0
+
+- Initial Release
+- Can check grades, assignments, assignment details
+- Uses SKYSCRAPEAPI V1.2
+
+## Getting Started with Documentation
+
+**DOCUMENTATION VERSION 1.2.1**
 
 To use this API, you must take the package SkywardScraperAPI. I have not made this implementable with pubspec.yaml.
 
 ```
-    var skywardBaseURL = 'https://skyward-fbprod.iscorp.com/scripts/wsisa.dll/WService=wsedufortbendtx/';
-    var skywardAPI = SkywardAPICore(skywardBaseURL);
-    await skywardAPI.getSkywardAuthenticationCodes({username}, {password});
+var skywardBaseURL = 'https://skyward-fbprod.iscorp.com/scripts/wsisa.dll/WService=wsedufortbendtx/';
+var skywardAPI = SkywardAPICore(skywardBaseURL);
+await skywardAPI.getSkywardAuthenticationCodes({username}, {password});
 ```
 
 The code above demonstrates the creation of a SkywardAPI instance and initializing it. The URL provided by the developer must be the base URL of the district's skyward website without 'seplog01.w'.
 
 You will also have to import 2 dart files:
 ```
-    import 'SkywardScraperAPI/SkywardAPICore.dart';
-    import 'SkywardScraperAPI/SkywardAPITypes.dart';
+import 'SkywardScraperAPI/SkywardAPICore.dart';
+import 'SkywardScraperAPI/SkywardAPITypes.dart';
 ```
 
 ## Functions to Know
@@ -29,7 +56,7 @@ Some important functions to know that'll help you use the API.
 ### Getting the available grading terms 
 
 ```
-    List<Term> gradingTerms = await skywardAPI.getGradeBookTerms();
+List<Term> gradingTerms = await skywardAPI.getGradeBookTerms();
 ```
 
 This function returns a list of terms and allows you to get the abbreviated and full name of terms. Note: This function **IS ASYNC** and will take a little more time to run. **CALL AWAIT** so your program will wait for this line of code to finish.
@@ -37,7 +64,7 @@ This function returns a list of terms and allows you to get the abbreviated and 
 ### Getting the available gradebook grades 
 
 ```
-    List<GradeboxGridBox> grades = await skywardAPI.getGradeBookGrades(gradingTerms);
+List<GradeboxGridBox> grades = await skywardAPI.getGradeBookGrades(gradingTerms);
 ```
 
 This function returns a list of GradeBox. It takes in ONE parameter from the function getGradeBookTerms() or custom terms. Note: This function **IS ASYNC** and will take a little more time to run. **CALL AWAIT** so your program will wait for this line of code to finish.
@@ -45,10 +72,18 @@ This function returns a list of GradeBox. It takes in ONE parameter from the fun
 ### Getting the assignments in a term and course
 
 ```
-    List<AssignmentsGridBox> assignmentBoxes = await skywardAPI.getAssignmentsFromGradeBox(gradeboxGridBox);
+List<AssignmentsGridBox> assignmentBoxes = await skywardAPI.getAssignmentsFromGradeBox(gradeboxGridBox);
 ```
 
 This function returns a list of AssignmentsGridBox. It takes in ONE parameter from the function getGradeBookGrades() or custom grade boxes *not recommended*. Note: This function **IS ASYNC** and will take a little more time to run. **CALL AWAIT** so your program will wait for this line of code to finish.
+
+### Getting assignment details from assignment
+
+```
+List<AssignmentInfoBox> assignmentInfoBoxes = await skywardAPI.getAssignmentInfoFromAssignment(assignmentBox);
+```
+
+This function returns a list of AssignmentInfoBox. It takes in ONE parameter from the function getAssignmentsFromGradeBox() or custom assignment boxes *not recommended*. Note: This function **IS ASYNC** and will take a little more time to run. **CALL AWAIT** so your program will wait for this line of code to finish.
 
 ## Types
 
@@ -109,3 +144,10 @@ Inherits AssignmentsGridBox.
 
 - String catName: Category name such as DAILY.
 - String weight: Weight of category such as 50.00%.
+
+#### AssignmentInfoBox
+
+- String infoName: Assignment key such as Median:
+- String info: Assignment key value such as 85.32
+
+- String getUIMessage(): Returns infoName and info together to fit into UI such as "Median: 85.32"
