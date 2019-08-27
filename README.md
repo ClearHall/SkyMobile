@@ -29,7 +29,7 @@ Changelog for SKYSCRAPEAPI and SkyMobile.
 - Can check grades, assignments, assignment details
 - Uses SKYSCRAPEAPI V1.2
 
-## Getting Started with Documentation
+## Documentation
 
 **DOCUMENTATION VERSION 1.2.1**
 
