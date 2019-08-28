@@ -3,6 +3,8 @@ import 'SkywardScraperAPI/SkywardAPICore.dart';
 import 'termGradeViewer.dart';
 import 'customDialogOptions.dart';
 import 'globalVariables.dart';
+import 'assignmentInfoViewer.dart';
+import 'assignmentsViewer.dart';
 
 void main() => runApp(MyApp());
 
@@ -13,8 +15,14 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'SkyMobile',
       theme: ThemeData(primarySwatch: Colors.orange),
-      home: MyHomePage(title: 'SkyMobile'),
+      initialRoute: "/",
       debugShowCheckedModeBanner: false,
+      routes: {
+        "/": (context) => MyHomePage(),
+        "/termviewer": (context) => TermViewerPage(),
+        "/assignmentsviewer": (context) => AssignmentsViewer(),
+        "/assignmentsinfoviewer": (context) => AssignmentInfoViewer(),
+      },
     );
   }
 }
@@ -48,7 +56,7 @@ class MyHomePageState extends State<MyHomePage> {
 
     showDialog(
         context: context,
-        builder: (BuildContext context) => dialog);
+        builder: (BuildContext context) => dialog).then((val){isCancelled = true;});;
 
     skywardAPI = SkywardAPICore(
         'https://skyward-fbprod.iscorp.com/scripts/wsisa.dll/WService=wsedufortbendtx/');
@@ -67,12 +75,11 @@ class MyHomePageState extends State<MyHomePage> {
     } else {
       terms = await skywardAPI.getGradeBookTerms();
       gradeBoxes = (await skywardAPI.getGradeBookGrades(terms));
-      var tm = TermViewerPage();
       if(!isCancelled) {
         Navigator.of(context, rootNavigator: true).popUntil((result){
           return result.settings.name == '/';
         });
-        Navigator.push(context, MaterialPageRoute(builder: (context) => (tm)));
+        Navigator.pushNamed(context, '/termviewer');
       }
     }
   }

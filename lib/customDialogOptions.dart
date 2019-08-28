@@ -84,6 +84,8 @@ class HuntyDialogLoading extends HuntyDialog {
       {@required title, @required description})
       : super(title: title, description: description, buttonText: null);
 
+
+
   @override
   createDialogBoxContents(BuildContext context) {
     return <Widget>[

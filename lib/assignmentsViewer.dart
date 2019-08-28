@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'SkywardScraperAPI/SkywardAPICore.dart';
 import 'package:flutter/cupertino.dart';
 import 'SkywardScraperAPI/SkywardAPITypes.dart';
 import 'customDialogOptions.dart';
@@ -21,9 +20,23 @@ class _AssignmentsViewerState extends State<AssignmentsViewer> {
   _AssignmentsViewerState(this.courseName);
 
   _goToAssignmentInfo(Assignment box) async{
+    bool isCancelled = false;
+    var dialog = HuntyDialogLoading('Cancel', () {
+      isCancelled = true;
+    }, title: 'Loading', description: ('Getting your grades..'));
+
+    showDialog(
+        context: context,
+        builder: (BuildContext context) => dialog).then((val){isCancelled = true;});
+
       assignmentInfoBoxes = await skywardAPI.getAssignmentInfoFromAssignment(box);
       var tm = AssignmentInfoViewer(courseName: courseName,);
-      Navigator.push(context, MaterialPageRoute(builder: (context) => (tm)));
+      if(!isCancelled) {
+        Navigator.of(context, rootNavigator: true).popUntil((result){
+          return result.settings.name == '/';
+        });
+        Navigator.push(context, MaterialPageRoute(builder: (context) => (tm)));
+      }
   }
 
   @override

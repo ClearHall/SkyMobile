@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'SkywardScraperAPI/SkywardAPICore.dart';
 import 'package:flutter/cupertino.dart';
 import 'SkywardScraperAPI/SkywardAPITypes.dart';
 import 'customDialogOptions.dart';
@@ -17,15 +16,31 @@ class _TermViewer extends State<TermViewerPage> {
   int currentTermIndex = 0;
 
   _goToAssignmentsViewer(GradeBox gradeBox, String courseName) async{
+    bool isCancelled = false;
+    var dialog = HuntyDialogLoading('Cancel', () {
+      isCancelled = true;
+    }, title: 'Loading', description: ('Getting your grades..'));
+
+    showDialog(
+        context: context,
+        builder: (BuildContext context) => dialog).then((val){isCancelled = true;});
+
     assignmentsGridBoxes =
-        await skywardAPI.getAssignmentsFromGradeBox(gradeBox);
-    debugPrint(assignmentsGridBoxes.toString());
+    await skywardAPI.getAssignmentsFromGradeBox(gradeBox);
     var tm = AssignmentsViewer(courseName: courseName,);
-    Navigator.push(context, MaterialPageRoute(builder: (context) => (tm)));
+    print(isCancelled);
+    if(!isCancelled) {
+      Navigator.of(context, rootNavigator: true).popUntil((result){
+        return result.settings.name == '/termviewer';
+      });
+      Navigator.pushNamed(context, '/assignmentsviewer');
+    }
   }
 
   @override
   Widget build(BuildContext context) {
+    print(ModalRoute.of(context).settings.name);
+
     final FixedExtentScrollController scrollController =
         FixedExtentScrollController(initialItem: currentTermIndex);
 
