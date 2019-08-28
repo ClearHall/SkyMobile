@@ -2,6 +2,8 @@
 
 Cross platform SkyMobile with API.
 
+Join the SkyMobile discord server [here](https://discord.gg/Hqvann5).
+
 # Changelog
 
 Changelog for SKYSCRAPEAPI and SkyMobile.
