@@ -2,6 +2,8 @@
 
 Cross platform SkyMobile with API.
 
+Join the SkyMobile discord server [here](https://discord.gg/Hqvann5).
+
 # Changelog
 
 Changelog for SKYSCRAPEAPI and SkyMobile.
@@ -12,11 +14,11 @@ Changelog for SKYSCRAPEAPI and SkyMobile.
 
 - Fixed bug where assignments with the same name would display the same details: *THIS BUG AFFECTS SKYMOBILE iOS AND WILL NOT BE FIXED FOR SKYMOBILE iOS*
 
-### V1.2
+### V1.2.0
 
 - Can scrape assignment details.
 
-### V1
+### V1.0.0
 
 - Build the basic foundation. Initial release.
 - Can scrape gradebook and assignments.
