@@ -123,3 +123,27 @@ class AssignmentInfoBox{
     return 'AssignmentInfoBox{infoName: $infoName, info: $info}';
   }
 }
+
+class SkywardSearchState{
+  String stateName;
+  String stateID;
+
+  SkywardSearchState(this.stateName, this.stateID);
+
+  @override
+  String toString() {
+    return 'State{stateName: $stateName, stateID: $stateID}';
+  }
+}
+
+class SkywardDistrict{
+  String districtName;
+  String districtLink;
+
+  SkywardDistrict(this.districtName, this.districtLink);
+
+  @override
+  String toString() {
+    return 'SkywardDistrict{districtName: $districtName, districtLink: $districtLink}';
+  }
+}

@@ -5,6 +5,8 @@ import 'customDialogOptions.dart';
 import 'globalVariables.dart';
 import 'assignmentInfoViewer.dart';
 import 'assignmentsViewer.dart';
+import 'SkywardScraperAPI/SkywardAPITypes.dart';
+import 'SkywardScraperAPI/SkywardDistrictSearcher.dart';
 
 void main() => runApp(MyApp());
 
@@ -36,7 +38,6 @@ class MyHomePage extends StatefulWidget {
 }
 
 class MyHomePageState extends State<MyHomePage> {
-  Stream<List> dataSub;
 
   void _incrementCounter() async {
     var terms = (await skywardAPI.getGradeBookTerms());
@@ -54,9 +55,11 @@ class MyHomePageState extends State<MyHomePage> {
       isCancelled = true;
     }, title: 'Loading', description: ('Getting your grades..'));
 
-    showDialog(
-        context: context,
-        builder: (BuildContext context) => dialog).then((val){isCancelled = true;});;
+    showDialog(context: context, builder: (BuildContext context) => dialog)
+        .then((val) {
+      isCancelled = true;
+    });
+    ;
 
     skywardAPI = SkywardAPICore(
         'https://skyward-fbprod.iscorp.com/scripts/wsisa.dll/WService=wsedufortbendtx/');
@@ -75,8 +78,8 @@ class MyHomePageState extends State<MyHomePage> {
     } else {
       terms = await skywardAPI.getGradeBookTerms();
       gradeBoxes = (await skywardAPI.getGradeBookGrades(terms));
-      if(!isCancelled) {
-        Navigator.of(context, rootNavigator: true).popUntil((result){
+      if (!isCancelled) {
+        Navigator.of(context, rootNavigator: true).popUntil((result) {
           return result.settings.name == '/';
         });
         Navigator.pushNamed(context, '/termviewer');
@@ -199,6 +202,33 @@ class MyHomePageState extends State<MyHomePage> {
                                             width: 2)),
                                     child: new Text(
                                       'Submit',
+                                      style: new TextStyle(
+                                          fontSize: 20.0,
+                                          color: Colors.orangeAccent),
+                                    ),
+                                  )),
+                            )),
+                        new Container(
+                            padding: EdgeInsets.only(
+                                top: 20, left: 30, right: 30, bottom: 20),
+                            child: Material(
+                              color: Colors.transparent,
+                              child: InkWell(
+                                  splashColor: Colors.orangeAccent,
+                                  borderRadius: BorderRadius.circular(16),
+                                  onTap: () => {
+                                      },
+                                  child: Container(
+                                    alignment: Alignment.center,
+                                    padding: EdgeInsets.all(10),
+                                    decoration: BoxDecoration(
+                                        borderRadius:
+                                            BorderRadius.circular(16.0),
+                                        border: Border.all(
+                                            color: Colors.orangeAccent,
+                                            width: 2)),
+                                    child: new Text(
+                                      'Search District',
                                       style: new TextStyle(
                                           fontSize: 20.0,
                                           color: Colors.orangeAccent),

@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'main.dart';
+import 'SkywardScraperAPI/SkywardAPITypes.dart';
 
 class HuntyDialog extends StatelessWidget {
   final String title, description, buttonText;

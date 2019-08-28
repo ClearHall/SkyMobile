@@ -28,7 +28,6 @@ class _TermViewer extends State<TermViewerPage> {
     assignmentsGridBoxes =
     await skywardAPI.getAssignmentsFromGradeBox(gradeBox);
     var tm = AssignmentsViewer(courseName: courseName,);
-    print(isCancelled);
     if(!isCancelled) {
       Navigator.of(context, rootNavigator: true).popUntil((result){
         return result.settings.name == '/termviewer';
@@ -39,7 +38,6 @@ class _TermViewer extends State<TermViewerPage> {
 
   @override
   Widget build(BuildContext context) {
-    print(ModalRoute.of(context).settings.name);
 
     final FixedExtentScrollController scrollController =
         FixedExtentScrollController(initialItem: currentTermIndex);

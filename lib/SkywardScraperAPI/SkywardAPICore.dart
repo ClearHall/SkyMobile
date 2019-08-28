@@ -1,8 +1,3 @@
-/*
-  SkyScrapeAPI Version 1.0
-  © Hunter Han
- */
-
 import 'SkywardAuthenticator.dart';
 import 'GradebookAccessor.dart';
 import 'AssignmentAccessor.dart';

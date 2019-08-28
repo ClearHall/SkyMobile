@@ -48,7 +48,6 @@ class AssignmentAccessor {
         }else if(tdElem.classes.isEmpty && !tdElem.attributes.containsKey('style') && tdElem.attributes['style'] != 'padding-right:4px'){
           int ind = _getIndexOfAssignmentFromNameAndElement(
               showAssignmentIDVal, tdElems[i + 1].text);
-          print(showAssignmentIDVal[ind].attributes);
           gridBoxes.add(Assignment(
               showAssignmentIDVal[ind].attributes['data-sid'],
               showAssignmentIDVal[ind].attributes['data-aid'],
