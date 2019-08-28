@@ -10,6 +10,12 @@ Changelog for SKYSCRAPEAPI and SkyMobile.
 
 ## SKYSCRAPEAPI
 
+Main scraping API for SkyMobile cross platform.
+
+### V1.3.0
+
+- Adds DistrictSearcher to search for districts family access links.
+
 ### V1.2.1
 
 - Fixed bug where assignments with the same name would display the same details: *THIS BUG AFFECTS SKYMOBILE iOS AND WILL NOT BE FIXED FOR SKYMOBILE iOS*
@@ -33,7 +39,7 @@ Changelog for SKYSCRAPEAPI and SkyMobile.
 
 ## Documentation
 
-**DOCUMENTATION VERSION 1.2.1**
+**DOCUMENTATION VERSION 1.3.0**
 
 To use this API, you must take the package SkywardScraperAPI. I have not made this implementable with pubspec.yaml.
 
@@ -86,6 +92,16 @@ List<AssignmentInfoBox> assignmentInfoBoxes = await skywardAPI.getAssignmentInfo
 ```
 
 This function returns a list of AssignmentInfoBox. It takes in ONE parameter from the function getAssignmentsFromGradeBox() or custom assignment boxes *not recommended*. Note: This function **IS ASYNC** and will take a little more time to run. **CALL AWAIT** so your program will wait for this line of code to finish.
+
+### Searching for districts
+
+Extra import needed: SkywardScraperAPI/SkywardDistrictSearcher.dart
+
+```
+await SkywardDistrictSearcher.getStatesAndPostRequiredBodyElements();
+List<> districts = await SkywardDistrictSearcher.searchForDistrictLinkFromState("180", "Alvin");
+```
+
 
 ## Types
 
