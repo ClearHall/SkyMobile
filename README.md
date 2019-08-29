@@ -12,6 +12,10 @@ Changelog for SKYSCRAPEAPI and SkyMobile.
 
 Main scraping API for SkyMobile cross platform.
 
+### V1.4.0
+
+- Remade Assignment scraping algorithm to support more districts.
+
 ### V1.3.0
 
 - Adds DistrictSearcher to search for districts family access links.
@@ -30,6 +34,11 @@ Main scraping API for SkyMobile cross platform.
 - Can scrape gradebook and assignments.
 
 ## SkyMobile
+
+### Planned V1.1.0
+- Adds DistrictSearcher
+- Fixes bugs for other districts
+- Fixes multiple registered taps bug
 
 ### V1.0.0
 
