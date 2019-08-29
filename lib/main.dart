@@ -5,7 +5,6 @@ import 'customDialogOptions.dart';
 import 'globalVariables.dart';
 import 'assignmentInfoViewer.dart';
 import 'assignmentsViewer.dart';
-import 'SkywardScraperAPI/SkywardAPITypes.dart';
 import 'SkywardScraperAPI/SkywardDistrictSearcher.dart';
 
 void main() => runApp(MyApp());
@@ -39,15 +38,7 @@ class MyHomePage extends StatefulWidget {
 
 class MyHomePageState extends State<MyHomePage> {
 
-  void _incrementCounter() async {
-    var terms = (await skywardAPI.getGradeBookTerms());
-    var gradeBoxes = await skywardAPI.getGradeBookGrades(terms);
-    var assignmentBoxes =
-        await skywardAPI.getAssignmentsFromGradeBox(gradeBoxes[1]);
-    print(gradeBoxes);
-    print(assignmentBoxes);
-    print(await skywardAPI.getAssignmentInfoFromAssignment(assignmentBoxes[1]));
-  }
+  static
 
   void _getGradeTerms(String user, String pass, BuildContext context) async {
     bool isCancelled = false;
@@ -62,7 +53,7 @@ class MyHomePageState extends State<MyHomePage> {
     ;
 
     skywardAPI = SkywardAPICore(
-        'https://skyward-fbprod.iscorp.com/scripts/wsisa.dll/WService=wsedufortbendtx/');
+        'https://skyward.hpisd.org/scripts/wsisa.dll/WService=wsEAplus/fwemnu01.w');
     if (await skywardAPI.getSkywardAuthenticationCodes(user, pass) ==
         SkywardAPICodes.LoginFailed) {
       Navigator.of(context).pop(dialog);

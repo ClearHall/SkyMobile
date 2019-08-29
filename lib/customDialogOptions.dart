@@ -177,10 +177,21 @@ class _HuntyDistrictSearcherWidgetState
     List<Widget> districtCards = [];
     for (SkywardDistrict district in districtsFromSearchQuery) {
       districtCards.add(Container(
-        color: DialogColorMode.getDialogOrWidgetColor(),
-        child: Text(district.districtName),
-        height: 30,
-        width: 50,
+        child: InkWell(
+          onTap: (){
+
+          },
+            child: Card(
+                color: Colors.white10,
+                child: Container(
+                  padding: EdgeInsets.all(10),
+                  child: Text(
+                    district.districtName,
+                    style: TextStyle(color: Colors.white),
+                  ),
+                ))),
+        height: 100,
+        width: 130,
       ));
     }
 
@@ -199,7 +210,7 @@ class _HuntyDistrictSearcherWidgetState
           fontSize: 16.0,
         ),
       ),
-      SizedBox(height: 24.0),
+      SizedBox(height: 10.0),
       new Theme(
           data: Theme.of(context)
               .copyWith(canvasColor: DialogColorMode.getDialogOrWidgetColor()),
@@ -222,7 +233,7 @@ class _HuntyDistrictSearcherWidgetState
             },
           )),
       Container(
-        padding: EdgeInsets.all(25),
+        padding: EdgeInsets.only(left: 25, right: 25, top: 10, bottom: 10),
         child: TextField(
           textAlign: TextAlign.center,
           controller: textController,
@@ -278,23 +289,28 @@ class _HuntyDistrictSearcherWidgetState
   }
 
   _searchForState() async {
-      if (textController.text.length < 3) {
-        messages = Container(child: Text(
+    if (textController.text.length < 3) {
+      messages = Container(
+        child: Text(
           'Please enter 3 or more characters to get a complete search.',
           style: TextStyle(color: Colors.red),
-        ), padding: EdgeInsets.all(10),);
-      } else {
-        districtsFromSearchQuery = await SkywardDistrictSearcher.searchForDistrictLinkFromState(dropDownVal, textController.text.trim());
-        messages = null;
-      }
-      setState(() {});
+        ),
+        padding: EdgeInsets.all(10),
+      );
+    } else {
+      districtsFromSearchQuery =
+          await SkywardDistrictSearcher.searchForDistrictLinkFromState(
+              dropDownVal, textController.text.trim());
+      messages = null;
+    }
+    setState(() {});
   }
 
   customDialogContent(BuildContext context) {
     return Stack(
       children: <Widget>[
         Container(
-          padding: EdgeInsets.only(top: 60.0, bottom: 16, left: 15, right: 16),
+          padding: EdgeInsets.only(top: 30.0, bottom: 16, left: 15, right: 16),
           margin: EdgeInsets.only(top: 20),
           decoration: new BoxDecoration(
             border: Border.all(color: Colors.orange),

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'SkywardScraperAPI/SkywardAPITypes.dart';
 import 'customDialogOptions.dart';
-import 'assignmentInfoViewer.dart';
 import 'globalVariables.dart';
 
 class AssignmentsViewer extends StatefulWidget {
@@ -20,22 +19,26 @@ class _AssignmentsViewerState extends State<AssignmentsViewer> {
   _AssignmentsViewerState(this.courseName);
 
   _goToAssignmentInfo(Assignment box) async{
-    bool isCancelled = false;
-    var dialog = HuntyDialogLoading('Cancel', () {
-      isCancelled = true;
-    }, title: 'Loading', description: ('Getting your grades..'));
+    if(box.assignmentID != null) {
+      bool isCancelled = false;
+      var dialog = HuntyDialogLoading('Cancel', () {
+        isCancelled = true;
+      }, title: 'Loading', description: ('Getting your grades..'));
 
-    showDialog(
-        context: context,
-        builder: (BuildContext context) => dialog).then((val){isCancelled = true;});
-
-      assignmentInfoBoxes = await skywardAPI.getAssignmentInfoFromAssignment(box);
-      var tm = AssignmentInfoViewer(courseName: courseName,);
-    if(!isCancelled) {
-      Navigator.of(context, rootNavigator: true).popUntil((result){
-        return result.settings.name == '/assignmentsviewer';
+      showDialog(
+          context: context,
+          builder: (BuildContext context) => dialog).then((val) {
+        isCancelled = true;
       });
-      Navigator.pushNamed(context, '/assignmentsinfoviewer');
+
+      assignmentInfoBoxes =
+      await skywardAPI.getAssignmentInfoFromAssignment(box);
+      if (!isCancelled) {
+        Navigator.of(context, rootNavigator: true).popUntil((result) {
+          return result.settings.name == '/assignmentsviewer';
+        });
+        Navigator.pushNamed(context, '/assignmentsinfoviewer');
+      }
     }
   }
 

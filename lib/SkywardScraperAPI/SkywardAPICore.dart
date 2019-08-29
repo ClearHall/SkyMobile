@@ -6,18 +6,18 @@ import 'AssignmentInfoAccessor.dart';
 
 class SkywardAPICore {
   Map<String, String> loginSessionRequiredBodyElements;
-  final String _baseURL;
+  String _baseURL;
   String _gradebookHTML;
   GradebookAccessor gradebookAccessor = GradebookAccessor();
 
   SkywardAPICore(this._baseURL) {
     if (_verifyBaseURL(this._baseURL)) {
-      this._baseURL.substring(0, this._baseURL.lastIndexOf('/') + 1);
+      this._baseURL = this._baseURL.substring(0, this._baseURL.lastIndexOf('/') + 1);
     }
   }
 
   bool _verifyBaseURL(String url) {
-    return url.endsWith('/');
+    return !url.endsWith('/');
   }
 
   //Returns true for success and false for failed.

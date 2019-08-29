@@ -85,7 +85,6 @@ class AssignmentsGridBox extends GridBox{
   String getDecimal(){
       for(String a in attributes.values){
         if(double.tryParse(a) != null && a.contains('.')){
-          print(a);
           return a;
         }
       }

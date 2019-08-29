@@ -59,7 +59,15 @@ class AssignmentAccessor {
         for(Element td in tdVals) {
           attributes.add(td.text);
         }
-        gridBoxes.add(Assignment(assignment.attributes['data-sid'], assignment.attributes['data-aid'], assignment.attributes['data-gid'], attributes[1], Map.fromIterables(headers, attributes)));
+        if(assignment != null)
+          gridBoxes.add(Assignment(assignment.attributes['data-sid'], assignment.attributes['data-aid'], assignment.attributes['data-gid'], attributes[1], Map.fromIterables(headers, attributes)));
+        else {
+          for(int i = attributes.length; i < headers.length; i++){
+            attributes.add("");
+          }
+          gridBoxes.add(Assignment(null, null, null, attributes.first,
+              Map.fromIterables(headers, attributes)));
+        }
       }
     }
     return gridBoxes;
