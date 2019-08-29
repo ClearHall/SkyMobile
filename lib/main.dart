@@ -6,6 +6,7 @@ import 'globalVariables.dart';
 import 'assignmentInfoViewer.dart';
 import 'assignmentsViewer.dart';
 import 'SkywardScraperAPI/SkywardDistrictSearcher.dart';
+import 'SkywardScraperAPI/SkywardAPITypes.dart';
 
 void main() => runApp(MyApp());
 
@@ -38,7 +39,7 @@ class MyHomePage extends StatefulWidget {
 
 class MyHomePageState extends State<MyHomePage> {
 
-  static
+  static SkywardDistrict district = SkywardDistrict('FORT BEND ISD', 'https://skyward-fbprod.iscorp.com/scripts/wsisa.dll/WService=wsedufortbendtx/seplog01.w');
 
   void _getGradeTerms(String user, String pass, BuildContext context) async {
     bool isCancelled = false;
@@ -52,8 +53,7 @@ class MyHomePageState extends State<MyHomePage> {
     });
     ;
 
-    skywardAPI = SkywardAPICore(
-        'https://skyward.hpisd.org/scripts/wsisa.dll/WService=wsEAplus/fwemnu01.w');
+    skywardAPI = SkywardAPICore(district.districtLink);
     if (await skywardAPI.getSkywardAuthenticationCodes(user, pass) ==
         SkywardAPICodes.LoginFailed) {
       Navigator.of(context).pop(dialog);
@@ -124,7 +124,7 @@ class MyHomePageState extends State<MyHomePage> {
                               alignment: Alignment.center,
                               padding: EdgeInsets.all(10),
                               child: new Text(
-                                'Enter your Skyward Credentials for FORT BEND ISD.',
+                                'Enter your Skyward Credentials for ${district.districtName}.',
                                 style: new TextStyle(
                                     fontSize: 20.0, color: Colors.white),
                               ),
@@ -210,7 +210,7 @@ class MyHomePageState extends State<MyHomePage> {
                             )),
                         new Container(
                             padding: EdgeInsets.only(
-                                top: 20, left: 30, right: 30, bottom: 20),
+                                top: 0, left: 30, right: 30, bottom: 25),
                             child: Material(
                               color: Colors.transparent,
                               child: InkWell(
