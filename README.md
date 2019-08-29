@@ -112,6 +112,7 @@ List<> districts = await SkywardDistrictSearcher.searchForDistrictLinkFromState(
 ```
 
 
+
 ## Types
 
 The following types are the only types you will need to know about.
@@ -152,9 +153,10 @@ Inherits GradeboxGridBox.
 
 Inherits GradeboxGridBox.
 
-- String grade: Your grade such as 95.
-- String decimalGrade: Your grade down to the decimal such as 94.5.
-- String gradeOutOfMax: Your grade out of the maximum points such as 94.5 out of 100. (* out of 100) if no grade.
+- Map<String, String> attributes: Extra attributes such as {Assignment: QUIZ, Grade: 43}
+- String getAssignment(): Returns assumed second attribute assignment name such as QUIZ.
+- String getDecimal(): Searches for a decimal in attributes, if one isn't found, then an integer is retrieved. If an integer isn't found, then null is returned.
+- String getIntGrade(): Searches for an integer in attributes, if one is not found, then returns null.
 
 #### Assignment
 
@@ -162,8 +164,8 @@ Inherits AssignmentsGridBox.
 
 - String studentID: **NOT YOUR USERNAME** Your student ID to identify your session such as 33198.
 - String assignmentID: Assignment ID used to get more assignment details.
-- String assignmentName: The assignment name.
-- String dateDue: Due date of the assignment.
+- String gbID: The extra attribute used to post.
+- String assignmentName: Assignment name such as QUIZ.
 
 #### CategoryHeader
 
@@ -178,3 +180,8 @@ Inherits AssignmentsGridBox.
 - String info: Assignment key value such as 85.32
 
 - String getUIMessage(): Returns infoName and info together to fit into UI such as "Median: 85.32"
+
+#### SkywardSearchState
+
+- String stateName: Name of the state such as Texas.
+- String stateID: Name of the corresponding state ID for example, Texas' state ID is 180.
