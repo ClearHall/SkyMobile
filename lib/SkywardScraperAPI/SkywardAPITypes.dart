@@ -69,15 +69,36 @@ class GradeBox extends GradeTextBox{
 }
 
 class AssignmentsGridBox extends GridBox{
-  String grade;
-  String decimalGrade;
-  String gradeOutOfMax;
+  Map<String, String> attributes;
 
-  AssignmentsGridBox(this.grade, this.decimalGrade, this.gradeOutOfMax);
+  AssignmentsGridBox(this.attributes);
 
   @override
   String toString() {
-    return 'AssignmentsGridBox{grade: $grade, decimalGrade: $decimalGrade, gradeOutOfMax: $gradeOutOfMax';
+    return "";
+  }
+
+  String getAssignment(){
+    return attributes[attributes.keys.toList()[1]];
+  }
+
+  String getDecimal(){
+      for(String a in attributes.values){
+        if(double.tryParse(a) != null && a.contains('.')){
+          print(a);
+          return a;
+        }
+      }
+      return getIntGrade();
+  }
+
+  String getIntGrade(){
+    for(String val in attributes.values){
+      if(int.tryParse(val) != null){
+        return val;
+      }
+    }
+    return null;
   }
 }
 
@@ -86,13 +107,12 @@ class Assignment extends AssignmentsGridBox{
   String assignmentID;
   String gbID;
   String assignmentName;
-  String dateDue;
 
-  Assignment(this.studentID, this.assignmentID,this.gbID, this.dateDue, this.assignmentName, String grade, String gradeOutOfMax, String decimalGrade):super(grade, decimalGrade, gradeOutOfMax);
+  Assignment(this.studentID, this.assignmentID, this.gbID, this.assignmentName,Map<String, String> attributes):super(attributes);
 
   @override
   String toString() {
-    return 'Assignment{studentID: $studentID, assignmentID: $assignmentID,gbID: $gbID, assignmentName: $assignmentName, grade: $grade, decimalGrade: $decimalGrade, gradeOutOfMax: $gradeOutOfMax, dateDue: $dateDue}';
+    return 'Assignment{studentID: $studentID, assignmentID: $assignmentID,gbID: $gbID, assignmentName: $assignmentName}';
   }
 }
 
@@ -100,11 +120,11 @@ class CategoryHeader extends AssignmentsGridBox{
   String catName;
   String weight;
 
-  CategoryHeader(this.catName, this.weight, String grade, String gradeOutOfMax, String decimalGrade):super(grade, decimalGrade, gradeOutOfMax);
+  CategoryHeader(this.catName, this.weight,Map<String, String> attributes):super(attributes);
 
   @override
   String toString() {
-    return 'CategoryHeader{catName: $catName,weight: $weight grade: $grade, decimalGrade: $decimalGrade, gradeOutOfMax: $gradeOutOfMax}';
+    return 'CategoryHeader{catName: $catName,weight: $weight}';
   }
 }
 

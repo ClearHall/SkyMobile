@@ -177,7 +177,10 @@ class _HuntyDistrictSearcherWidgetState
     List<Widget> districtCards = [];
     for (SkywardDistrict district in districtsFromSearchQuery) {
       districtCards.add(Container(
+        color: DialogColorMode.getDialogOrWidgetColor(),
         child: Text(district.districtName),
+        height: 30,
+        width: 50,
       ));
     }
 

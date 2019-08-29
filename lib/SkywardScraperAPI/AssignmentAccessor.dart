@@ -19,94 +19,49 @@ class AssignmentAccessor {
   }
 
   static getAssignmentsDialog(String assignmentPageHTML) {
-    String newString = assignmentPageHTML.split("<![CDATA[")[1].split("]]>")[0];
-    var doc = DocumentFragment.html(newString);
+    var doc = DocumentFragment.html(assignmentPageHTML);
     List<AssignmentsGridBox> gridBoxes = [];
-    List<Element> tdElems = doc.querySelectorAll('td');
-    List<Element> showAssignmentIDVal =
-        doc.querySelectorAll('#showAssignmentInfo');
-    for (int i = 0; i < tdElems.length; i++) {
-      Element tdElem = tdElems[i];
-      if (tdElem.classes.contains('nWp') && tdElem.classes.contains('noLBdr')) {
-        String weightedText =
-            tdElem.children.isNotEmpty ? tdElem.children[1].text : null;
-        gridBoxes.add(CategoryHeader(
-            tdElem.text.substring(
-                0,
-                weightedText != null
-                    ? tdElem.text.indexOf(weightedText)
-                    : tdElem.text.length),
-            weightedText,
-            tdElems[i + 1].text,
-            tdElems[i + 3].text,
-            tdElems[i + 2].text));
-        i = i + 4;
-      } else if (tdElem.attributes['scope'] == 'row' &&
-          tdElem.text.trim().isNotEmpty) {
-        if (tdElem.attributes.containsKey('nPtb')) {
-          gridBoxes.add(CategoryHeader(
-              tdElem.text, null, null, null, tdElems[i + 1].text));
-          i = i + 2;
-        } else if (tdElem.classes.contains('aTop')) {
-          gridBoxes.add(CategoryHeader(tdElem.children[0].text, null,
-              tdElems[i + 1].text, null, tdElems[i + 2].text));
-          i = i + 3;
-        } else if (tdElem.classes.isEmpty &&
-            !tdElem.attributes.containsKey('style') &&
-            tdElem.attributes['style'] != 'padding-right:4px') {
-          Element assignment = showAssignmentIDVal.removeAt(_getIndexOfAssignmentFromNameAndElement(
-              showAssignmentIDVal, tdElems[i + 1].text));
+    Element table =
+        doc.querySelector('table[id*=grid_stuAssignmentSummaryGrid]');
+    List<String> headers = [];
+    List<Element> elementsInsideTable =
+        table.querySelector('tbody').querySelectorAll('tr');
 
-          List<String> attemptRetrieve = [
-            tdElems[i + 2].text,
-            tdElems[i + 4].text,
-            tdElems[i + 3].text
-          ];
-          String intGrade = _getIntInd(attemptRetrieve);
-          String decimalGrade = _getDecimalInd(attemptRetrieve);
+    if (headers.isEmpty) {
+      List<Element> elems = table.querySelector('thead').querySelectorAll('th');
+      for (Element header in elems) {
+        headers.add(header.text);
+      }
+    }
 
-          gridBoxes.add(Assignment(
-            assignment.attributes['data-sid'],
-            assignment.attributes['data-aid'],
-            assignment.attributes['data-gid'],
-            tdElem.text,
-            tdElems[i + 1].text,
-            intGrade,
-            attemptRetrieve[0],
-            decimalGrade,
-          ));
-          i = i + 5;
+    for(Element row in elementsInsideTable){
+      List<Element> tdVals = row.querySelectorAll('td');
+      List<String> attributes = [];
+      if(row.classes.contains('sf_Section') && row.classes.contains('cat')){
+        CategoryHeader catHeader = CategoryHeader(null, null, null);
+        for(Element td in tdVals){
+          if(td.classes.contains('nWp') && td.classes.contains('noLBdr')){
+            Element weighted = td.querySelector('span');
+            catHeader.weight = weighted != null ? weighted.text : null;
+            attributes.add(td.text.substring(0, weighted != null ? td.text.indexOf(weighted.text) : td.text.length));
+          }else{
+            attributes.add(td.text);
+          }
         }
+        for(int i = attributes.length; i < headers.length; i++){
+          attributes.add("");
+        }
+        catHeader.catName = attributes[1];
+        catHeader.attributes = Map.fromIterables(headers, attributes);
+        gridBoxes.add(catHeader);
+      }else{
+        Element assignment = row.querySelector('#showAssignmentInfo');
+        for(Element td in tdVals) {
+          attributes.add(td.text);
+        }
+        gridBoxes.add(Assignment(assignment.attributes['data-sid'], assignment.attributes['data-aid'], assignment.attributes['data-gid'], attributes[1], Map.fromIterables(headers, attributes)));
       }
     }
-    gridBoxes.removeAt(0);
     return gridBoxes;
-  }
-
-  static String _getDecimalInd(List<String> list) {
-    for (String val in list) {
-      if (double.tryParse(val) != null) {
-        list.remove(val);
-        return val;
-      }
-    }
-  }
-
-  static String _getIntInd(List<String> list) {
-    for (String val in list) {
-      if (int.tryParse(val) != null) {
-        list.remove(val);
-        return val;
-      }
-    }
-  }
-
-  static _getIndexOfAssignmentFromNameAndElement(
-      List<Element> elems, String name) {
-    for (int i = 0; i < elems.length; i++) {
-      if (elems[i].text == name) {
-        return i;
-      }
-    }
   }
 }

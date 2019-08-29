@@ -39,12 +39,14 @@ class _AssignmentsViewerState extends State<AssignmentsViewer> {
     }
   }
 
+
+
   @override
   Widget build(BuildContext context) {
     List<Widget> body = [];
     for(AssignmentsGridBox box in assignmentsGridBoxes){
       bool isBoxCatHeader = box is CategoryHeader;
-      String grade = isBoxCatHeader ? (box as CategoryHeader).decimalGrade : (box as Assignment).decimalGrade;
+      String grade = isBoxCatHeader ? (box as CategoryHeader).getDecimal() : (box as Assignment).getDecimal();
       bool secondContNeeded = (isBoxCatHeader && (box as CategoryHeader).weight != null);
 
       body.add(Card(
