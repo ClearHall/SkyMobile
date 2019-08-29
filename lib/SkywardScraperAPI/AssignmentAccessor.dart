@@ -48,20 +48,43 @@ class AssignmentAccessor {
         }else if(tdElem.classes.isEmpty && !tdElem.attributes.containsKey('style') && tdElem.attributes['style'] != 'padding-right:4px'){
           int ind = _getIndexOfAssignmentFromNameAndElement(
               showAssignmentIDVal, tdElems[i + 1].text);
+
+          List<String> attempRetrieve = [ tdElems[i + 2].text,tdElems[i + 4].text,tdElems[i + 3].text];
+
           gridBoxes.add(Assignment(
               showAssignmentIDVal[ind].attributes['data-sid'],
               showAssignmentIDVal[ind].attributes['data-aid'],
               showAssignmentIDVal[ind].attributes['data-gid'],
               tdElem.text,
               tdElems[i + 1].text,
-              tdElems[i + 2].text,
-              tdElems[i + 4].text,
-              tdElems[i + 3].text));
+              _getIntInd(attempRetrieve),
+              attempRetrieve[0],
+              _getDecimalInd(attempRetrieve),
+              );
           i = i + 5;
         }
       }
     }
+    gridBoxes.removeAt(0);
     return gridBoxes;
+  }
+
+  static String _getDecimalInd(List<String> list){
+    for(String val in list){
+      if (double.tryParse(val) != null){
+        list.remove(val);
+        return val;
+      }
+    }
+  }
+
+  static String _getIntInd(List<String> list){
+    for(String val in list){
+      if (int.tryParse(val) != null){
+        list.remove(val);
+        return val;
+      }
+    }
   }
 
   static _getIndexOfAssignmentFromNameAndElement(

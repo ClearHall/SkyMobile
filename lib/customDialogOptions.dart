@@ -1,6 +1,20 @@
 import 'package:flutter/material.dart';
-import 'main.dart';
+import 'SkywardScraperAPI/SkywardDistrictSearcher.dart';
 import 'SkywardScraperAPI/SkywardAPITypes.dart';
+
+class DialogColorMode {
+  static Color getBackgroundColor() {
+    return Colors.black;
+  }
+
+  static Color getDialogOrWidgetColor() {
+    return Color.fromARGB(255, 21, 21, 21);
+  }
+
+  static Color getTextColor() {
+    return Colors.white;
+  }
+}
 
 class HuntyDialog extends StatelessWidget {
   final String title, description, buttonText;
@@ -82,11 +96,9 @@ class HuntyDialog extends StatelessWidget {
 class HuntyDialogLoading extends HuntyDialog {
   final String cancelText;
   final Function runWhenCancelled;
-  HuntyDialogLoading( this.cancelText, this.runWhenCancelled,
+  HuntyDialogLoading(this.cancelText, this.runWhenCancelled,
       {@required title, @required description})
       : super(title: title, description: description, buttonText: null);
-
-
 
   @override
   createDialogBoxContents(BuildContext context) {
@@ -116,10 +128,160 @@ class HuntyDialogLoading extends HuntyDialog {
             Navigator.of(context).pop();
             runWhenCancelled();
           },
-          child: Text(cancelText, style: TextStyle(color: Colors.red),),
+          child: Text(
+            cancelText,
+            style: TextStyle(color: Colors.red),
+          ),
         ),
       ),
     ];
+  }
+}
+
+class HuntyDistrictSearcherWidget extends StatefulWidget {
+  HuntyDistrictSearcherWidget({this.title, this.description, this.buttonText});
+
+  final String title, description, buttonText;
+
+  @override
+  _HuntyDistrictSearcherWidgetState createState() =>
+      _HuntyDistrictSearcherWidgetState(
+          title: title, description: description, buttonText: buttonText);
+}
+
+class _HuntyDistrictSearcherWidgetState
+    extends State<HuntyDistrictSearcherWidget> {
+  final String title, description, buttonText;
+
+  _HuntyDistrictSearcherWidgetState(
+      {@required this.title,
+      @required this.description,
+      @required this.buttonText});
+
+  @override
+  Widget build(BuildContext context) {
+    return Dialog(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
+      elevation: 0.0,
+      backgroundColor: Colors.transparent,
+      child: customDialogContent(context),
+    );
+  }
+
+  var dropDownVal = SkywardDistrictSearcher.states[0].stateID;
+  var textController = TextEditingController();
+
+  createDialogBoxContents(BuildContext context) {
+    return <Widget>[
+      Text(
+        title,
+        style: TextStyle(
+            fontSize: 24.0, fontWeight: FontWeight.w700, color: Colors.blue),
+      ),
+      SizedBox(height: 16.0),
+      Text(
+        description,
+        textAlign: TextAlign.center,
+        style: TextStyle(
+          color: DialogColorMode.getTextColor(),
+          fontSize: 16.0,
+        ),
+      ),
+      SizedBox(height: 24.0),
+      DropdownButton<String>(
+        items: SkywardDistrictSearcher.states
+            .map<DropdownMenuItem<String>>((SkywardSearchState value) {
+          return DropdownMenuItem<String>(
+            value: value.stateID,
+            child: Text(
+              value.stateName,
+              style: TextStyle(color: DialogColorMode.getTextColor()),
+            ),
+          );
+        }).toList(),
+        value: dropDownVal,
+        onChanged: (String newVal) {
+          setState(() {
+            dropDownVal = newVal;
+          });
+        },
+      ),
+      Container(
+        padding: EdgeInsets.all(25),
+        child: TextField(
+          textAlign: TextAlign.center,
+          controller: textController,
+          style: TextStyle(color: DialogColorMode.getTextColor()),
+//          onSubmitted: (String a) {
+//            Navigator.of(context).pop();
+//            okPressed();
+//          },
+          decoration: InputDecoration(
+              hintText: 'District Search',
+              hintStyle: TextStyle(color: Colors.white),
+              enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(50.0),
+                  borderSide: BorderSide(color: Colors.blue)),
+              border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(50.0),
+                  borderSide:
+                      BorderSide(color: DialogColorMode.getTextColor()))),
+        ),
+      ),
+      Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: <Widget>[
+        Align(
+            alignment: Alignment.bottomLeft,
+            child: FlatButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text(
+                'Cancel',
+                style: TextStyle(color: Colors.orange),
+              ),
+            )),
+        Align(
+          alignment: Alignment.bottomRight,
+          child: FlatButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+            child: Text(
+              buttonText,
+              style: TextStyle(color: Colors.blue),
+            ),
+          ),
+        )
+      ]),
+    ];
+  }
+
+  customDialogContent(BuildContext context) {
+    return Stack(
+      children: <Widget>[
+        Container(
+          padding: EdgeInsets.only(top: 60.0, bottom: 16, left: 15, right: 16),
+          margin: EdgeInsets.only(top: 20),
+          decoration: new BoxDecoration(
+            border: Border.all(color: Colors.orange),
+            color: DialogColorMode.getDialogOrWidgetColor(),
+            shape: BoxShape.rectangle,
+            borderRadius: BorderRadius.circular(16),
+            boxShadow: [
+              BoxShadow(
+                color: DialogColorMode.getBackgroundColor(),
+                blurRadius: 10.0,
+                offset: const Offset(0.0, 10.0),
+              ),
+            ],
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: createDialogBoxContents(context),
+          ),
+        )
+      ],
+    );
   }
 }
 

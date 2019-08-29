@@ -87,6 +87,15 @@ class MyHomePageState extends State<MyHomePage> {
     }
   }
 
+  _showDialog()async{
+    await SkywardDistrictSearcher.getStatesAndPostRequiredBodyElements();
+    showDialog(
+        context: context,
+        builder: ((BuildContext context) {
+          return HuntyDistrictSearcherWidget(title: 'District Searcher', description: 'Search for districts', buttonText: 'OK');
+        }));
+  }
+
   TextEditingController _controllerUsername = TextEditingController();
   TextEditingController _controllerPassword = TextEditingController();
 
@@ -216,8 +225,7 @@ class MyHomePageState extends State<MyHomePage> {
                               child: InkWell(
                                   splashColor: Colors.orangeAccent,
                                   borderRadius: BorderRadius.circular(16),
-                                  onTap: () => {
-                                      },
+                                  onTap: () => {_showDialog()},
                                   child: Container(
                                     alignment: Alignment.center,
                                     padding: EdgeInsets.all(10),
