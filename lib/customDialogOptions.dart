@@ -170,8 +170,17 @@ class _HuntyDistrictSearcherWidgetState
 
   var dropDownVal = SkywardDistrictSearcher.states[0].stateID;
   var textController = TextEditingController();
+  List<SkywardDistrict> districtsFromSearchQuery = [];
+  Widget messages;
 
   createDialogBoxContents(BuildContext context) {
+    List<Widget> districtCards = [];
+    for (SkywardDistrict district in districtsFromSearchQuery) {
+      districtCards.add(Container(
+        child: Text(district.districtName),
+      ));
+    }
+
     return <Widget>[
       Text(
         title,
@@ -188,24 +197,27 @@ class _HuntyDistrictSearcherWidgetState
         ),
       ),
       SizedBox(height: 24.0),
-      DropdownButton<String>(
-        items: SkywardDistrictSearcher.states
-            .map<DropdownMenuItem<String>>((SkywardSearchState value) {
-          return DropdownMenuItem<String>(
-            value: value.stateID,
-            child: Text(
-              value.stateName,
-              style: TextStyle(color: DialogColorMode.getTextColor()),
-            ),
-          );
-        }).toList(),
-        value: dropDownVal,
-        onChanged: (String newVal) {
-          setState(() {
-            dropDownVal = newVal;
-          });
-        },
-      ),
+      new Theme(
+          data: Theme.of(context)
+              .copyWith(canvasColor: DialogColorMode.getDialogOrWidgetColor()),
+          child: DropdownButton<String>(
+            items: SkywardDistrictSearcher.states
+                .map<DropdownMenuItem<String>>((SkywardSearchState value) {
+              return DropdownMenuItem<String>(
+                value: value.stateID,
+                child: Text(
+                  value.stateName,
+                  style: TextStyle(color: DialogColorMode.getTextColor()),
+                ),
+              );
+            }).toList(),
+            value: dropDownVal,
+            onChanged: (String newVal) {
+              setState(() {
+                dropDownVal = newVal;
+              });
+            },
+          )),
       Container(
         padding: EdgeInsets.all(25),
         child: TextField(
@@ -228,6 +240,12 @@ class _HuntyDistrictSearcherWidgetState
                       BorderSide(color: DialogColorMode.getTextColor()))),
         ),
       ),
+      messages != null ? messages : Container(),
+      districtCards.length == 0
+          ? Container()
+          : SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: new Row(children: districtCards)),
       Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: <Widget>[
         Align(
             alignment: Alignment.bottomLeft,
@@ -244,16 +262,29 @@ class _HuntyDistrictSearcherWidgetState
           alignment: Alignment.bottomRight,
           child: FlatButton(
             onPressed: () {
-              Navigator.of(context).pop();
+              _searchForState();
             },
             child: Text(
-              buttonText,
+              'Submit',
               style: TextStyle(color: Colors.blue),
             ),
           ),
         )
       ]),
     ];
+  }
+
+  _searchForState() async {
+      if (textController.text.length < 3) {
+        messages = Container(child: Text(
+          'Please enter 3 or more characters to get a complete search.',
+          style: TextStyle(color: Colors.red),
+        ), padding: EdgeInsets.all(10),);
+      } else {
+        districtsFromSearchQuery = await SkywardDistrictSearcher.searchForDistrictLinkFromState(dropDownVal, textController.text.trim());
+        messages = null;
+      }
+      setState(() {});
   }
 
   customDialogContent(BuildContext context) {

@@ -31,12 +31,12 @@ class _AssignmentsViewerState extends State<AssignmentsViewer> {
 
       assignmentInfoBoxes = await skywardAPI.getAssignmentInfoFromAssignment(box);
       var tm = AssignmentInfoViewer(courseName: courseName,);
-      if(!isCancelled) {
-        Navigator.of(context, rootNavigator: true).popUntil((result){
-          return result.settings.name == '/';
-        });
-        Navigator.push(context, MaterialPageRoute(builder: (context) => (tm)));
-      }
+    if(!isCancelled) {
+      Navigator.of(context, rootNavigator: true).popUntil((result){
+        return result.settings.name == '/assignmentsviewer';
+      });
+      Navigator.pushNamed(context, '/assignmentsinfoviewer');
+    }
   }
 
   @override

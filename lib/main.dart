@@ -92,7 +92,7 @@ class MyHomePageState extends State<MyHomePage> {
     showDialog(
         context: context,
         builder: ((BuildContext context) {
-          return HuntyDistrictSearcherWidget(title: 'District Searcher', description: 'Search for districts', buttonText: 'OK');
+          return HuntyDistrictSearcherWidget(title: 'District Searcher', description: "Select your state and enter your district's name. (Ex: Fort Bend ISD)", buttonText: 'OK');
         }));
   }
 
