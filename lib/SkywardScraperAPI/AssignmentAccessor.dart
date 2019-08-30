@@ -41,9 +41,15 @@ class AssignmentAccessor {
         CategoryHeader catHeader = CategoryHeader(null, null, null);
         for(Element td in tdVals){
           if(td.classes.contains('nWp') && td.classes.contains('noLBdr')){
-            Element weighted = td.querySelector('span');
-            catHeader.weight = weighted != null ? weighted.text : null;
-            attributes.add(td.text.substring(0, weighted != null ? td.text.indexOf(weighted.text) : td.text.length));
+            List<Element> weighted = td.querySelectorAll('span');
+            String weightedText;
+            if(weighted.length > 0) {
+              weightedText = weighted != null ? weighted.last.text : null;
+              catHeader.weight = weightedText;
+            }
+            attributes.add(td.text.substring(0,
+                weightedText != null ? td.text.indexOf(weightedText) : td
+                    .text.length));
           }else{
             attributes.add(td.text);
           }

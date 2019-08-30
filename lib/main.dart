@@ -7,6 +7,8 @@ import 'package:skymobile/skywardNavViews/assignmentInfoViewer.dart';
 import 'package:skymobile/skywardNavViews/assignmentsViewer.dart';
 import 'SkywardScraperAPI/SkywardDistrictSearcher.dart';
 import 'SkywardScraperAPI/SkywardAPITypes.dart';
+import 'package:skymobile/辅助/accountTypes.dart';
+import 'package:skymobile/辅助/jsonSaver.dart';
 
 void main() => runApp(MyApp());
 
@@ -38,8 +40,13 @@ class MyHomePage extends StatefulWidget {
 }
 
 class MyHomePageState extends State<MyHomePage> {
+  static SkywardDistrict district = SkywardDistrict('FORT BEND ISD',
+      'https://skyward-fbprod.iscorp.com/scripts/wsisa.dll/WService=wsedufortbendtx/seplog01.w');
 
-  static SkywardDistrict district = SkywardDistrict('FORT BEND ISD', 'https://skyward-fbprod.iscorp.com/scripts/wsisa.dll/WService=wsedufortbendtx/seplog01.w');
+  void initState() {
+    super.initState();
+    _getAccounts();
+  }
 
   void _getGradeTerms(String user, String pass, BuildContext context) async {
     bool isCancelled = false;
@@ -78,21 +85,273 @@ class MyHomePageState extends State<MyHomePage> {
     }
   }
 
-  _showDialog()async{
+  _showDialog() async {
     await SkywardDistrictSearcher.getStatesAndPostRequiredBodyElements();
     showDialog(
         context: context,
         builder: ((BuildContext context) {
-          return HuntyDistrictSearcherWidget(title: 'District Searcher', description: "Select your state and enter your district's name. (Ex: Fort Bend ISD)", buttonText: 'OK');
+          return HuntyDistrictSearcherWidget(
+              title: 'District Searcher',
+              description:
+                  "Select your state and enter your district's name. (Ex: Fort Bend ISD)",
+              buttonText: 'OK');
         }));
   }
 
   TextEditingController _controllerUsername = TextEditingController();
   TextEditingController _controllerPassword = TextEditingController();
+  bool isInAccountChooserStatus = false;
+  List<Account> accounts = [];
+
+  void _getAccounts() async {
+    if (await JSONSaver.accountFileExists()) {
+      accounts = await JSONSaver.readAccountData();
+    } else {
+      await JSONSaver.saveAccountData([]);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     final focus = FocusNode();
+    ListView listView;
+
+    if (isInAccountChooserStatus) {
+      List<Widget> widget = [];
+      widget.add(SizedBox(height: 24,));
+      for (Account acc in accounts) {
+        widget.add(Container(
+            padding: EdgeInsets.only(top: 10, left: 20, right: 20, bottom: 10),
+            child: Material(
+              color: Colors.transparent,
+              child: InkWell(
+                  splashColor: Colors.orangeAccent,
+                  borderRadius: BorderRadius.circular(16),
+                  onTap: () => {
+                        focus.requestFocus(new FocusNode()),
+                      },
+                  child: Container(
+                    alignment: Alignment.center,
+                    padding: EdgeInsets.all(10),
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(16.0),
+                        border:
+                            Border.all(color: Colors.blueAccent, width: 2)),
+                    child: new Text(
+                      acc.nick,
+                      style: new TextStyle(
+                          fontSize: 20.0, color: Colors.blueAccent),
+                    ),
+                  )),
+            )));
+      }
+      widget.add(SizedBox(height: 24,));
+      widget.add(new Container(
+          padding:
+          EdgeInsets.only(top: 0, left: 30, right: 30, bottom: 25),
+          child: Material(
+            color: Colors.transparent,
+            child: InkWell(
+                splashColor: Colors.orangeAccent,
+                borderRadius: BorderRadius.circular(16),
+                onTap: () => {
+                  setState(() {
+                    isInAccountChooserStatus =
+                    !isInAccountChooserStatus;
+                  })
+                },
+                child: Container(
+                  alignment: Alignment.center,
+                  padding: EdgeInsets.all(10),
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(16.0),
+                      border: Border.all(
+                          color: Colors.orangeAccent, width: 2)),
+                  child: new Text(
+                    'Credential Login',
+                    style: new TextStyle(
+                        fontSize: 20.0, color: Colors.orangeAccent),
+                  ),
+                )),
+          )),);
+      listView = ListView(shrinkWrap: true, children: <Widget>[
+        Container(
+          child: Text('Accounts',
+              style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 50,
+                  fontWeight: FontWeight.w700,
+                  letterSpacing: 2)),
+          alignment: Alignment.centerLeft,
+          padding: EdgeInsets.only(left: 20, bottom: 10),
+        ),
+        Card(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(15.0),
+            ),
+            color: Colors.white10,
+            child: ListView(shrinkWrap: true, children: widget))
+      ]);
+    } else {
+      listView = ListView(shrinkWrap: true, children: <Widget>[
+        Container(
+          child: Text('Login',
+              style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 50,
+                  fontWeight: FontWeight.w700,
+                  letterSpacing: 2)),
+          alignment: Alignment.centerLeft,
+          padding: EdgeInsets.only(left: 20, bottom: 10),
+        ),
+        Card(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(15.0),
+            ),
+            color: Colors.white10,
+            child: ListView(shrinkWrap: true, children: <Widget>[
+              Container(
+                  padding:
+                      EdgeInsets.only(top: 20, left: 30, right: 30, bottom: 0),
+                  child: Container(
+                    alignment: Alignment.center,
+                    padding: EdgeInsets.all(10),
+                    child: new Text(
+                      'Enter your Skyward Credentials for ${district.districtName}.',
+                      style: new TextStyle(fontSize: 20.0, color: Colors.white),
+                    ),
+                  )),
+              Container(
+                  padding:
+                      EdgeInsets.only(top: 20, left: 16, right: 16, bottom: 15),
+                  child: TextFormField(
+                    textInputAction: TextInputAction.next,
+                    autofocus: true,
+                    controller: _controllerUsername,
+                    style: TextStyle(color: Colors.white),
+                    decoration: InputDecoration(
+                        contentPadding: const EdgeInsets.all(18),
+                        labelText: "Username",
+                        labelStyle: TextStyle(color: Colors.blue),
+                        enabledBorder: OutlineInputBorder(
+                            borderSide:
+                                BorderSide(color: Colors.blue, width: 2),
+                            borderRadius: BorderRadius.circular(16)),
+                        focusedBorder: OutlineInputBorder(
+                            borderSide:
+                                BorderSide(color: Colors.blue, width: 2),
+                            borderRadius: BorderRadius.circular(16))),
+                    onFieldSubmitted: (v) {
+                      FocusScope.of(context).requestFocus(focus);
+                    },
+                  )),
+              Container(
+                  padding:
+                      EdgeInsets.only(top: 0, left: 16, right: 16, bottom: 10),
+                  child: TextFormField(
+                    focusNode: focus,
+                    controller: _controllerPassword,
+                    obscureText: true,
+                    textInputAction: TextInputAction.next,
+                    autofocus: true,
+                    style: TextStyle(color: Colors.white),
+                    decoration: InputDecoration(
+                        contentPadding: const EdgeInsets.all(18),
+                        labelText: "Password",
+                        labelStyle: TextStyle(color: Colors.blue),
+                        enabledBorder: OutlineInputBorder(
+                            borderSide:
+                                BorderSide(color: Colors.blue, width: 2),
+                            borderRadius: BorderRadius.circular(16)),
+                        focusedBorder: OutlineInputBorder(
+                            borderSide:
+                                BorderSide(color: Colors.blue, width: 2),
+                            borderRadius: BorderRadius.circular(16))),
+                    onFieldSubmitted: (v) {
+                      focus.unfocus();
+                    },
+                  )),
+              new Container(
+                  padding:
+                      EdgeInsets.only(top: 20, left: 30, right: 30, bottom: 20),
+                  child: Material(
+                    color: Colors.transparent,
+                    child: InkWell(
+                        splashColor: Colors.orangeAccent,
+                        borderRadius: BorderRadius.circular(16),
+                        onTap: () => {
+                              focus.requestFocus(new FocusNode()),
+                              _getGradeTerms(_controllerUsername.text,
+                                  _controllerPassword.text, context)
+                            },
+                        child: Container(
+                          alignment: Alignment.center,
+                          padding: EdgeInsets.all(10),
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(16.0),
+                              border: Border.all(
+                                  color: Colors.orangeAccent, width: 2)),
+                          child: new Text(
+                            'Submit',
+                            style: new TextStyle(
+                                fontSize: 20.0, color: Colors.orangeAccent),
+                          ),
+                        )),
+                  )),
+              new Container(
+                  padding:
+                      EdgeInsets.only(top: 0, left: 30, right: 30, bottom: 20),
+                  child: Material(
+                    color: Colors.transparent,
+                    child: InkWell(
+                        splashColor: Colors.orangeAccent,
+                        borderRadius: BorderRadius.circular(16),
+                        onTap: () => {_showDialog()},
+                        child: Container(
+                          alignment: Alignment.center,
+                          padding: EdgeInsets.all(10),
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(16.0),
+                              border: Border.all(
+                                  color: Colors.orangeAccent, width: 2)),
+                          child: new Text(
+                            'Search District',
+                            style: new TextStyle(
+                                fontSize: 20.0, color: Colors.orangeAccent),
+                          ),
+                        )),
+                  )),
+              new Container(
+                  padding:
+                      EdgeInsets.only(top: 0, left: 30, right: 30, bottom: 25),
+                  child: Material(
+                    color: Colors.transparent,
+                    child: InkWell(
+                        splashColor: Colors.orangeAccent,
+                        borderRadius: BorderRadius.circular(16),
+                        onTap: () => {
+                              setState(() {
+                                isInAccountChooserStatus =
+                                    !isInAccountChooserStatus;
+                              })
+                            },
+                        child: Container(
+                          alignment: Alignment.center,
+                          padding: EdgeInsets.all(10),
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(16.0),
+                              border: Border.all(
+                                  color: Colors.orangeAccent, width: 2)),
+                          child: new Text(
+                            'Choose Accounts',
+                            style: new TextStyle(
+                                fontSize: 20.0, color: Colors.orangeAccent),
+                          ),
+                        )),
+                  )),
+            ]))
+      ]);
+    }
 
     return Scaffold(
         backgroundColor: Colors.black,
@@ -100,141 +359,6 @@ class MyHomePageState extends State<MyHomePage> {
             child: Container(
                 padding: EdgeInsets.all(10),
                 alignment: Alignment.center,
-                child: ListView(shrinkWrap: true, children: <Widget>[
-                  Container(
-                    child: Text('Login',
-                        style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 50,
-                            fontWeight: FontWeight.w700,
-                            letterSpacing: 2)),
-                    alignment: Alignment.centerLeft,
-                    padding: EdgeInsets.only(left: 20, bottom: 10),
-                  ),
-                  Card(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(15.0),
-                      ),
-                      color: Colors.white10,
-                      child: ListView(shrinkWrap: true, children: <Widget>[
-                        Container(
-                            padding: EdgeInsets.only(
-                                top: 20, left: 30, right: 30, bottom: 0),
-                            child: Container(
-                              alignment: Alignment.center,
-                              padding: EdgeInsets.all(10),
-                              child: new Text(
-                                'Enter your Skyward Credentials for ${district.districtName}.',
-                                style: new TextStyle(
-                                    fontSize: 20.0, color: Colors.white),
-                              ),
-                            )),
-                        Container(
-                            padding: EdgeInsets.only(
-                                top: 20, left: 16, right: 16, bottom: 15),
-                            child: TextFormField(
-                              textInputAction: TextInputAction.next,
-                              autofocus: true,
-                              controller: _controllerUsername,
-                              style: TextStyle(color: Colors.white),
-                              decoration: InputDecoration(
-                                  contentPadding: const EdgeInsets.all(18),
-                                  labelText: "Username",
-                                  labelStyle: TextStyle(color: Colors.blue),
-                                  enabledBorder: OutlineInputBorder(
-                                      borderSide: BorderSide(
-                                          color: Colors.blue, width: 2),
-                                      borderRadius: BorderRadius.circular(16)),
-                                  focusedBorder: OutlineInputBorder(
-                                      borderSide: BorderSide(
-                                          color: Colors.blue, width: 2),
-                                      borderRadius: BorderRadius.circular(16))),
-                              onFieldSubmitted: (v) {
-                                FocusScope.of(context).requestFocus(focus);
-                              },
-                            )),
-                        Container(
-                            padding: EdgeInsets.only(
-                                top: 0, left: 16, right: 16, bottom: 10),
-                            child: TextFormField(
-                              focusNode: focus,
-                              controller: _controllerPassword,
-                              obscureText: true,
-                              textInputAction: TextInputAction.next,
-                              autofocus: true,
-                              style: TextStyle(color: Colors.white),
-                              decoration: InputDecoration(
-                                  contentPadding: const EdgeInsets.all(18),
-                                  labelText: "Password",
-                                  labelStyle: TextStyle(color: Colors.blue),
-                                  enabledBorder: OutlineInputBorder(
-                                      borderSide: BorderSide(
-                                          color: Colors.blue, width: 2),
-                                      borderRadius: BorderRadius.circular(16)),
-                                  focusedBorder: OutlineInputBorder(
-                                      borderSide: BorderSide(
-                                          color: Colors.blue, width: 2),
-                                      borderRadius: BorderRadius.circular(16))),
-                              onFieldSubmitted: (v) {
-                                focus.unfocus();
-                              },
-                            )),
-                        new Container(
-                            padding: EdgeInsets.only(
-                                top: 20, left: 30, right: 30, bottom: 20),
-                            child: Material(
-                              color: Colors.transparent,
-                              child: InkWell(
-                                  splashColor: Colors.orangeAccent,
-                                  borderRadius: BorderRadius.circular(16),
-                                  onTap: () => {
-                                        _getGradeTerms(_controllerUsername.text,
-                                            _controllerPassword.text, context)
-                                      },
-                                  child: Container(
-                                    alignment: Alignment.center,
-                                    padding: EdgeInsets.all(10),
-                                    decoration: BoxDecoration(
-                                        borderRadius:
-                                            BorderRadius.circular(16.0),
-                                        border: Border.all(
-                                            color: Colors.orangeAccent,
-                                            width: 2)),
-                                    child: new Text(
-                                      'Submit',
-                                      style: new TextStyle(
-                                          fontSize: 20.0,
-                                          color: Colors.orangeAccent),
-                                    ),
-                                  )),
-                            )),
-                        new Container(
-                            padding: EdgeInsets.only(
-                                top: 0, left: 30, right: 30, bottom: 25),
-                            child: Material(
-                              color: Colors.transparent,
-                              child: InkWell(
-                                  splashColor: Colors.orangeAccent,
-                                  borderRadius: BorderRadius.circular(16),
-                                  onTap: () => {_showDialog()},
-                                  child: Container(
-                                    alignment: Alignment.center,
-                                    padding: EdgeInsets.all(10),
-                                    decoration: BoxDecoration(
-                                        borderRadius:
-                                            BorderRadius.circular(16.0),
-                                        border: Border.all(
-                                            color: Colors.orangeAccent,
-                                            width: 2)),
-                                    child: new Text(
-                                      'Search District',
-                                      style: new TextStyle(
-                                          fontSize: 20.0,
-                                          color: Colors.orangeAccent),
-                                    ),
-                                  )),
-                            )),
-                      ]))
-                ]))));
+                child: listView)));
   }
 }

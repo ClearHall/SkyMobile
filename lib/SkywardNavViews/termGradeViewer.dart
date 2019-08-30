@@ -34,6 +34,21 @@ class _TermViewer extends State<TermViewerPage> {
     }
   }
 
+  void initState() {
+    super.initState();
+    _setIntTerm();
+  }
+
+  _setIntTerm(){
+    Term currentTerm;
+    for(int i = 0; i < gradeBoxes.length; i++){
+      if(gradeBoxes[i] is GradeBox){
+        currentTerm = (gradeBoxes[i] as GradeBox).term;
+      }
+    }
+    currentTermIndex = terms.indexOf(currentTerm);
+  }
+
   @override
   Widget build(BuildContext context) {
 
