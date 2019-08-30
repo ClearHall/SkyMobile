@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'SkywardScraperAPI/SkywardAPICore.dart';
-import 'termGradeViewer.dart';
+import 'package:skymobile/skywardNavViews/termGradeViewer.dart';
 import 'customDialogOptions.dart';
 import 'globalVariables.dart';
-import 'assignmentInfoViewer.dart';
-import 'assignmentsViewer.dart';
+import 'package:skymobile/skywardNavViews/assignmentInfoViewer.dart';
+import 'package:skymobile/skywardNavViews/assignmentsViewer.dart';
 import 'SkywardScraperAPI/SkywardDistrictSearcher.dart';
 import 'SkywardScraperAPI/SkywardAPITypes.dart';
 
