@@ -74,15 +74,14 @@ class MyHomePageState extends State<MyHomePage> {
                 buttonText: 'Ok');
           });
     } else {
-
-      if(!_isCredentialsSavedAlready(user)) {
+      if (!_isCredentialsSavedAlready(user)) {
         await showDialog(
             context: context,
             builder: (BuildContext) {
               return HuntyDialogForConfirmation(
                 title: 'New Account',
                 description:
-                'New account detected, would you like to save this account?.',
+                    'New account detected, would you like to save this account?.',
                 runIfUserConfirms: () {
                   setState(() {
                     accounts.add(Account(user, user, pass, district));
@@ -105,9 +104,9 @@ class MyHomePageState extends State<MyHomePage> {
     }
   }
 
-  bool _isCredentialsSavedAlready(String user){
-    for(Account acc in accounts){
-      if(acc.district == district && acc.user == user) return true;
+  bool _isCredentialsSavedAlready(String user) {
+    for (Account acc in accounts) {
+      if (acc.district == district && acc.user == user) return true;
     }
     return false;
   }
@@ -175,25 +174,53 @@ class MyHomePageState extends State<MyHomePage> {
   bool isInAccountChooserStatus = false;
   List<Account> accounts = [];
 
+  //NOTE: USING THIS IS VERY BUGGY!!!!!
+  void _debugUseGenerateFakeAccounts(int numOfFakeAccounts) {
+    accounts = [];
+    for (int i = 0; i < numOfFakeAccounts; i++) {
+      accounts.add(Account(i.toString(), i.toString(), i.toString(), null));
+    }
+  }
+
   void _getAccounts() async {
     if (await JSONSaver.accountFileExists()) {
       accounts = await JSONSaver.readAccountData();
     } else {
       await JSONSaver.saveAccountData([]);
     }
+    if (accounts.length == 0) {
+      accounts.add(Account('You have no saved accounts', null, null, null));
+    }
+  }
+
+  void _removeDebugAccounts() {
+    for (int i = accounts.length - 1; i >= 0; i--) {
+      if (accounts[i].district == null) {
+        accounts.removeAt(i);
+      }
+    }
+    JSONSaver.saveAccountData(accounts);
   }
 
   final focus = FocusNode();
 
   @override
   Widget build(BuildContext context) {
+    if (district == null) {
+      district = SkywardDistrict('FORT BEND ISD',
+          'https://skyward-fbprod.iscorp.com/scripts/wsisa.dll/WService=wsedufortbendtx/seplog01.w');
+    }
+    if (accounts.length == 0) {
+      accounts.add(Account('You have no saved accounts', null, null, null));
+    }
+    if (accounts.length > 1) {
+      _removeDebugAccounts();
+    }
     ListView listView;
 
     if (isInAccountChooserStatus) {
       List<Widget> widget = [];
-      widget.add(SizedBox(
-        height: 24,
-      ));
+
       for (Account acc in accounts) {
         widget.add(Container(
             padding: EdgeInsets.only(top: 10, left: 20, right: 20, bottom: 10),
@@ -202,65 +229,93 @@ class MyHomePageState extends State<MyHomePage> {
               child: InkWell(
                   splashColor: Colors.orangeAccent,
                   borderRadius: BorderRadius.circular(16),
-                  onTap: () => {
-                        focus.unfocus(),
-                        district = acc.district,
-                        _getGradeTermsFromAccount(acc, context)
-                      },
+                  onTap:
+                      !(accounts.length > 0 && accounts.first.district == null)
+                          ? () => {
+                                focus.unfocus(),
+                                district = acc.district,
+                                _getGradeTermsFromAccount(acc, context)
+                              }
+                          : () => {},
                   child: Container(
                     alignment: Alignment.center,
                     decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(16.0),
                         border: Border.all(color: Colors.blueAccent, width: 2)),
-                    child: ListTile(
-                      title: Text(
-                        acc.nick,
-                        style: new TextStyle(
-                            fontSize: 20.0, color: Colors.blueAccent),
-                      ),
-                      trailing: IconButton(
-                          icon: Icon(Icons.delete_forever, color: Colors.white,),
-                          onPressed: () {
-                            setState(() {
-                              accounts.remove(acc);
-                              JSONSaver.saveAccountData(accounts);
-                            });
-                          }),
-                    ),
+                    child: accounts.length > 0 &&
+                            accounts.first.district == null
+                        ? ListTile(
+                            title: Text(
+                            acc.nick,
+                            style: new TextStyle(
+                                fontSize: 20.0, color: Colors.blueAccent),
+                          ))
+                        : ListTile(
+                            title: Text(
+                              acc.nick,
+                              style: new TextStyle(
+                                  fontSize: 20.0, color: Colors.blueAccent),
+                            ),
+                            trailing: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: <Widget>[
+                                IconButton(
+                                    icon: Icon(
+                                      Icons.delete_forever,
+                                      color: Colors.white,
+                                    ),
+                                    onPressed: () {
+                                      showDialog(
+                                          context: context,
+                                          builder: (BuildContext context) =>
+                                              HuntyDialogForConfirmation(
+                                                  title: 'Account Deletion',
+                                                  description:
+                                                      'Are you sure you want to remove this account from your device?',
+                                                  runIfUserConfirms: () {
+                                                    setState(() {
+                                                      accounts.remove(acc);
+                                                      JSONSaver.saveAccountData(
+                                                          accounts);
+                                                    });
+                                                  },
+                                                  btnTextForConfirmation: 'Yes',
+                                                  btnTextForCancel: 'No'));
+                                    }),
+                                IconButton(
+                                  icon: Icon(Icons.edit),
+                                  color: Colors.white,
+                                  onPressed: () {
+                                    TextEditingController accountEditor =
+                                        TextEditingController();
+                                    showDialog(
+                                        context: context,
+                                        builder: (BuildContext context) =>
+                                            HuntyDialogWithText(
+                                                hint: 'Edit Account',
+                                                textController: accountEditor,
+                                                okPressed: () {
+                                                  setState(() {
+                                                    acc.nick =
+                                                        accountEditor.text;
+                                                    JSONSaver.saveAccountData(
+                                                        accounts);
+                                                  });
+                                                },
+                                                title: 'Edit Account Name',
+                                                description:
+                                                    'Type in a new account name to be displayed. This does not affect logging in and logging out.',
+                                                buttonText: 'Submit'));
+                                  },
+                                )
+                              ],
+                            )),
                   )),
             )));
       }
       widget.add(SizedBox(
         height: 24,
       ));
-      widget.add(
-        new Container(
-            padding: EdgeInsets.only(top: 0, left: 30, right: 30, bottom: 25),
-            child: Material(
-              color: Colors.transparent,
-              child: InkWell(
-                  splashColor: Colors.orangeAccent,
-                  borderRadius: BorderRadius.circular(16),
-                  onTap: () => {
-                        setState(() {
-                          isInAccountChooserStatus = !isInAccountChooserStatus;
-                        })
-                      },
-                  child: Container(
-                    alignment: Alignment.center,
-                    padding: EdgeInsets.all(10),
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(16.0),
-                        border:
-                            Border.all(color: Colors.orangeAccent, width: 2)),
-                    child: new Text(
-                      'Credential Login',
-                      style: new TextStyle(
-                          fontSize: 20.0, color: Colors.orangeAccent),
-                    ),
-                  )),
-            )),
-      );
       listView = ListView(shrinkWrap: true, children: <Widget>[
         Container(
           child: Text('Accounts',
@@ -277,7 +332,51 @@ class MyHomePageState extends State<MyHomePage> {
               borderRadius: BorderRadius.circular(15.0),
             ),
             color: Colors.white10,
-            child: ListView(shrinkWrap: true, children: widget))
+            child: Column(
+              children: <Widget>[
+                widget.length > 5
+                    ? Container(
+                        padding: EdgeInsets.only(bottom: 20, top: 20),
+                        child: ConstrainedBox(
+                            constraints: BoxConstraints(maxHeight: 500),
+                            child: SingleChildScrollView(
+                              child: Column(
+                                children: widget,
+                              ),
+                            )))
+                    : Container(
+                        padding: EdgeInsets.only(bottom: 20, top: 20),
+                        child: ListView(shrinkWrap: true, children: widget)),
+                Container(
+                    padding: EdgeInsets.only(
+                        top: 0, left: 30, right: 30, bottom: 25),
+                    child: Material(
+                      color: Colors.transparent,
+                      child: InkWell(
+                          splashColor: Colors.orangeAccent,
+                          borderRadius: BorderRadius.circular(16),
+                          onTap: () => {
+                                setState(() {
+                                  isInAccountChooserStatus =
+                                      !isInAccountChooserStatus;
+                                })
+                              },
+                          child: Container(
+                            alignment: Alignment.center,
+                            padding: EdgeInsets.all(10),
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(16.0),
+                                border: Border.all(
+                                    color: Colors.orangeAccent, width: 2)),
+                            child: new Text(
+                              'Credential Login',
+                              style: new TextStyle(
+                                  fontSize: 20.0, color: Colors.orangeAccent),
+                            ),
+                          )),
+                    )),
+              ],
+            ))
       ]);
     } else {
       listView = ListView(shrinkWrap: true, children: <Widget>[
@@ -355,8 +454,8 @@ class MyHomePageState extends State<MyHomePage> {
                             borderRadius: BorderRadius.circular(16))),
                     onFieldSubmitted: (v) {
                       //if(!focus.hasPrimaryFocus){
-                        focus.unfocus();
-                     // }
+                      focus.unfocus();
+                      // }
                     },
                   )),
               new Container(

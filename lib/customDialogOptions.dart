@@ -476,6 +476,7 @@ class HuntyDialogWithText extends HuntyDialog {
           controller: textController,
           onSubmitted: (String a) {
             Navigator.of(context).pop();
+            textController.text = a;
             okPressed();
           },
           decoration: InputDecoration(
