@@ -74,6 +74,78 @@ class MyHomePageState extends State<MyHomePage> {
                 buttonText: 'Ok');
           });
     } else {
+
+      if(!_isCredentialsSavedAlready(user)) {
+        await showDialog(
+            context: context,
+            builder: (BuildContext) {
+              return HuntyDialogForConfirmation(
+                title: 'New Account',
+                description:
+                'New account detected, would you like to save this account?.',
+                runIfUserConfirms: () {
+                  setState(() {
+                    accounts.add(Account(user, user, pass, district));
+                    JSONSaver.saveAccountData(accounts);
+                  });
+                },
+                btnTextForCancel: "Cancel",
+                btnTextForConfirmation: 'Ok',
+              );
+            });
+      }
+      terms = await skywardAPI.getGradeBookTerms();
+      gradeBoxes = (await skywardAPI.getGradeBookGrades(terms));
+      if (!isCancelled) {
+        Navigator.of(context, rootNavigator: true).popUntil((result) {
+          return result.settings.name == '/';
+        });
+        Navigator.pushNamed(context, '/termviewer');
+      }
+    }
+  }
+
+  bool _isCredentialsSavedAlready(String user){
+    for(Account acc in accounts){
+      if(acc.district == district && acc.user == user) return true;
+    }
+    return false;
+  }
+
+  void _getGradeTermsFromAccount(Account acc, BuildContext context) async {
+    bool isCancelled = false;
+    var dialog = HuntyDialogLoading('Cancel', () {
+      isCancelled = true;
+    }, title: 'Loading', description: ('Getting your grades..'));
+
+    showDialog(context: context, builder: (BuildContext context) => dialog)
+        .then((val) {
+      isCancelled = true;
+    });
+    ;
+
+    skywardAPI = SkywardAPICore(district.districtLink);
+    if (await skywardAPI.getSkywardAuthenticationCodes(acc.user, acc.pass) ==
+        SkywardAPICodes.LoginFailed) {
+      Navigator.of(context).pop(dialog);
+      showDialog(
+          context: context,
+          builder: (BuildContext) {
+            return HuntyDialogForConfirmation(
+              title: 'Uh-Oh',
+              description:
+                  'Invalid Credentials or Internet Failure. Would you like to remove this account?.',
+              runIfUserConfirms: () {
+                setState(() {
+                  accounts.remove(acc);
+                  JSONSaver.saveAccountData(accounts);
+                });
+              },
+              btnTextForCancel: "Cancel",
+              btnTextForConfirmation: 'Ok',
+            );
+          });
+    } else {
       terms = await skywardAPI.getGradeBookTerms();
       gradeBoxes = (await skywardAPI.getGradeBookGrades(terms));
       if (!isCancelled) {
@@ -111,14 +183,17 @@ class MyHomePageState extends State<MyHomePage> {
     }
   }
 
+  final focus = FocusNode();
+
   @override
   Widget build(BuildContext context) {
-    final focus = FocusNode();
     ListView listView;
 
     if (isInAccountChooserStatus) {
       List<Widget> widget = [];
-      widget.add(SizedBox(height: 24,));
+      widget.add(SizedBox(
+        height: 24,
+      ));
       for (Account acc in accounts) {
         widget.add(Container(
             padding: EdgeInsets.only(top: 10, left: 20, right: 20, bottom: 10),
@@ -128,7 +203,48 @@ class MyHomePageState extends State<MyHomePage> {
                   splashColor: Colors.orangeAccent,
                   borderRadius: BorderRadius.circular(16),
                   onTap: () => {
-                        focus.requestFocus(new FocusNode()),
+                        focus.unfocus(),
+                        district = acc.district,
+                        _getGradeTermsFromAccount(acc, context)
+                      },
+                  child: Container(
+                    alignment: Alignment.center,
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(16.0),
+                        border: Border.all(color: Colors.blueAccent, width: 2)),
+                    child: ListTile(
+                      title: Text(
+                        acc.nick,
+                        style: new TextStyle(
+                            fontSize: 20.0, color: Colors.blueAccent),
+                      ),
+                      trailing: IconButton(
+                          icon: Icon(Icons.delete_forever, color: Colors.white,),
+                          onPressed: () {
+                            setState(() {
+                              accounts.remove(acc);
+                              JSONSaver.saveAccountData(accounts);
+                            });
+                          }),
+                    ),
+                  )),
+            )));
+      }
+      widget.add(SizedBox(
+        height: 24,
+      ));
+      widget.add(
+        new Container(
+            padding: EdgeInsets.only(top: 0, left: 30, right: 30, bottom: 25),
+            child: Material(
+              color: Colors.transparent,
+              child: InkWell(
+                  splashColor: Colors.orangeAccent,
+                  borderRadius: BorderRadius.circular(16),
+                  onTap: () => {
+                        setState(() {
+                          isInAccountChooserStatus = !isInAccountChooserStatus;
+                        })
                       },
                   child: Container(
                     alignment: Alignment.center,
@@ -136,44 +252,15 @@ class MyHomePageState extends State<MyHomePage> {
                     decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(16.0),
                         border:
-                            Border.all(color: Colors.blueAccent, width: 2)),
+                            Border.all(color: Colors.orangeAccent, width: 2)),
                     child: new Text(
-                      acc.nick,
+                      'Credential Login',
                       style: new TextStyle(
-                          fontSize: 20.0, color: Colors.blueAccent),
+                          fontSize: 20.0, color: Colors.orangeAccent),
                     ),
                   )),
-            )));
-      }
-      widget.add(SizedBox(height: 24,));
-      widget.add(new Container(
-          padding:
-          EdgeInsets.only(top: 0, left: 30, right: 30, bottom: 25),
-          child: Material(
-            color: Colors.transparent,
-            child: InkWell(
-                splashColor: Colors.orangeAccent,
-                borderRadius: BorderRadius.circular(16),
-                onTap: () => {
-                  setState(() {
-                    isInAccountChooserStatus =
-                    !isInAccountChooserStatus;
-                  })
-                },
-                child: Container(
-                  alignment: Alignment.center,
-                  padding: EdgeInsets.all(10),
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(16.0),
-                      border: Border.all(
-                          color: Colors.orangeAccent, width: 2)),
-                  child: new Text(
-                    'Credential Login',
-                    style: new TextStyle(
-                        fontSize: 20.0, color: Colors.orangeAccent),
-                  ),
-                )),
-          )),);
+            )),
+      );
       listView = ListView(shrinkWrap: true, children: <Widget>[
         Container(
           child: Text('Accounts',
@@ -253,7 +340,6 @@ class MyHomePageState extends State<MyHomePage> {
                     controller: _controllerPassword,
                     obscureText: true,
                     textInputAction: TextInputAction.next,
-                    autofocus: true,
                     style: TextStyle(color: Colors.white),
                     decoration: InputDecoration(
                         contentPadding: const EdgeInsets.all(18),
@@ -268,7 +354,9 @@ class MyHomePageState extends State<MyHomePage> {
                                 BorderSide(color: Colors.blue, width: 2),
                             borderRadius: BorderRadius.circular(16))),
                     onFieldSubmitted: (v) {
-                      focus.unfocus();
+                      //if(!focus.hasPrimaryFocus){
+                        focus.unfocus();
+                     // }
                     },
                   )),
               new Container(
@@ -280,7 +368,7 @@ class MyHomePageState extends State<MyHomePage> {
                         splashColor: Colors.orangeAccent,
                         borderRadius: BorderRadius.circular(16),
                         onTap: () => {
-                              focus.requestFocus(new FocusNode()),
+                              focus.unfocus(),
                               _getGradeTerms(_controllerUsername.text,
                                   _controllerPassword.text, context)
                             },
