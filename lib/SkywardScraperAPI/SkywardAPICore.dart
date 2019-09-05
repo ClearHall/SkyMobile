@@ -3,6 +3,7 @@ import 'GradebookAccessor.dart';
 import 'AssignmentAccessor.dart';
 import 'SkywardAPITypes.dart';
 import 'AssignmentInfoAccessor.dart';
+import 'HistoryAccessor.dart';
 
 class SkywardAPICore {
   Map<String, String> loginSessionRequiredBodyElements;
@@ -70,6 +71,10 @@ class SkywardAPICore {
     return AssignmentInfoAccessor.getAssignmentInfoBoxesFromHTML(
         await AssignmentInfoAccessor.getAssignmentsDialogHTML(
             assignmentsPostCodes, _baseURL, assignment));
+  }
+
+  getHistory() async{
+    print(await HistoryAccessor.parseGradebookHTML(await HistoryAccessor.getGradebookHTML(loginSessionRequiredBodyElements, _baseURL)));
   }
 }
 

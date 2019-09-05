@@ -14,20 +14,42 @@ class TermViewerPage extends StatefulWidget {
 class _TermViewer extends State<TermViewerPage> {
   int currentTermIndex = 0;
 
-  _goToAssignmentsViewer(GradeBox gradeBox, String courseName) async{
+  _goToGPACalculator(String courseName) async {
+//    bool isCancelled = false;
+//    var dialog = HuntyDialogLoading('Cancel', () {
+//      isCancelled = true;
+//    }, title: 'Loading', description: ('Getting your grades..'));
+//
+//    showDialog(
+//        context: context,
+//        builder: (BuildContext context) => dialog).then((val){isCancelled = true;});
+//
+//    assignmentsGridBoxes =
+//    await skywardAPI.getAssignmentsFromGradeBox(gradeBox);
+//    if(!isCancelled) {
+//      Navigator.of(context, rootNavigator: true).popUntil((result){
+//        return result.settings.name == '/termviewer';
+//      });
+//      Navigator.pushNamed(context, '/assignmentsviewer');
+//    }
+    await skywardAPI.getHistory();
+  }
+
+  _goToAssignmentsViewer(GradeBox gradeBox, String courseName) async {
     bool isCancelled = false;
     var dialog = HuntyDialogLoading('Cancel', () {
       isCancelled = true;
     }, title: 'Loading', description: ('Getting your grades..'));
 
-    showDialog(
-        context: context,
-        builder: (BuildContext context) => dialog).then((val){isCancelled = true;});
+    showDialog(context: context, builder: (BuildContext context) => dialog)
+        .then((val) {
+      isCancelled = true;
+    });
 
     assignmentsGridBoxes =
-    await skywardAPI.getAssignmentsFromGradeBox(gradeBox);
-    if(!isCancelled) {
-      Navigator.of(context, rootNavigator: true).popUntil((result){
+        await skywardAPI.getAssignmentsFromGradeBox(gradeBox);
+    if (!isCancelled) {
+      Navigator.of(context, rootNavigator: true).popUntil((result) {
         return result.settings.name == '/termviewer';
       });
       Navigator.pushNamed(context, '/assignmentsviewer');
@@ -39,10 +61,10 @@ class _TermViewer extends State<TermViewerPage> {
     _setIntTerm();
   }
 
-  _setIntTerm(){
+  _setIntTerm() {
     Term currentTerm;
-    for(int i = 0; i < gradeBoxes.length; i++){
-      if(gradeBoxes[i] is GradeBox){
+    for (int i = 0; i < gradeBoxes.length; i++) {
+      if (gradeBoxes[i] is GradeBox) {
         currentTerm = (gradeBoxes[i] as GradeBox).term;
       }
     }
@@ -51,7 +73,6 @@ class _TermViewer extends State<TermViewerPage> {
 
   @override
   Widget build(BuildContext context) {
-
     final FixedExtentScrollController scrollController =
         FixedExtentScrollController(initialItem: currentTermIndex);
 
@@ -125,64 +146,70 @@ class _TermViewer extends State<TermViewerPage> {
 
         body.add(Card(
           child: InkWell(
-            onTap: (){
-              if(gradeBox != null && gradeBox is GradeBox)
-                _goToAssignmentsViewer(gradeBox, teacherIDBox.courseName);
-            },
+              onTap: () {
+                if (gradeBox != null && gradeBox is GradeBox)
+                  _goToAssignmentsViewer(gradeBox, teacherIDBox.courseName);
+              },
               child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: <Widget>[
-              Container(
-                alignment: Alignment.centerLeft,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    Container(
-                      constraints: BoxConstraints(
-                          maxWidth: MediaQuery.of(context).size.width / 6 * 4),
-                      padding: EdgeInsets.only(
-                          top: 10, left: 10, right: 10, bottom: 0),
-                      alignment: Alignment.centerLeft,
-                      child: Text(
-                        teacherIDBox.courseName,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: TextStyle(color: Colors.orange, fontSize: 20, fontWeight: FontWeight.w700),
-                        textAlign: TextAlign.start,
-                      ),
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  Container(
+                    alignment: Alignment.centerLeft,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        Container(
+                          constraints: BoxConstraints(
+                              maxWidth:
+                                  MediaQuery.of(context).size.width / 6 * 4),
+                          padding: EdgeInsets.only(
+                              top: 10, left: 10, right: 10, bottom: 0),
+                          alignment: Alignment.centerLeft,
+                          child: Text(
+                            teacherIDBox.courseName,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(
+                                color: Colors.orange,
+                                fontSize: 20,
+                                fontWeight: FontWeight.w700),
+                            textAlign: TextAlign.start,
+                          ),
+                        ),
+                        Container(
+                          padding: EdgeInsets.only(
+                              top: 5, left: 10, right: 10, bottom: 0),
+                          alignment: Alignment.centerLeft,
+                          child: Text(teacherIDBox.teacherName,
+                              style:
+                                  TextStyle(color: Colors.white, fontSize: 15),
+                              textAlign: TextAlign.start),
+                        ),
+                        Container(
+                            padding: EdgeInsets.only(
+                                top: 5, left: 10, right: 10, bottom: 10),
+                            alignment: Alignment.centerLeft,
+                            child: Text(teacherIDBox.timePeriod,
+                                style: TextStyle(
+                                    color: Colors.white, fontSize: 15),
+                                textAlign: TextAlign.start))
+                      ],
                     ),
-                    Container(
-                      padding: EdgeInsets.only(
-                          top: 5, left: 10, right: 10, bottom: 0),
-                      alignment: Alignment.centerLeft,
-                      child: Text(teacherIDBox.teacherName,
-                          style: TextStyle(color: Colors.white, fontSize: 15),
-                          textAlign: TextAlign.start),
+                  ),
+                  Container(
+                    constraints: BoxConstraints(minHeight: 60),
+                    padding: EdgeInsets.only(right: 20),
+                    alignment: Alignment.centerRight,
+                    child: Text(
+                      grade,
+                      style: TextStyle(
+                          fontSize: 25,
+                          fontWeight: FontWeight.w700,
+                          color: getColorFrom(grade)),
                     ),
-                    Container(
-                        padding: EdgeInsets.only(
-                            top: 5, left: 10, right: 10, bottom: 10),
-                        alignment: Alignment.centerLeft,
-                        child: Text(teacherIDBox.timePeriod,
-                            style: TextStyle(color: Colors.white, fontSize: 15),
-                            textAlign: TextAlign.start))
-                  ],
-                ),
-              ),
-              Container(
-                constraints: BoxConstraints(minHeight: 60),
-                padding: EdgeInsets.only(right: 20),
-                alignment: Alignment.centerRight,
-                child: Text(
-                  grade,
-                  style: TextStyle(
-                      fontSize: 25,
-                      fontWeight: FontWeight.w700,
-                      color: getColorFrom(grade)),
-                ),
-              ),
-            ],
-          )),
+                  ),
+                ],
+              )),
           color: Colors.white12,
         ));
       }
@@ -204,12 +231,29 @@ class _TermViewer extends State<TermViewerPage> {
                   cardColor: Colors.black87,
                 ),
                 child: PopupMenuButton(
-
+                  onSelected: (String selected) {
+                    switch (selected) {
+                      case 'settings':
+                        break;
+                      case 'gpaCalc':
+                        {
+                          _goToGPACalculator('TEST');
+                        }
+                    }
+                  },
                   itemBuilder: (_) => <PopupMenuItem<String>>[
                     PopupMenuItem<String>(
-                        child: const Text('Settings', style: TextStyle(color: Colors.white),), value: 'settings'),
+                        child: const Text(
+                          'Settings',
+                          style: TextStyle(color: Colors.white),
+                        ),
+                        value: 'settings'),
                     PopupMenuItem<String>(
-                        child: const Text('GPA Calculator', style: TextStyle(color: Colors.white),), value: 'gpaCalc'),
+                        child: const Text(
+                          'GPA Calculator',
+                          style: TextStyle(color: Colors.white),
+                        ),
+                        value: 'gpaCalc'),
                   ],
                 ))
           ],
