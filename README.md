@@ -35,12 +35,13 @@ Main scraping API for SkyMobile cross platform.
 
 ## SkyMobile
 
-### Planned V1.1.0
+### V1.1.0 Beta
 - Adds DistrictSearcher
 - Fixes bugs for other districts
 - Fixes multiple registered taps bug
+- Added account saving
 
-### V1.0.0
+### V1.0.0 Beta
 
 - Initial Release
 - Can check grades, assignments, assignment details
