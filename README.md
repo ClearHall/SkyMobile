@@ -12,6 +12,10 @@ Changelog for SKYSCRAPEAPI and SkyMobile.
 
 Main scraping API for SkyMobile cross platform.
 
+### V1.4.1
+
+- Adressed major bug which prevented users from Highland Park ISD from logging in. This should fix logging in bugs for all districts with wsEAplus in their url link name.
+
 ### V1.4.0
 
 - Remade Assignment scraping algorithm to support more districts.
@@ -49,7 +53,7 @@ Main scraping API for SkyMobile cross platform.
 
 ## Documentation
 
-**DOCUMENTATION VERSION 1.4.0**
+**DOCUMENTATION VERSION 1.4.1**
 
 To use this API, you must take the package SkywardScraperAPI. I have not made this implementable with pubspec.yaml.
 
@@ -109,10 +113,10 @@ Extra import needed: SkywardScraperAPI/SkywardDistrictSearcher.dart
 
 ```
 await SkywardDistrictSearcher.getStatesAndPostRequiredBodyElements();
-List<> districts = await SkywardDistrictSearcher.searchForDistrictLinkFromState("180", "Alvin");
+List<SkywardDistrict> districts = await SkywardDistrictSearcher.searchForDistrictLinkFromState("180", "Alvin");
 ```
 
-
+Searches for districts and returns the link found for those districts. This link is not fool-proof and may be wrong. Contact me at hunter.han@gmail.com if any errors in links are found.
 
 ## Types
 
