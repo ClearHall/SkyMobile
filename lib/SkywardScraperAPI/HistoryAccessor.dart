@@ -3,8 +3,9 @@ import 'package:html/dom.dart';
 import 'SkywardAPITypes.dart';
 import 'dart:convert';
 
-class HistoryAccessor{
-  static final _termJsonDeliminater = "sff.sv('sf_gridObjects',\$.extend((sff.getValue('sf_gridObjects') || {}), ";
+class HistoryAccessor {
+  static final _termJsonDeliminater =
+      "sff.sv('sf_gridObjects',\$.extend((sff.getValue('sf_gridObjects') || {}), ";
 
   static getGradebookHTML(Map<String, String> codes, String baseURL) async {
     final String gradebookURL = baseURL + 'sfacademichistory001.w';
@@ -18,38 +19,77 @@ class HistoryAccessor{
 
     for (Element elem in elems) {
       if (elem.text.contains('sff.')) {
-        if (elem.text.contains(
-            _termJsonDeliminater)) {
-          var needToDecodeJson =
-          elem.text.substring(elem.text.indexOf(_termJsonDeliminater) +
-              _termJsonDeliminater.length, elem.text.length - 4);
+        if (elem.text.contains(_termJsonDeliminater)) {
+          var needToDecodeJson = elem.text.substring(
+              elem.text.indexOf(_termJsonDeliminater) +
+                  _termJsonDeliminater.length,
+              elem.text.length - 4);
 
-          while(needToDecodeJson.contains("'gradeGrid")){
+          while (needToDecodeJson.contains("'gradeGrid")) {
             int indOfGradeGrid = needToDecodeJson.indexOf("'gradeGrid") - 1;
-            needToDecodeJson = needToDecodeJson.replaceFirst("'", "\"", indOfGradeGrid);
-            needToDecodeJson = needToDecodeJson.replaceFirst("'", "\"", indOfGradeGrid);
+            needToDecodeJson =
+                needToDecodeJson.replaceFirst("'", "\"", indOfGradeGrid);
+            needToDecodeJson =
+                needToDecodeJson.replaceFirst("'", "\"", indOfGradeGrid);
           }
 
-          print(needToDecodeJson);
           var mapOfFutureParsedHTML = json.decode(needToDecodeJson);
 
-          for(var x in mapOfFutureParsedHTML.values)
-            print(x);
+          return (getLegacyGrades(mapOfFutureParsedHTML)[2]);
         }
       }
     }
   }
 
-  static getLegacyGrades(Map<String, dynamic> retrieved){
-    for(Map school in retrieved.values){
+  static getLegacyGrades(Map<String, dynamic> retrieved) {
+    List<SchoolYear> schoolYears = [];
+
+    for (Map school in retrieved.values) {
       List mapsOfGrid = school['tb']['r'];
       SchoolYear currentYear;
-      for(Map elem in mapsOfGrid){
+      List<Term> tempTerms = [];
+      for (Map elem in mapsOfGrid) {
         List cArray = elem['c'];
-        for(Map x in cArray){
+        String firstElemType = cArray.first['h'];
 
+        Document docFrag = Document.html("""<html>
+                                              <head></head>
+                                              <body>$firstElemType </body>
+                                             </html>""");
+
+        String type = 'terms';
+        String className;
+        if (docFrag.querySelector('div') != null) {
+          type = 'schoolyear';
+          currentYear = SchoolYear();
+          currentYear.description = docFrag.querySelector('div').text;
+          currentYear.grades = Map();
+          if (currentYear != null) schoolYears.add(currentYear);
+          tempTerms = [];
+        } else if (!firstElemType.contains('style="vertical-align:bottom"')) {
+          type = 'classandgrades';
+          className = docFrag.querySelector('body').text;
+          currentYear.grades[className] = Map();
         }
+
+        if (type != 'schoolyear')
+          for (int i = 0; i < cArray.length; i++) {
+            Map x = cArray[i];
+            Document curr = Document.html("""<html>
+                                              <head></head>
+                                              <body>${x.values.first}</body>
+                                             </html>""");
+            Map<Term, String> grades = currentYear.grades[className];
+            if (type == 'terms') {
+              var attrElem = curr.querySelector('span')?? curr.querySelector('body');
+              tempTerms.add(Term(attrElem.text, attrElem.attributes['tooltip']));
+            } else {
+              grades[tempTerms[i]] = curr.querySelector('body').text;
+            }
+          }
       }
+      schoolYears.add(currentYear);
     }
+    return schoolYears;
   }
 }

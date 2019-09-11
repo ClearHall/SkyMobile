@@ -7,7 +7,7 @@ class Term {
   //For debugging only.
   @override
   String toString() {
-    return termCode + ":" + termName;
+    return "$termCode : $termName";
   }
 
   @override
@@ -177,12 +177,11 @@ class SkywardDistrict{
 
 class SchoolYear{
   String description;
-  List<Term> terms;
   //First String represents class, in each class theres a map of the term and then the grade of that term.
   Map<String, Map<Term, String>> grades;
 
   @override
   String toString() {
-    return 'SchoolYear{description: $description, terms: $terms, grades: $grades}';
+    return 'SchoolYear{description: $description, classes: $grades}';
   }
 }

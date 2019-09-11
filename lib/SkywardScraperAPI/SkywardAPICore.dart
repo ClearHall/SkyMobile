@@ -75,7 +75,7 @@ class SkywardAPICore {
   }
 
   getHistory() async{
-    print(await HistoryAccessor.parseGradebookHTML(await HistoryAccessor.getGradebookHTML(loginSessionRequiredBodyElements, _baseURL)));
+    return (await HistoryAccessor.parseGradebookHTML(await HistoryAccessor.getGradebookHTML(loginSessionRequiredBodyElements, _baseURL)));
   }
 }
 
