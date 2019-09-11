@@ -49,7 +49,7 @@ Main scraping API for SkyMobile cross platform.
 
 ## Documentation
 
-**DOCUMENTATION VERSION 1.3.0**
+**DOCUMENTATION VERSION 1.4.0**
 
 To use this API, you must take the package SkywardScraperAPI. I have not made this implementable with pubspec.yaml.
 
