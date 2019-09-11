@@ -39,4 +39,17 @@ class HistoryAccessor{
       }
     }
   }
+
+  static getLegacyGrades(Map<String, dynamic> retrieved){
+    for(Map school in retrieved.values){
+      List mapsOfGrid = school['tb']['r'];
+      SchoolYear currentYear;
+      for(Map elem in mapsOfGrid){
+        List cArray = elem['c'];
+        for(Map x in cArray){
+
+        }
+      }
+    }
+  }
 }

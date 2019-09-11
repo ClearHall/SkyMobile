@@ -69,6 +69,7 @@ class _TermViewer extends State<TermViewerPage> {
       }
     }
     currentTermIndex = terms.indexOf(currentTerm);
+    if(currentTermIndex < 0) currentTermIndex = 0;
   }
 
   @override
@@ -95,7 +96,7 @@ class _TermViewer extends State<TermViewerPage> {
                 RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
             child: Container(
               child: Text(
-                'Term: ${terms[currentTermIndex].termCode} / ${terms[currentTermIndex].termName}',
+                'Term: ${terms [currentTermIndex].termCode} / ${terms[currentTermIndex].termName}',
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700),
                 textAlign: TextAlign.center,
               ),

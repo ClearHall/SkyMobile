@@ -16,6 +16,7 @@ class GradebookAccessor {
   getGradebookHTML(Map<String, String> codes, String baseURL) async {
     final String gradebookURL = baseURL + 'sfgradebook001.w';
     final postReq = await http.post(gradebookURL, body: codes);
+    var postBody = postReq.body;
     initGradebookAndGradesHTML(postReq.body);
     return postReq.body;
   }
@@ -67,13 +68,9 @@ class GradebookAccessor {
   void initGradebookAndGradesHTML(String html){
     Document doc = parse(html);
 
-    List<Element> elems = doc.querySelectorAll("script");
-
-    for (Element elem in elems) {
-      if (elem.text.contains('sff.')) {
-
-        if (elem.text.contains(
-            _termJsonDeliminater)) {
+    Element elem = doc.querySelector("script[data-rel='sff']");
+    var outertext = elem.outerHtml;
+        if (elem.text.contains(_termJsonDeliminater)) {
           var needToDecodeJson =
           elem.text.substring(elem.text.indexOf(_termJsonDeliminater) + _termJsonDeliminater.length, elem.text.length - 5);
           needToDecodeJson =
@@ -87,8 +84,6 @@ class GradebookAccessor {
             gradesElements = mapOfFutureParsedHTML['tb']['r'];
           }
         }
-      }
-    }
 
   }
 

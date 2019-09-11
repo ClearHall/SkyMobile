@@ -162,7 +162,27 @@ class SkywardDistrict{
   SkywardDistrict(this.districtName, this.districtLink);
 
   @override
+  bool operator ==(other) {
+    if(other is SkywardDistrict)
+      return districtLink == other.districtLink;
+    else
+      return false;
+  }
+
+  @override
   String toString() {
     return 'SkywardDistrict{districtName: $districtName, districtLink: $districtLink}';
+  }
+}
+
+class SchoolYear{
+  String description;
+  List<Term> terms;
+  //First String represents class, in each class theres a map of the term and then the grade of that term.
+  Map<String, Map<Term, String>> grades;
+
+  @override
+  String toString() {
+    return 'SchoolYear{description: $description, terms: $terms, grades: $grades}';
   }
 }

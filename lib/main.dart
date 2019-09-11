@@ -58,7 +58,6 @@ class MyHomePageState extends State<MyHomePage> {
         .then((val) {
       isCancelled = true;
     });
-    ;
 
     skywardAPI = SkywardAPICore(district.districtLink);
     if (await skywardAPI.getSkywardAuthenticationCodes(user, pass) ==
@@ -74,6 +73,7 @@ class MyHomePageState extends State<MyHomePage> {
                 buttonText: 'Ok');
           });
     } else {
+      _getAccounts();
       if (!_isCredentialsSavedAlready(user)) {
         await showDialog(
             context: context,

@@ -15,6 +15,7 @@ class SkywardAPICore {
     if (_verifyBaseURL(this._baseURL)) {
       this._baseURL = this._baseURL.substring(0, this._baseURL.lastIndexOf('/') + 1);
     }
+    if(_baseURL.contains("wsEAplus")) _baseURL = _baseURL.substring(0, _baseURL.indexOf('wsEAplus') + 'wsEAplus'.length) + "/";
   }
 
   bool _verifyBaseURL(String url) {
