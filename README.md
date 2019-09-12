@@ -12,6 +12,10 @@ Changelog for SKYSCRAPEAPI and SkyMobile.
 
 Main scraping API for SkyMobile cross platform.
 
+### V1.5.0
+
+- Added History Scraper. Allows you to scrape from sfacademichistory001.w.
+
 ### V1.4.1
 
 - Adressed major bug which prevented users from Highland Park ISD from logging in. This should fix logging in bugs for all districts with wsEAplus in their url link name.
@@ -117,6 +121,14 @@ List<SkywardDistrict> districts = await SkywardDistrictSearcher.searchForDistric
 ```
 
 Searches for districts and returns the link found for those districts. This link is not fool-proof and may be wrong. Contact me at hunter.han@gmail.com if any errors in links are found.
+
+### Getting grading history
+
+```
+var history = skywardAPI.getHistory();
+```
+
+This function returns a list of SchoolYear. Note: This function **IS ASYNC** and will take a little more time to run. **CALL AWAIT** so your program will wait for this line of code to finish.
 
 ## Types
 
