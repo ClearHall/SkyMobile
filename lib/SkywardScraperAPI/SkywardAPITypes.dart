@@ -177,6 +177,7 @@ class SkywardDistrict{
 
 class SchoolYear{
   String description;
+  List<Term> terms;
   //First String represents class, in each class theres a map of the term and then the grade of that term.
   Map<String, Map<Term, String>> grades;
 

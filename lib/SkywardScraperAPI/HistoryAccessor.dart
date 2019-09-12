@@ -35,7 +35,7 @@ class HistoryAccessor {
 
           var mapOfFutureParsedHTML = json.decode(needToDecodeJson);
 
-          return (getLegacyGrades(mapOfFutureParsedHTML)[2]);
+          return (getLegacyGrades(mapOfFutureParsedHTML));
         }
       }
     }
@@ -87,6 +87,7 @@ class HistoryAccessor {
               grades[tempTerms[i]] = curr.querySelector('body').text;
             }
           }
+        if(type == 'terms') currentYear.terms = tempTerms;
       }
       schoolYears.add(currentYear);
     }

@@ -9,6 +9,7 @@ import 'SkywardScraperAPI/SkywardDistrictSearcher.dart';
 import 'SkywardScraperAPI/SkywardAPITypes.dart';
 import 'package:skymobile/辅助/accountTypes.dart';
 import 'package:skymobile/辅助/jsonSaver.dart';
+import 'package:skymobile/另/gpaCalculatorSchoolYear.dart';
 
 void main() => runApp(MyApp());
 
@@ -26,6 +27,7 @@ class MyApp extends StatelessWidget {
         "/termviewer": (context) => TermViewerPage(),
         "/assignmentsviewer": (context) => AssignmentsViewer(),
         "/assignmentsinfoviewer": (context) => AssignmentInfoViewer(),
+        "/gpacalculatorschoolyear": (context) => GPACalculatorSchoolYear()
       },
     );
   }

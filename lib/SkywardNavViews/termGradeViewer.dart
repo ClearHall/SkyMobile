@@ -15,24 +15,22 @@ class _TermViewer extends State<TermViewerPage> {
   int currentTermIndex = 0;
 
   _goToGPACalculator(String courseName) async {
-//    bool isCancelled = false;
-//    var dialog = HuntyDialogLoading('Cancel', () {
-//      isCancelled = true;
-//    }, title: 'Loading', description: ('Getting your grades..'));
-//
-//    showDialog(
-//        context: context,
-//        builder: (BuildContext context) => dialog).then((val){isCancelled = true;});
-//
-//    assignmentsGridBoxes =
-//    await skywardAPI.getAssignmentsFromGradeBox(gradeBox);
-//    if(!isCancelled) {
-//      Navigator.of(context, rootNavigator: true).popUntil((result){
-//        return result.settings.name == '/termviewer';
-//      });
-//      Navigator.pushNamed(context, '/assignmentsviewer');
-//    }
-    await skywardAPI.getHistory();
+    bool isCancelled = false;
+    var dialog = HuntyDialogLoading('Cancel', () {
+      isCancelled = true;
+    }, title: 'Loading', description: ('Getting your grades..'));
+
+    showDialog(
+        context: context,
+        builder: (BuildContext context) => dialog).then((val){isCancelled = true;});
+
+    historyGrades = await skywardAPI.getHistory();
+    if(!isCancelled) {
+      Navigator.of(context, rootNavigator: true).popUntil((result){
+        return result.settings.name == '/termviewer';
+      });
+      Navigator.pushNamed(context, '/gpacalculatorschoolyear');
+    }
   }
 
   _goToAssignmentsViewer(GradeBox gradeBox, String courseName) async {

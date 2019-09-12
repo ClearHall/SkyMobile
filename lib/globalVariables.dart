@@ -7,6 +7,9 @@ List<Term> terms;
 List<GridBox> gradeBoxes;
 List<AssignmentsGridBox> assignmentsGridBoxes;
 List<AssignmentInfoBox> assignmentInfoBoxes;
+List<SchoolYear> historyGrades;
+
+List<String> termIdentifiersCountingTowardGPA = ['S1', 'S2'];
 
 Color getColorFrom(String grade){
   if(grade != null && grade != '' && double.tryParse(grade) != null){
@@ -21,4 +24,13 @@ Color getColorFrom(String grade){
     return Color.fromARGB(255, (red * 255).floor(), (green * 255).floor(), 0);
   }
   return Color.fromARGB(255, 0, (0.8471 * 255).round(), (0.8039 * 255).round());
+}
+
+List<double> getAveragesOfTermsCountingTowardGPA(){
+  List<double> averagesRespeciveOfTerms = [];
+  for(String term in termIdentifiersCountingTowardGPA){
+    for(SchoolYear schoolYear in historyGrades){
+
+    }
+  }
 }
