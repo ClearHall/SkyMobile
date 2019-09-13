@@ -12,6 +12,10 @@ Changelog for SKYSCRAPEAPI and SkyMobile.
 
 Main scraping API for SkyMobile cross platform.
 
+### V1.5.1
+
+- Modified History Scraper and Data Types to support json saving.
+
 ### V1.5.0
 
 - Added History Scraper. Allows you to scrape from sfacademichistory001.w.
