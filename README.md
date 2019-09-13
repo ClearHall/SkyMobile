@@ -139,18 +139,26 @@ Searches for districts and returns the link found for those districts. This link
 ### Getting grading history
 
 ```
-var history = skywardAPI.getHistory();
+var history = await skywardAPI.getHistory();
 ```
 
-This function returns a list of SchoolYear. Note: This function **IS ASYNC** and will take a little more time to run. **CALL AWAIT** so your program will wait for this line of code to finish.
+This function returns a list of SchoolYear taken from sfacademichistory. Refer to SchoolYear documentation to understand how the datatype SchoolYear functions. Note: This function **IS ASYNC** and will take a little more time to run. **CALL AWAIT** so your program will wait for this line of code to finish.
 
 ## Types
 
-The following types are the only types you will need to know about.
+The following type are the types you need to know to operate the API.
 
 #### Term
 - String termCode: The term code such as PR1.
 - String termName: The term name such as TERM 1.
+
+**JSON ENCODING FORMAT**
+```
+{
+  'termCode': termCode,
+  'termName': termName
+}
+```
 
 #### GradeboxGridBox
 - bool clickable: If the box is clickable and has another dialog. **NOTE: Default value is false**
@@ -216,3 +224,69 @@ Inherits AssignmentsGridBox.
 
 - String stateName: Name of the state such as Texas.
 - String stateID: Name of the corresponding state ID for example, Texas' state ID is 180.
+
+#### SkywardDistrict
+
+- String districtName: The name of the district stored inside such as "FORT BEND ISD"
+- String districtLink: The link scraped from the district searcher such as "https://skyward-fbprod.iscorp.com/scripts/wsisa.dll/WService=wsedufortbendtx/seplog01.w"
+
+**JSON ENCODING FORMAT**
+```
+{
+  'districtName': districtName,
+  'districtLink': districtLink
+}
+```
+
+#### SchoolYear
+
+- String description: Name of the school year such as "2018-2019 9th grade"
+- List<Term> terms: Terms from this school year such as [Term("CP1", "Citizenship 1"),Term("PR1", "Term 1")]
+- List<Class> classes: Classes from this school year such as [Class("Biology", ["91"], 1.0, 3.0, ClassLevel.PreAP)]
+- bool isEnabled = true: If the SchoolYear is enabled and counts toward the final GPA. Default value is true.
+  
+**JSON ENCODING FORMAT**
+```
+{
+  'description': description,
+  'terms': {
+    {
+      *Insert Term JSON Code*
+    }, ...more terms(terms is a list)
+  },
+  'classes' : {
+     {
+      *Insert Class JSON Code*
+     }, ...more classes
+   },
+   'isEnabled' : isEnabled
+}
+```
+
+#### Class
+String name: Name of the class such as Precal PreAP
+List<String> grades: List of grades respective to the parent SchoolYear terms
+double credits: How many credits the class is worth such as 1.0
+double fourScaleCredits: How many credits the class is worth counting toward 4.0 scale
+ClassLevel classLevel: The level of the class
+  
+**JSON ENCODING FORMAT**
+```
+{
+  'name': name,
+  'grades': {
+    {
+     "grade",
+     "grade",...more grades
+    },
+  },
+  'credits' : credits,
+  'fourScaleCredits' : fourScaleCredits,
+   'classLevel' : classLevel
+}
+```
+
+#### ClassLevel enum
+- Regular
+- PreAP
+- AP
