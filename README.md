@@ -69,9 +69,7 @@ Main scraping API for SkyMobile cross platform.
 - Can check grades, assignments, assignment details
 - Uses SKYSCRAPEAPI V1.2
 
-## Documentation
-
-**DOCUMENTATION VERSION 1.4.1 Incomplete**
+# Documentation Version 1.5.1
 
 To use this API, you must take the package SkywardScraperAPI. I have not made this implementable with pubspec.yaml.
 
@@ -264,11 +262,11 @@ Inherits AssignmentsGridBox.
 ```
 
 #### Class
-String name: Name of the class such as Precal PreAP
-List<String> grades: List of grades respective to the parent SchoolYear terms
-double credits: How many credits the class is worth such as 1.0
-double fourScaleCredits: How many credits the class is worth counting toward 4.0 scale
-ClassLevel classLevel: The level of the class
+- String name: Name of the class such as Precal PreAP
+- List<String> grades: List of grades respective to the parent SchoolYear terms
+- double credits: How many credits the class is worth such as 1.0
+- double fourScaleCredits: How many credits the class is worth counting toward 4.0 scale
+- ClassLevel classLevel: The level of the class
   
 **JSON ENCODING FORMAT**
 ```
