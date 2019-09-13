@@ -43,7 +43,17 @@ Main scraping API for SkyMobile cross platform.
 
 ## SkyMobile
 
+### V2.0 Beta
+
+- Updates JSON Saver to save GPA Calculator modifications
+- Adds GPA Calculator
+  - HUGE Upgrade from GPA Calculator iOS
+  - Adds new window for modifying specific school years
+  - Popup window for class credit and level modification **SUBJECT TO CHANGE**
+  - Selectable semesters to add into the GPA Calculator
+
 ### V1.1.0 Beta
+
 - Adds DistrictSearcher
 - Fixes bugs for other districts
 - Fixes multiple registered taps bug
@@ -57,7 +67,7 @@ Main scraping API for SkyMobile cross platform.
 
 ## Documentation
 
-**DOCUMENTATION VERSION 1.4.1**
+**DOCUMENTATION VERSION 1.4.1 Incomplete**
 
 To use this API, you must take the package SkywardScraperAPI. I have not made this implementable with pubspec.yaml.
 
