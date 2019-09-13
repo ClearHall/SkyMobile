@@ -47,7 +47,7 @@ Main scraping API for SkyMobile cross platform.
 
 ## SkyMobile
 
-### V2.0 Beta
+### V2.0 Release
 
 - Updates JSON Saver to save GPA Calculator modifications
 - Adds GPA Calculator
@@ -55,6 +55,7 @@ Main scraping API for SkyMobile cross platform.
   - Adds new window for modifying specific school years
   - Popup window for class credit and level modification **SUBJECT TO CHANGE**
   - Selectable semesters to add into the GPA Calculator
+- Uses SKYSCRAPEAPI V1.5.1
 
 ### V1.1.0 Beta
 
@@ -62,6 +63,7 @@ Main scraping API for SkyMobile cross platform.
 - Fixes bugs for other districts
 - Fixes multiple registered taps bug
 - Added account saving
+- Uses SKYSCRAPEAPI V1.4.1
 
 ### V1.0.0 Beta
 
