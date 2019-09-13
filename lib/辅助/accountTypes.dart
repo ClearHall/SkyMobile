@@ -12,15 +12,14 @@ class Account{
   : nick = json['nick'],
   user = json['user'],
   pass = json['pass'],
-  district = SkywardDistrict(json['districtName'], json['districtLink']);
+  district = SkywardDistrict.fromJson(json['district']);
 
   Map<String, dynamic> toJson() =>
       {
         'nick': nick,
         'user': user,
         'pass': pass,
-        'districtName': district.districtName,
-        'districtLink': district.districtLink,
+        'district': district
       };
 
   @override

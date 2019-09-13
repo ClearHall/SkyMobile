@@ -10,6 +10,16 @@ class Term {
     return "$termCode : $termName";
   }
 
+  Term.fromJson(Map<String, dynamic> json)
+      : termCode = json['termCode'],
+        termName = json['termName'];
+
+  Map<String, dynamic> toJson() =>
+      {
+        'termCode': termCode,
+        'termName': termName,
+      };
+
   @override
   bool operator ==(other) {
     if(other is Term){
@@ -161,6 +171,16 @@ class SkywardDistrict{
 
   SkywardDistrict(this.districtName, this.districtLink);
 
+  SkywardDistrict.fromJson(Map<String, dynamic> json)
+      : districtName = json['districtName'],
+        districtLink = json['districtLink'];
+
+  Map<String, dynamic> toJson() =>
+      {
+        'districtName': districtName,
+        'districtLink': districtLink,
+      };
+
   @override
   bool operator ==(other) {
     if(other is SkywardDistrict)
@@ -179,10 +199,89 @@ class SchoolYear{
   String description;
   List<Term> terms;
   //First String represents class, in each class theres a map of the term and then the grade of that term.
-  Map<String, Map<Term, String>> grades;
+  List<Class> classes;
+  //SKYMOBILE SPECIFIC ATTRIBUTE
+  bool isEnabled = true;
+
+  SchoolYear();
+
+  SchoolYear.fromJson(Map<String, dynamic> json)
+      : description = json['description'],
+        terms = getTermsFromEncodedTermsList(json['terms']),
+        classes = getClassesFromEncodedClassesList(json['classes']),
+        isEnabled = json['isEnabled'];
+
+  static List<Term> getTermsFromEncodedTermsList(List terms){
+    List<Term> fin = [];
+    for(var x in terms){
+      fin.add(Term.fromJson(x));
+    }
+    return fin;
+  }
+
+  static List<Class> getClassesFromEncodedClassesList(List classes){
+    List<Class> fin = [];
+    for(var x in classes){
+      fin.add(Class.fromJson(x));
+    }
+    return fin;
+  }
+
+  Map<String, dynamic> toJson() =>
+      {
+        'description': description,
+        'terms': terms,
+        'classes': classes,
+        'isEnabled': isEnabled
+      };
 
   @override
   String toString() {
-    return 'SchoolYear{description: $description, classes: $grades}';
+    return 'SchoolYear{description: $description, classes: $classes}';
   }
+}
+
+class Class{
+  String name;
+  List<String> grades; //Assumed all terms in parent terms are correct
+  double credits;
+  double fourScaleCredits;
+  ClassLevel classLevel;
+
+  Class(this.name);
+
+  Class.fromJson(Map<String, dynamic> json)
+      : name = json['name'],
+        grades = getGradesFromEncodedGradesList(json['grades']),
+        credits = json['credits'],
+        fourScaleCredits = json['fourScaleCredits'],
+        classLevel = json['classLevel'];
+
+  Map<String, dynamic> toJson() =>
+      {
+        'name': name,
+        'grades': grades,
+        'credits': credits,
+        'fourScaleCredits': fourScaleCredits,
+        'classLevel': classLevel,
+      };
+
+  static List<String> getGradesFromEncodedGradesList(List grades){
+    List<String> fin = [];
+    for(var x in grades){
+      fin.add(x);
+    }
+    return fin;
+  }
+
+  @override
+  String toString() {
+    return 'GPACalculatorClass{name: $name, grades: $grades, credits: $credits, fourScaleCredits: $fourScaleCredits, classLevel: $classLevel}';
+  }
+}
+
+enum ClassLevel{
+  Regular,
+  PreAP,
+  AP
 }

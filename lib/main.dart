@@ -42,6 +42,7 @@ class MyHomePage extends StatefulWidget {
 }
 
 class MyHomePageState extends State<MyHomePage> {
+  JSONSaver jsonSaver = JSONSaver(FilesAvailable.accounts);
   static SkywardDistrict district = SkywardDistrict('FORT BEND ISD',
       'https://skyward-fbprod.iscorp.com/scripts/wsisa.dll/WService=wsedufortbendtx/seplog01.w');
 
@@ -87,7 +88,7 @@ class MyHomePageState extends State<MyHomePage> {
                 runIfUserConfirms: () {
                   setState(() {
                     accounts.add(Account(user, user, pass, district));
-                    JSONSaver.saveAccountData(accounts);
+                    jsonSaver.saveListData(accounts);
                   });
                 },
                 btnTextForCancel: "Cancel",
@@ -139,7 +140,7 @@ class MyHomePageState extends State<MyHomePage> {
               runIfUserConfirms: () {
                 setState(() {
                   accounts.remove(acc);
-                  JSONSaver.saveAccountData(accounts);
+                  jsonSaver.saveListData(accounts);
                 });
               },
               btnTextForCancel: "Cancel",
@@ -177,18 +178,19 @@ class MyHomePageState extends State<MyHomePage> {
   List<Account> accounts = [];
 
   //NOTE: USING THIS IS VERY BUGGY!!!!!
-  void _debugUseGenerateFakeAccounts(int numOfFakeAccounts) {
-    accounts = [];
-    for (int i = 0; i < numOfFakeAccounts; i++) {
-      accounts.add(Account(i.toString(), i.toString(), i.toString(), null));
-    }
-  }
+//  void _debugUseGenerateFakeAccounts(int numOfFakeAccounts) {
+//    accounts = [];
+//    for (int i = 0; i < numOfFakeAccounts; i++) {
+//      accounts.add(Account(i.toString(), i.toString(), i.toString(), null));
+//    }
+//  }
 
   void _getAccounts() async {
-    if (await JSONSaver.accountFileExists()) {
-      accounts = await JSONSaver.readAccountData();
+    if (await jsonSaver.accountFileExists()) {
+      List unconverted = (await jsonSaver.readListData());
+      accounts = List<Account>.from(unconverted);
     } else {
-      await JSONSaver.saveAccountData([]);
+      await jsonSaver.saveListData([]);
     }
     if (accounts.length == 0) {
       accounts.add(Account('You have no saved accounts', null, null, null));
@@ -201,7 +203,7 @@ class MyHomePageState extends State<MyHomePage> {
         accounts.removeAt(i);
       }
     }
-    JSONSaver.saveAccountData(accounts);
+    jsonSaver.saveListData(accounts);
   }
 
   final focus = FocusNode();
@@ -277,7 +279,7 @@ class MyHomePageState extends State<MyHomePage> {
                                                   runIfUserConfirms: () {
                                                     setState(() {
                                                       accounts.remove(acc);
-                                                      JSONSaver.saveAccountData(
+                                                      jsonSaver.saveListData(
                                                           accounts);
                                                     });
                                                   },
@@ -300,7 +302,7 @@ class MyHomePageState extends State<MyHomePage> {
                                                   setState(() {
                                                     acc.nick =
                                                         accountEditor.text;
-                                                    JSONSaver.saveAccountData(
+                                                    jsonSaver.saveListData(
                                                         accounts);
                                                   });
                                                 },

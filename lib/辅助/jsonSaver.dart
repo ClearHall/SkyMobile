@@ -2,47 +2,69 @@ import 'dart:convert';
 import 'package:path_provider/path_provider.dart';
 import 'dart:io';
 import 'accountTypes.dart';
+import 'package:skymobile/SkywardScraperAPI/SkywardAPITypes.dart';
 
 class JSONSaver{
-  static getLocalDirectoryPath() async{
+  FilesAvailable fileName;
+
+  JSONSaver(this.fileName);
+
+  getLocalDirectoryPath() async{
     final dir = await getApplicationDocumentsDirectory();
 
     return dir.path;
   }
 
-  static accountSaverFile() async{
+  getFile() async{
     final path = await getLocalDirectoryPath();
-    return File('$path/accounts.accDat');
+    return File('$path/${fileName.toString()}.skymobileDat');
   }
 
-  static accountFileExists() async{
+  accountFileExists() async{
     final path = await getLocalDirectoryPath();
-    return await File('$path/accounts.accDat').exists();
+    return await File('$path/${fileName.toString()}.skymobileDat').exists();
   }
 
-  static saveAccountData(List<Account> acc) async{
-    final File file = await accountSaverFile();
+  saveListData(List savingList) async{
+    final File file = await getFile();
     List<String> keys = [];
-    for(int i = 0; i < acc.length; i++){
+    for(int i = 0; i < savingList.length; i++){
       keys.add(i.toString());
     }
-    Map<String, dynamic> accMap = Map.fromIterables(keys, acc);
+    Map<String, dynamic> accMap = Map.fromIterables(keys, savingList);
     return file.writeAsString(jsonEncode(accMap));
   }
 
-  static readAccountData() async{
+  readListData() async{
     try{
-      List<Account> accts = [];
-      final File file = await accountSaverFile();
+      List listOfTargetedObject = [];
+      final File file = await getFile();
       String contents = await file.readAsString();
-      Map<String, dynamic> accounts = jsonDecode(contents);
-      for(Map avv in accounts.values){
-        Account currentAcc = Account.fromJson(avv);
-        accts.add(currentAcc);
+      Map<String, dynamic> retrievedJSONCoded = jsonDecode(contents);
+      for(Map avv in retrievedJSONCoded.values){
+        var currentAcc;
+        switch (fileName) {
+          case FilesAvailable.accounts:
+            currentAcc = Account.fromJson(avv);
+            break;
+          case FilesAvailable.gpaCalcAttributes:
+            currentAcc = SchoolYear.fromJson(avv);
+            break;
+          default:
+            break;
+        }
+        listOfTargetedObject.add(currentAcc);
       }
-      return accts;
-    } catch (e) {
+      return listOfTargetedObject;
+    } catch (e,s) {
+      print(s);
       return 0;
     }
   }
+
+}
+
+enum FilesAvailable{
+  accounts,
+  gpaCalcAttributes
 }

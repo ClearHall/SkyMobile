@@ -63,13 +63,14 @@ class HistoryAccessor {
           type = 'schoolyear';
           currentYear = SchoolYear();
           currentYear.description = docFrag.querySelector('div').text;
-          currentYear.grades = Map();
+          currentYear.classes = List();
           if (currentYear != null) schoolYears.add(currentYear);
           tempTerms = [];
         } else if (!firstElemType.contains('style="vertical-align:bottom"')) {
           type = 'classandgrades';
           className = docFrag.querySelector('body').text;
-          currentYear.grades[className] = Map();
+          currentYear.classes.add(Class(className));
+          currentYear.classes.last.grades = List<String>();
         }
 
         if (type != 'schoolyear')
@@ -79,12 +80,11 @@ class HistoryAccessor {
                                               <head></head>
                                               <body>${x.values.first}</body>
                                              </html>""");
-            Map<Term, String> grades = currentYear.grades[className];
             if (type == 'terms') {
               var attrElem = curr.querySelector('span')?? curr.querySelector('body');
               tempTerms.add(Term(attrElem.text, attrElem.attributes['tooltip']));
             } else {
-              grades[tempTerms[i]] = curr.querySelector('body').text;
+              currentYear.classes.last.grades.add(curr.querySelector('body').text);
             }
           }
         if(type == 'terms') currentYear.terms = tempTerms;

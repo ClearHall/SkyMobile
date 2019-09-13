@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:skymobile/globalVariables.dart';
+//import 'package:skymobile/globalVariables.dart';
+import 'package:skymobile/辅助/jsonSaver.dart';
 
 class GPACalculatorSchoolYear extends StatefulWidget {
   MaterialColor secondColor;
@@ -10,10 +11,18 @@ class GPACalculatorSchoolYear extends StatefulWidget {
 }
 
 class _GPACalculatorSchoolYearState extends State<GPACalculatorSchoolYear> {
+  JSONSaver jsonSaver = JSONSaver(FilesAvailable.gpaCalcAttributes);
+  
+//  _testGPACalcSaving() async{
+//    await jsonSaver.saveListData(historyGrades);
+//    print((await jsonSaver.readListData()));
+//  }
+  
   @override
   Widget build(BuildContext context) {
-    bool didSuccessfullyGetOlderGrades = false;
-    if (historyGrades != null) didSuccessfullyGetOlderGrades = true;
+//    bool didSuccessfullyGetOlderGrades = false;
+//
+//    if (historyGrades != null) didSuccessfullyGetOlderGrades = true;
     return Scaffold(
         appBar: AppBar(
           backgroundColor: Colors.lightBlue,

@@ -26,11 +26,11 @@ Color getColorFrom(String grade){
   return Color.fromARGB(255, 0, (0.8471 * 255).round(), (0.8039 * 255).round());
 }
 
-List<double> getAveragesOfTermsCountingTowardGPA(){
-  List<double> averagesRespeciveOfTerms = [];
-  for(String term in termIdentifiersCountingTowardGPA){
-    for(SchoolYear schoolYear in historyGrades){
-
-    }
-  }
-}
+//List<double> getAveragesOfTermsCountingTowardGPA(List<SchoolYear> enabledSchoolYears){
+//  List<double> averagesRespeciveOfTerms = [];
+//  for(String term in termIdentifiersCountingTowardGPA){
+//    for(SchoolYear schoolYear in enabledSchoolYears){
+//
+//    }
+//  }
+//}
