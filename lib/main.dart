@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'SkywardScraperAPI/SkywardAPICore.dart';
-import 'package:skymobile/skywardNavViews/termGradeViewer.dart';
+import 'package:skymobile/SkywardNavViews/termGradeViewer.dart';
 import 'customDialogOptions.dart';
 import 'globalVariables.dart';
-import 'package:skymobile/skywardNavViews/assignmentInfoViewer.dart';
-import 'package:skymobile/skywardNavViews/assignmentsViewer.dart';
+import 'package:skymobile/SkywardNavViews/assignmentInfoViewer.dart';
+import 'package:skymobile/SkywardNavViews/assignmentsViewer.dart';
 import 'SkywardScraperAPI/SkywardDistrictSearcher.dart';
 import 'SkywardScraperAPI/SkywardAPITypes.dart';
 import 'package:skymobile/辅助/accountTypes.dart';
@@ -416,7 +416,7 @@ class MyHomePageState extends State<MyHomePage> {
                       EdgeInsets.only(top: 20, left: 16, right: 16, bottom: 15),
                   child: TextFormField(
                     textInputAction: TextInputAction.next,
-                    autofocus: true,
+                    autofocus: false,
                     controller: _controllerUsername,
                     style: TextStyle(color: Colors.white),
                     decoration: InputDecoration(

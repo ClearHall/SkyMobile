@@ -9,7 +9,7 @@ List<AssignmentsGridBox> assignmentsGridBoxes;
 List<AssignmentInfoBox> assignmentInfoBoxes;
 List<SchoolYear> historyGrades;
 
-List<String> termIdentifiersCountingTowardGPA = ['S1', 'S2'];
+List<String> termIdentifiersCountingTowardGPA = ['PR1', 'S1', 'S2'];
 
 Color getColorFrom(String grade){
   if(grade != null && grade != '' && double.tryParse(grade) != null){
@@ -26,11 +26,42 @@ Color getColorFrom(String grade){
   return Color.fromARGB(255, 0, (0.8471 * 255).round(), (0.8039 * 255).round());
 }
 
-//List<double> getAveragesOfTermsCountingTowardGPA(List<SchoolYear> enabledSchoolYears){
-//  List<double> averagesRespeciveOfTerms = [];
-//  for(String term in termIdentifiersCountingTowardGPA){
-//    for(SchoolYear schoolYear in enabledSchoolYears){
-//
-//    }
-//  }
-//}
+List<double> getAveragesOfTermsCountingTowardGPA(List<SchoolYear> enabledSchoolYears){
+  List<double> averagesRespeciveOfTerms = [];
+  for(String term in termIdentifiersCountingTowardGPA){
+    double finalGrade = 0;
+    double credits = 0;
+    for(SchoolYear schoolYear in enabledSchoolYears){
+      if(schoolYear.terms.contains(Term(term, null))) {
+        int indexOfTerm = schoolYear.terms.indexOf(Term(term,null));
+        for (Class classYear in schoolYear.classes) {
+          int addOnPoints = determinePointsFromClassLevel(classYear.classLevel ?? ClassLevel.Regular);
+          if (addOnPoints >= 0) {
+            double attemptedDoubleParse = double.tryParse(classYear.grades[indexOfTerm]);
+            if(attemptedDoubleParse != null){
+              finalGrade += attemptedDoubleParse + addOnPoints;
+              credits += classYear.credits ?? 1.0;
+            }
+          }
+        }
+      }
+    }
+    if(credits == 0) averagesRespeciveOfTerms.add(0); else averagesRespeciveOfTerms.add(finalGrade/credits);
+  }
+  return averagesRespeciveOfTerms;
+}
+
+int determinePointsFromClassLevel(ClassLevel level){
+  switch(level){
+    case ClassLevel.AP:
+      return 10;
+    case ClassLevel.PreAP:
+      return 5;
+    case ClassLevel.Regular:
+      return 0;
+    case ClassLevel.None:
+      return -1;
+    default:
+      return -1;
+  }
+}

@@ -283,5 +283,6 @@ class Class{
 enum ClassLevel{
   Regular,
   PreAP,
-  AP
+  AP,
+  None
 }
