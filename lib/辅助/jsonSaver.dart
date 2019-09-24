@@ -25,37 +25,40 @@ class JSONSaver{
     return await File('$path/${fileName.toString()}.skymobileDat').exists();
   }
 
-  saveListData(List savingList) async{
+  saveListData(dynamic savingList) async{
     final File file = await getFile();
-    List<String> keys = [];
-    for(int i = 0; i < savingList.length; i++){
-      keys.add(i.toString());
-    }
-    Map<String, dynamic> accMap = Map.fromIterables(keys, savingList);
-    return file.writeAsString(jsonEncode(accMap));
+    return file.writeAsString(jsonEncode(savingList));
   }
 
   readListData() async{
     try{
-      List listOfTargetedObject = [];
       final File file = await getFile();
       String contents = await file.readAsString();
-      Map<String, dynamic> retrievedJSONCoded = jsonDecode(contents);
-      for(Map avv in retrievedJSONCoded.values){
-        var currentAcc;
-        switch (fileName) {
-          case FilesAvailable.accounts:
-            currentAcc = Account.fromJson(avv);
-            break;
-          case FilesAvailable.gpaCalcAttributes:
-            currentAcc = SchoolYear.fromJson(avv);
-            break;
-          default:
-            break;
+      var retrievedJSONCoded = jsonDecode(contents);
+
+      if(retrievedJSONCoded is List){
+        List listOfTargetedObject = [];
+        for(var retrieved in retrievedJSONCoded)
+        if(fileName == FilesAvailable.accounts){
+          listOfTargetedObject.add(Account.fromJson(retrieved));
         }
-        listOfTargetedObject.add(currentAcc);
+        return listOfTargetedObject;
       }
-      return listOfTargetedObject;
+
+      if(retrievedJSONCoded is Map){
+        Map mapOfTargetedObject = Map();
+        if(fileName == FilesAvailable.gpaCalcAttributes) {
+          retrievedJSONCoded.forEach((key, val) {
+            List newVal = [];
+            for (var retrieved in val) {
+              SchoolYear schoolYear = SchoolYear.fromJson(retrieved);
+              newVal.add(schoolYear);
+            }
+            mapOfTargetedObject[key] = newVal;
+          });
+        }
+        return mapOfTargetedObject;
+      }
     } catch (e,s) {
       print(s);
       return 0;

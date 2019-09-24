@@ -118,7 +118,7 @@ class AlwaysVisibleScrollbarPainter extends ScrollbarPainter {
 
   @override
   void dispose() {
-    _scrollable?.position?.removeListener(notifyListeners);
+   // _scrollable?.position?.removeListener(notifyListeners);
     super.dispose();
   }
 }

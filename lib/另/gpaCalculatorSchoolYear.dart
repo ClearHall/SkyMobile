@@ -1,8 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:skymobile/SkywardScraperAPI/SkywardAPITypes.dart';
 import 'package:skymobile/globalVariables.dart';
-import 'package:skymobile/辅助/jsonSaver.dart';
 import 'package:skymobile/辅助/alwaysVisibleScrollbar.dart';
 
 class GPACalculatorSchoolYear extends StatefulWidget {
@@ -14,25 +12,25 @@ class GPACalculatorSchoolYear extends StatefulWidget {
 }
 
 class _GPACalculatorSchoolYearState extends State<GPACalculatorSchoolYear> {
-  JSONSaver jsonSaver = JSONSaver(FilesAvailable.gpaCalcAttributes);
+  @override
+  void initState() {
+    super.initState();
+      getHistGrades();
+  }
 
-  _testGPACalcSaving() async {
-    await jsonSaver.saveListData(historyGrades);
-    List<SchoolYear> data =
-        List<SchoolYear>.from(await jsonSaver.readListData());
-    List<SchoolYear> newDat = [data[1]];
-    print(getAveragesOfTermsCountingTowardGPA(newDat));
+  getHistGrades() async{
+    historyGrades = await gpaCalculatorSettingsReadForCurrentSession();
+    setState(() {});
   }
 
   @override
   Widget build(BuildContext context) {
 //    bool didSuccessfullyGetOlderGrades = false;
-    _testGPACalcSaving();
+   // _testGPACalcSaving();
 //    if (historyGrades != null) didSuccessfullyGetOlderGrades = true;
 
     //DEBUGGING USE
-    List<SchoolYear> newDat = [historyGrades[1]];
-    List<double> averages = getAveragesOfTermsCountingTowardGPA(newDat);
+    List<double> averages = getAveragesOfTermsCountingTowardGPA(historyGrades);
 
     return Scaffold(
         appBar: AppBar(
@@ -46,7 +44,7 @@ class _GPACalculatorSchoolYearState extends State<GPACalculatorSchoolYear> {
         ),
         backgroundColor: Colors.black,
         body: Center(
-          child: Column(
+          child: ListView(
             children: <Widget>[
               Container(
                 padding: EdgeInsets.only(top: 20, left: 20, right: 20),
@@ -76,10 +74,62 @@ class _GPACalculatorSchoolYearState extends State<GPACalculatorSchoolYear> {
                   style: TextStyle(color: Colors.orangeAccent, fontSize: 20),
                 ),
                 padding: EdgeInsets.all(18),
-              )
+              ),
+              Container(
+                padding:
+                    EdgeInsets.only(top: 20, left: 20, right: 20, bottom: 10.0),
+                child: Container(
+                    //padding: EdgeInsets.all(10.0),
+                    // constraints: BoxConstraints(maxHeight: 100),
+                    child: Card(
+                        //shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                        color: Colors.white12,
+                        child: buildArrayOfSchoolYears())),
+              ),
             ],
           ),
         ));
+  }
+
+  Column buildArrayOfSchoolYears() {
+    List<Widget> widgets = [];
+    for (int i = 0; i < historyGrades.length; i++) {
+      widgets.add(Container(
+          padding: EdgeInsets.only(
+              left: 5,
+              right: 5,
+              top: 5.0,
+              bottom: i == historyGrades.length - 1 ? 5 : 0),
+          child: Card(
+              color: Colors.black,
+              child: ListTile(
+                title: Container(
+                  width: double.infinity,
+                  padding: EdgeInsets.only(top: 5, bottom: 5),
+                  child: Text(
+                    "${i == 0 ? 'Current: ' : ''}${historyGrades[i].description}",
+                    style: TextStyle(color: Colors.orange, fontSize: 20),
+                  ),
+                ),
+                trailing: IconButton(
+                  icon: Icon(
+                      historyGrades[i].isEnabled
+                          ? Icons.check_box
+                          : Icons.check_box_outline_blank,
+                      color: Colors.white),
+                  onPressed: () {
+                    setState(() {
+                      historyGrades[i].isEnabled = !historyGrades[i].isEnabled;
+                      gpaCalculatorSettingsSaveForCurrentSession();
+                    });
+                  },
+                ),
+              ))));
+    }
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: widgets,
+    );
   }
 
   double getFinalGPA(List<double> averages) {

@@ -89,7 +89,6 @@ class HistoryAccessor {
           }
         if(type == 'terms') currentYear.terms = tempTerms;
       }
-      schoolYears.add(currentYear);
     }
     return schoolYears;
   }

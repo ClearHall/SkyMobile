@@ -1,8 +1,10 @@
 import 'SkywardScraperAPI/SkywardAPICore.dart';
 import 'SkywardScraperAPI/SkywardAPITypes.dart';
 import 'package:flutter/material.dart';
+import 'package:skymobile/辅助/jsonSaver.dart';
 
 SkywardAPICore skywardAPI;
+String currentSessionIdentifier;
 List<Term> terms;
 List<GridBox> gradeBoxes;
 List<AssignmentsGridBox> assignmentsGridBoxes;
@@ -63,5 +65,30 @@ int determinePointsFromClassLevel(ClassLevel level){
       return -1;
     default:
       return -1;
+  }
+}
+
+
+gpaCalculatorSettingsSaveForCurrentSession() async{
+  JSONSaver jsonSaver = JSONSaver(FilesAvailable.gpaCalcAttributes);
+  var retrievedFromStorage = await jsonSaver.readListData();
+  if(retrievedFromStorage is Map){
+    retrievedFromStorage[currentSessionIdentifier] = historyGrades;
+    jsonSaver.saveListData(retrievedFromStorage);
+  }else{
+    Map newMap = Map();
+    newMap[currentSessionIdentifier] = historyGrades;
+    jsonSaver.saveListData(newMap);
+  }
+}
+
+gpaCalculatorSettingsReadForCurrentSession() async{
+  JSONSaver jsonSaver = JSONSaver(FilesAvailable.gpaCalcAttributes);
+  var retrievedFromStorage = await jsonSaver.readListData();
+  if(retrievedFromStorage is Map && retrievedFromStorage.containsKey(currentSessionIdentifier)) {
+    return List<SchoolYear>.from(retrievedFromStorage[currentSessionIdentifier]);
+  }else{
+    gpaCalculatorSettingsSaveForCurrentSession();
+    return historyGrades;
   }
 }

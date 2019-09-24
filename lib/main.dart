@@ -99,6 +99,7 @@ class MyHomePageState extends State<MyHomePage> {
       terms = await skywardAPI.getGradeBookTerms();
       gradeBoxes = (await skywardAPI.getGradeBookGrades(terms));
       if (!isCancelled) {
+        currentSessionIdentifier = user;
         Navigator.of(context, rootNavigator: true).popUntil((result) {
           return result.settings.name == '/';
         });
@@ -151,6 +152,7 @@ class MyHomePageState extends State<MyHomePage> {
       terms = await skywardAPI.getGradeBookTerms();
       gradeBoxes = (await skywardAPI.getGradeBookGrades(terms));
       if (!isCancelled) {
+        currentSessionIdentifier = acc.user;
         Navigator.of(context, rootNavigator: true).popUntil((result) {
           return result.settings.name == '/';
         });
@@ -187,7 +189,8 @@ class MyHomePageState extends State<MyHomePage> {
 
   void _getAccounts() async {
     if (await jsonSaver.accountFileExists()) {
-      List unconverted = (await jsonSaver.readListData());
+      var unconverted = (await jsonSaver.readListData());
+      if(unconverted is List)
       accounts = List<Account>.from(unconverted);
     } else {
       await jsonSaver.saveListData([]);
