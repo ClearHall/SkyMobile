@@ -12,6 +12,10 @@ Changelog for SKYSCRAPEAPI and SkyMobile.
 
 Main scraping API for SkyMobile cross platform.
 
+### V1.5.2
+
+- Fixed bug where duplicate SchoolYears were returned.
+
 ### V1.5.1
 
 - Modified History Scraper and Data Types to support json saving.
