@@ -11,7 +11,7 @@ List<AssignmentsGridBox> assignmentsGridBoxes;
 List<AssignmentInfoBox> assignmentInfoBoxes;
 List<SchoolYear> historyGrades;
 
-List<String> termIdentifiersCountingTowardGPA = ['PR1', 'S1', 'S2'];
+List<String> termIdentifiersCountingTowardGPA = ['S1', 'S2'];
 
 Color getColorFrom(String grade){
   if(grade != null && grade != '' && double.tryParse(grade) != null){
@@ -70,7 +70,7 @@ int determinePointsFromClassLevel(ClassLevel level){
 
 
 gpaCalculatorSettingsSaveForCurrentSession() async{
-  JSONSaver jsonSaver = JSONSaver(FilesAvailable.gpaCalcAttributes);
+  JSONSaver jsonSaver = JSONSaver(FilesAvailable.gpaCalculatorSettings);
   var retrievedFromStorage = await jsonSaver.readListData();
   if(retrievedFromStorage is Map){
     retrievedFromStorage[currentSessionIdentifier] = historyGrades;
@@ -83,7 +83,7 @@ gpaCalculatorSettingsSaveForCurrentSession() async{
 }
 
 gpaCalculatorSettingsReadForCurrentSession() async{
-  JSONSaver jsonSaver = JSONSaver(FilesAvailable.gpaCalcAttributes);
+  JSONSaver jsonSaver = JSONSaver(FilesAvailable.gpaCalculatorSettings);
   var retrievedFromStorage = await jsonSaver.readListData();
   if(retrievedFromStorage is Map && retrievedFromStorage.containsKey(currentSessionIdentifier)) {
     return List<SchoolYear>.from(retrievedFromStorage[currentSessionIdentifier]);
@@ -91,4 +91,19 @@ gpaCalculatorSettingsReadForCurrentSession() async{
     gpaCalculatorSettingsSaveForCurrentSession();
     return historyGrades;
   }
+}
+
+getTermsToRead() async{
+  JSONSaver jsonSaver = JSONSaver(FilesAvailable.gpaSelectedTerms);
+  var retrievedFromStorage = await jsonSaver.readListData();
+  if(retrievedFromStorage is List){
+    termIdentifiersCountingTowardGPA = List<String>.from(retrievedFromStorage);
+  }else{
+    saveTermsToRead();
+  }
+}
+
+saveTermsToRead() async{
+  JSONSaver jsonSaver = JSONSaver(FilesAvailable.gpaSelectedTerms);
+  await jsonSaver.saveListData(termIdentifiersCountingTowardGPA);
 }

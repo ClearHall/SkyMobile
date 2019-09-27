@@ -41,13 +41,15 @@ class JSONSaver{
         for(var retrieved in retrievedJSONCoded)
         if(fileName == FilesAvailable.accounts){
           listOfTargetedObject.add(Account.fromJson(retrieved));
+        }else if(fileName == FilesAvailable.gpaSelectedTerms){
+          listOfTargetedObject.add(retrieved);
         }
         return listOfTargetedObject;
       }
 
       if(retrievedJSONCoded is Map){
         Map mapOfTargetedObject = Map();
-        if(fileName == FilesAvailable.gpaCalcAttributes) {
+        if(fileName == FilesAvailable.gpaCalculatorSettings) {
           retrievedJSONCoded.forEach((key, val) {
             List newVal = [];
             for (var retrieved in val) {
@@ -69,5 +71,6 @@ class JSONSaver{
 
 enum FilesAvailable{
   accounts,
-  gpaCalcAttributes
+  gpaCalculatorSettings,
+  gpaSelectedTerms
 }
