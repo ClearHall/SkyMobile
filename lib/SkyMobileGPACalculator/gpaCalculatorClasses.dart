@@ -1,8 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:skymobile/SkywardScraperAPI/SkywardAPITypes.dart';
-import 'package:skymobile/globalVariables.dart';
-import 'package:skymobile/辅助/alwaysVisibleScrollbar.dart';
+import 'package:skymobile/SkyMobileHelperUtilities/globalVariables.dart';
+import 'gpaCalculatorSupportUtils.dart';
 
 class GPACalculatorClasses extends StatefulWidget {
   MaterialColor secondColor;
@@ -26,6 +26,19 @@ class GPACalculatorClassesState extends State<GPACalculatorClasses> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-       );
+      appBar: AppBar(
+        backgroundColor: Colors.lightBlue,
+        title: Text(schoolYear.description,
+            textAlign: TextAlign.center,
+            style: TextStyle(
+                color: Colors.black,
+                fontSize: 30,
+                fontWeight: FontWeight.w700)),
+      ),
+    backgroundColor: Colors.black,
+    body: Center(
+
+    )
+    );
   }
 }

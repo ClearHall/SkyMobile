@@ -1,8 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:skymobile/SkywardScraperAPI/SkywardAPITypes.dart';
-import 'package:skymobile/globalVariables.dart';
-import 'package:skymobile/辅助/alwaysVisibleScrollbar.dart';
+import 'package:skymobile/SkyMobileHelperUtilities/globalVariables.dart';
+import 'package:skymobile/SkyMobileHelperUtilities/alwaysVisibleScrollbar.dart';
+import 'gpaCalculatorSupportUtils.dart';
 
 class GPACalculatorSchoolYear extends StatefulWidget {
   MaterialColor secondColor;
@@ -41,7 +42,8 @@ class _GPACalculatorSchoolYearState extends State<GPACalculatorSchoolYear> {
     List<SchoolYear> enabledSchoolYears = getEnabledHistGrades();
     List<String> stringList = _getSelectableTermsString(enabledSchoolYears);
     _checkTerms(stringList);
-    List<double> averages = getAveragesOfTermsCountingTowardGPA(enabledSchoolYears);
+    List<double> averages =
+        getAveragesOfTermsCountingTowardGPA(enabledSchoolYears);
 
     return Scaffold(
         appBar: AppBar(
@@ -58,7 +60,7 @@ class _GPACalculatorSchoolYearState extends State<GPACalculatorSchoolYear> {
           child: ListView(
             children: <Widget>[
               Container(
-                padding: EdgeInsets.only(top: 20, left: 20, right: 20),
+                padding: EdgeInsets.only(top: termIdentifiersCountingTowardGPA.isEmpty ? 0 : 20, left: 20, right: 20),
                 child: ConstrainedBox(
                   constraints: BoxConstraints(maxHeight: 100),
                   child: Card(
@@ -90,8 +92,7 @@ class _GPACalculatorSchoolYearState extends State<GPACalculatorSchoolYear> {
                         scrollbarColor: Colors.white30.withOpacity(0.75),
                         scrollbarThickness: 8.0,
                         child: SingleChildScrollView(
-                            child: buildArrayOfSelectableTerms(
-                                stringList)),
+                            child: buildArrayOfSelectableTerms(stringList)),
                       )),
                 ),
               ),
@@ -121,44 +122,54 @@ class _GPACalculatorSchoolYearState extends State<GPACalculatorSchoolYear> {
   Column buildArrayOfSelectableTerms(List<String> stringList) {
     List<Widget> widgets = [];
 
-    saveTermsToRead();
     for (String term in stringList) {
-      if(!term.contains('\n'))
-      widgets.add(Container(
-        child: ListTile(
-          title: Text(
-            "$term",
-            style: TextStyle(color: Colors.orange, fontSize: 20),
-          ),
-          trailing: IconButton(icon: Icon(
-            termIdentifiersCountingTowardGPA.contains(term)
-                  ? Icons.check_box
-                  : Icons.check_box_outline_blank,
-              color: Colors.white),onPressed: () {
-            setState(() {
-              if(termIdentifiersCountingTowardGPA.contains(term)){
-                termIdentifiersCountingTowardGPA.remove(term);
-              }else{
-                int index = stringList.indexOf(term);
-                for(int i = 0; i < termIdentifiersCountingTowardGPA.length; i++){
-                  if(stringList.indexOf(termIdentifiersCountingTowardGPA[i]) > index){
-                    termIdentifiersCountingTowardGPA.insert(i, term);
-                    break;
+      if (!term.contains('\n'))
+        widgets.add(Container(
+          child: ListTile(
+            title: Text(
+              "$term",
+              style: TextStyle(color: Colors.orange, fontSize: 20),
+            ),
+            trailing: IconButton(
+              icon: Icon(
+                  termIdentifiersCountingTowardGPA.contains(term)
+                      ? Icons.check_box
+                      : Icons.check_box_outline_blank,
+                  color: Colors.white),
+              onPressed: () {
+                setState(() {
+                  if (termIdentifiersCountingTowardGPA.contains(term)) {
+                    termIdentifiersCountingTowardGPA.remove(term);
+                  } else {
+                    int index = stringList.indexOf(term);
+                    for (int i = 0;
+                        i < termIdentifiersCountingTowardGPA.length;
+                        i++) {
+                      if (stringList
+                              .indexOf(termIdentifiersCountingTowardGPA[i]) >
+                          index) {
+                        termIdentifiersCountingTowardGPA.insert(i, term);
+                        break;
+                      }
+                    }
+                    if (!termIdentifiersCountingTowardGPA.contains(term))
+                      termIdentifiersCountingTowardGPA.add(term);
                   }
-                }
-                if(!termIdentifiersCountingTowardGPA.contains(term)) termIdentifiersCountingTowardGPA.add(term);
-              }
-            });
-          },),
-        ),
-      ));
+                  saveTermsToRead();
+                });
+              },
+            ),
+          ),
+        ));
     }
-    return Column(children: widgets,);
+    return Column(
+      children: widgets,
+    );
   }
 
-  _checkTerms(List<String> selectableTerms){
-    for(int i = termIdentifiersCountingTowardGPA.length - 1; i >= 0; i--){
-      if(!selectableTerms.contains(termIdentifiersCountingTowardGPA[i])){
+  _checkTerms(List<String> selectableTerms) {
+    for (int i = termIdentifiersCountingTowardGPA.length - 1; i >= 0; i--) {
+      if (!selectableTerms.contains(termIdentifiersCountingTowardGPA[i])) {
         termIdentifiersCountingTowardGPA.removeAt(i);
       }
     }
@@ -192,20 +203,18 @@ class _GPACalculatorSchoolYearState extends State<GPACalculatorSchoolYear> {
               bottom: i == historyGrades.length - 1 ? 5 : 0),
           child: Card(
               color: Colors.black,
-              child: InkWell(
-                  onTap: () {
-                    //TODO: IMPLEMENT ON TAP
-                  },
-                  child: ListTile(
-                    title: Container(
-                      width: double.infinity,
-                      padding: EdgeInsets.only(top: 5, bottom: 5),
-                      child: Text(
-                        "${i == 0 ? 'Current: ' : ''}${historyGrades[i].description}",
-                        style: TextStyle(color: Colors.orange, fontSize: 20),
-                      ),
+              child: ListTile(
+                  title: Container(
+                    width: double.infinity,
+                    padding: EdgeInsets.only(top: 5, bottom: 5),
+                    child: Text(
+                      "${i == 0 ? 'Current: ' : ''}${historyGrades[i].description}",
+                      style: TextStyle(color: Colors.orange, fontSize: 20),
                     ),
-                    trailing: IconButton(
+                  ),
+                  trailing:
+                      Row(mainAxisSize: MainAxisSize.min, children: <Widget>[
+                    IconButton(
                       icon: Icon(
                           historyGrades[i].isEnabled
                               ? Icons.check_box
@@ -219,14 +228,19 @@ class _GPACalculatorSchoolYearState extends State<GPACalculatorSchoolYear> {
                             gpaCalculatorSettingsSaveForCurrentSession();
                           });
                         else {
-                          print("MAGIC");
                           setState(() {
                             historyGrades[i].isEnabled = true;
                           });
                         }
                       },
                     ),
-                  )))));
+                        IconButton(
+                          icon: Icon(Icons.play_circle_filled,color: Colors.white),
+                          onPressed: () {
+                            Navigator.pushNamed(context, '/gpacalculatorclasses', arguments: historyGrades[i]);
+                          },
+                        ),
+                  ])))));
     }
     return Column(
       mainAxisSize: MainAxisSize.min,

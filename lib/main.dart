@@ -1,15 +1,16 @@
 import 'package:flutter/material.dart';
 import 'SkywardScraperAPI/SkywardAPICore.dart';
 import 'package:skymobile/SkywardNavViews/termGradeViewer.dart';
-import 'customDialogOptions.dart';
-import 'globalVariables.dart';
+import 'SkyMobileHelperUtilities/customDialogOptions.dart';
+import 'SkyMobileHelperUtilities/globalVariables.dart';
 import 'package:skymobile/SkywardNavViews/assignmentInfoViewer.dart';
 import 'package:skymobile/SkywardNavViews/assignmentsViewer.dart';
 import 'SkywardScraperAPI/SkywardDistrictSearcher.dart';
 import 'SkywardScraperAPI/SkywardAPITypes.dart';
-import 'package:skymobile/辅助/accountTypes.dart';
-import 'package:skymobile/辅助/jsonSaver.dart';
-import 'package:skymobile/另/gpaCalculatorSchoolYear.dart';
+import 'package:skymobile/SkyMobileHelperUtilities/accountTypes.dart';
+import 'package:skymobile/SkyMobileHelperUtilities/jsonSaver.dart';
+import 'package:skymobile/SkyMobileGPACalculator/gpaCalculatorSchoolYear.dart';
+import 'package:skymobile/SkyMobileGPACalculator/gpaCalculatorClasses.dart';
 
 void main() => runApp(MyApp());
 
@@ -27,7 +28,9 @@ class MyApp extends StatelessWidget {
         "/termviewer": (context) => TermViewerPage(),
         "/assignmentsviewer": (context) => AssignmentsViewer(),
         "/assignmentsinfoviewer": (context) => AssignmentInfoViewer(),
-        "/gpacalculatorschoolyear": (context) => GPACalculatorSchoolYear()
+        "/gpacalculatorschoolyear": (context) => GPACalculatorSchoolYear(),
+        "/gpacalculatorclasses": (context) =>
+            GPACalculatorClasses(ModalRoute.of(context).settings.arguments),
       },
     );
   }
@@ -190,8 +193,7 @@ class MyHomePageState extends State<MyHomePage> {
   void _getAccounts() async {
     if (await jsonSaver.accountFileExists()) {
       var unconverted = (await jsonSaver.readListData());
-      if(unconverted is List)
-      accounts = List<Account>.from(unconverted);
+      if (unconverted is List) accounts = List<Account>.from(unconverted);
     } else {
       await jsonSaver.saveListData([]);
     }
@@ -305,8 +307,8 @@ class MyHomePageState extends State<MyHomePage> {
                                                   setState(() {
                                                     acc.nick =
                                                         accountEditor.text;
-                                                    jsonSaver.saveListData(
-                                                        accounts);
+                                                    jsonSaver
+                                                        .saveListData(accounts);
                                                   });
                                                 },
                                                 title: 'Edit Account Name',

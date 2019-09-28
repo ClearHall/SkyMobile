@@ -62,7 +62,6 @@ class JSONSaver{
         return mapOfTargetedObject;
       }
     } catch (e,s) {
-      print(s);
       return 0;
     }
   }

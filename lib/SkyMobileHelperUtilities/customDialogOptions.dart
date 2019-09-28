@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'SkywardScraperAPI/SkywardDistrictSearcher.dart';
-import 'SkywardScraperAPI/SkywardAPITypes.dart';
-import 'main.dart';
+import '../SkywardScraperAPI/SkywardDistrictSearcher.dart';
+import '../SkywardScraperAPI/SkywardAPITypes.dart';
+import '../main.dart';
 
 class DialogColorMode {
   static Color getBackgroundColor() {
