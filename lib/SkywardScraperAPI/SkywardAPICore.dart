@@ -1,3 +1,8 @@
+/*
+  SKYSCRAPEAPI
+  In-Code documentation will be written for those who would like to modify the API for their own purposes.
+ */
+
 import 'SkywardAuthenticator.dart';
 import 'GradebookAccessor.dart';
 import 'AssignmentAccessor.dart';

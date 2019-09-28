@@ -28,6 +28,7 @@ List<double> getAveragesOfTermsCountingTowardGPA(List<SchoolYear> enabledSchoolY
 }
 
 int determinePointsFromClassLevel(ClassLevel level){
+  //TODO: Let user decide the number of points to add for each level!
   switch(level){
     case ClassLevel.AP:
       return 10;
@@ -70,7 +71,6 @@ gpaCalculatorSettingsReadForCurrentSession() async{
 getTermsToRead() async{
   JSONSaver jsonSaver = JSONSaver(FilesAvailable.gpaSelectedTerms);
   var retrievedFromStorage = await jsonSaver.readListData();
-  print(retrievedFromStorage);
   if(retrievedFromStorage is List){
     termIdentifiersCountingTowardGPA = List<String>.from(retrievedFromStorage);
   }else{

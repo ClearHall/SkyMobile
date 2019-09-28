@@ -20,13 +20,14 @@ class _TermViewer extends State<TermViewerPage> {
       isCancelled = true;
     }, title: 'Loading', description: ('Getting your grades..'));
 
-    showDialog(
-        context: context,
-        builder: (BuildContext context) => dialog).then((val){isCancelled = true;});
+    showDialog(context: context, builder: (BuildContext context) => dialog)
+        .then((val) {
+      isCancelled = true;
+    });
 
     historyGrades = await skywardAPI.getHistory();
-    if(!isCancelled) {
-      Navigator.of(context, rootNavigator: true).popUntil((result){
+    if (!isCancelled) {
+      Navigator.of(context, rootNavigator: true).popUntil((result) {
         return result.settings.name == '/termviewer';
       });
       Navigator.pushNamed(context, '/gpacalculatorschoolyear');
@@ -67,7 +68,7 @@ class _TermViewer extends State<TermViewerPage> {
       }
     }
     currentTermIndex = terms.indexOf(currentTerm);
-    if(currentTermIndex < 0) currentTermIndex = 0;
+    if (currentTermIndex < 0) currentTermIndex = 0;
   }
 
   @override
@@ -85,40 +86,7 @@ class _TermViewer extends State<TermViewerPage> {
       ));
     }
 
-    List<Widget> body = [
-      Container(
-        child: InkWell(
-          child: Card(
-            color: Colors.orangeAccent,
-            shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
-            child: Container(
-              child: Text(
-                'Term: ${terms [currentTermIndex].termCode} / ${terms[currentTermIndex].termName}',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700),
-                textAlign: TextAlign.center,
-              ),
-              padding: EdgeInsets.all(20),
-            ),
-          ),
-          onTap: () {
-            showModalBottomSheet(
-                context: context,
-                builder: (BuildContext context) => CupertinoPicker(
-                    scrollController: scrollController,
-                    backgroundColor: Colors.black,
-                    children: cupPickerWid,
-                    itemExtent: 50,
-                    onSelectedItemChanged: (int changeTo) {
-                      setState(() {
-                        currentTermIndex = changeTo;
-                      });
-                    }));
-          },
-        ),
-        padding: EdgeInsets.all(10),
-      ),
-    ];
+    List<Widget> body = [];
 
     for (int i = 0; i < gradeBoxes.length; i++) {
       if (gradeBoxes[i] is TeacherIDBox) {
@@ -259,10 +227,45 @@ class _TermViewer extends State<TermViewerPage> {
         ),
         backgroundColor: Colors.black,
         body: Center(
-          child: ListView(
-            padding: EdgeInsets.all(10),
-            children: body,
+            child: Column(children: <Widget>[
+          Container(
+            child: InkWell(
+              child: Card(
+                color: Colors.orangeAccent,
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(30)),
+                child: Container(
+                  child: Text(
+                    'Term: ${terms[currentTermIndex].termCode} / ${terms[currentTermIndex].termName}',
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700),
+                    textAlign: TextAlign.center,
+                  ),
+                  padding: EdgeInsets.all(20),
+                ),
+              ),
+              onTap: () {
+                showModalBottomSheet(
+                    context: context,
+                    builder: (BuildContext context) => CupertinoPicker(
+                        scrollController: scrollController,
+                        backgroundColor: Colors.black,
+                        children: cupPickerWid,
+                        itemExtent: 50,
+                        onSelectedItemChanged: (int changeTo) {
+                          setState(() {
+                            currentTermIndex = changeTo;
+                          });
+                        }));
+              },
+            ),
+            padding: EdgeInsets.only(top: 10, left: 20, right: 20),
           ),
-        ));
+          Expanded(
+            child: ListView(
+              padding: EdgeInsets.all(10),
+              children: body,
+            ),
+          )
+        ])));
   }
 }
