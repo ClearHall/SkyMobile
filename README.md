@@ -57,9 +57,15 @@ Main scraping API for SkyMobile cross platform.
 - Adds GPA Calculator
   - HUGE Upgrade from GPA Calculator iOS
   - Adds new window for modifying specific school years
-  - Popup window for class credit and level modification **SUBJECT TO CHANGE**
   - Selectable semesters to add into the GPA Calculator
-- Uses SKYSCRAPEAPI V1.5.1
+- Uses SKYSCRAPEAPI V1.5.2
+
+### V1.2.0 Internal Testing
+
+- **WARNING: ALL PREVIOUSLY SAVED ACCOUNTS WILL BE DELETED**
+- Updates JSON Saver to save GPA Calculator modifications
+- Beta GPA Calculator
+- Uses SKYSCRAPEAPI V1.5.2
 
 ### V1.1.0 Beta
 
@@ -75,7 +81,7 @@ Main scraping API for SkyMobile cross platform.
 - Can check grades, assignments, assignment details
 - Uses SKYSCRAPEAPI V1.2
 
-# Documentation Version 1.5.1
+# Documentation Version 1.5.2
 
 To use this API, you must take the package SkywardScraperAPI. I have not made this implementable with pubspec.yaml.
 
@@ -95,7 +101,7 @@ import 'SkywardScraperAPI/SkywardAPITypes.dart';
 
 ## Functions to Know
 
-Some important functions to know that'll help you use the API.
+Some important functions to know that'll help you use the API. Before you call any of these functions, you must have created a SkywardAPI class and initialized it with credentials. As of **Version 1.5.2**, expired codes will not be checked. (Planned implementation)
 
 ### Getting the available grading terms 
 
