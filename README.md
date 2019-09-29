@@ -157,7 +157,7 @@ This function returns a list of SchoolYear taken from sfacademichistory. Refer t
 
 The following type are the types you need to know to operate the API.
 
-#### Term
+### Term
 - String termCode: The term code such as PR1.
 - String termName: The term name such as TERM 1.
 
@@ -169,10 +169,10 @@ The following type are the types you need to know to operate the API.
 }
 ```
 
-#### GradeboxGridBox
+### GradeboxGridBox
 - bool clickable: If the box is clickable and has another dialog. **NOTE: Default value is false**
 
-#### TeacherIDBox
+### TeacherIDBox
 
 Inherits GradeboxGridBox.
 
@@ -180,7 +180,7 @@ Inherits GradeboxGridBox.
 - String timePeriod: The period time and period number such as Period1(7:30-8:30AM).
 - String courseName: The course name such as Biology AP.
 
-#### LessInfoBox
+### LessInfoBox
 
 Inherits GradeboxGridBox.
 
@@ -188,7 +188,7 @@ Inherits GradeboxGridBox.
 - String behavior: The extra text associated such as E.
 
 
-#### GradeBox
+### GradeBox
 
 Inherits GradeboxGridBox.
 
@@ -197,7 +197,7 @@ Inherits GradeboxGridBox.
 - String grade: Your grade for that Term such as 75.
 - String studentID: **NOT YOUR USERNAME** Your student ID to identify your session such as 33198.
 
-#### AssignmentsGridBox
+### AssignmentsGridBox
 
 Inherits GradeboxGridBox.
 
@@ -206,7 +206,7 @@ Inherits GradeboxGridBox.
 - String getDecimal(): Searches for a decimal in attributes, if one isn't found, then an integer is retrieved. If an integer isn't found, then null is returned.
 - String getIntGrade(): Searches for an integer in attributes, if one is not found, then returns null.
 
-#### Assignment
+### Assignment
 
 Inherits AssignmentsGridBox.
 
@@ -215,26 +215,26 @@ Inherits AssignmentsGridBox.
 - String gbID: The extra attribute used to post.
 - String assignmentName: Assignment name such as QUIZ.
 
-#### CategoryHeader
+### CategoryHeader
 
 Inherits AssignmentsGridBox.
 
 - String catName: Category name such as DAILY.
 - String weight: Weight of category such as 50.00%.
 
-#### AssignmentInfoBox
+### AssignmentInfoBox
 
 - String infoName: Assignment key such as Median:
 - String info: Assignment key value such as 85.32
 
 - String getUIMessage(): Returns infoName and info together to fit into UI such as "Median: 85.32"
 
-#### SkywardSearchState
+### SkywardSearchState
 
 - String stateName: Name of the state such as Texas.
 - String stateID: Name of the corresponding state ID for example, Texas' state ID is 180.
 
-#### SkywardDistrict
+### SkywardDistrict
 
 - String districtName: The name of the district stored inside such as "FORT BEND ISD"
 - String districtLink: The link scraped from the district searcher such as "https://skyward-fbprod.iscorp.com/scripts/wsisa.dll/WService=wsedufortbendtx/seplog01.w"
@@ -247,7 +247,7 @@ Inherits AssignmentsGridBox.
 }
 ```
 
-#### SchoolYear
+### SchoolYear
 
 - String description: Name of the school year such as "2018-2019 9th grade"
 - List<Term> terms: Terms from this school year such as [Term("CP1", "Citizenship 1"),Term("PR1", "Term 1")]
@@ -272,7 +272,7 @@ Inherits AssignmentsGridBox.
 }
 ```
 
-#### Class
+### Class
 - String name: Name of the class such as Precal PreAP
 - List<String> grades: List of grades respective to the parent SchoolYear terms
 - double credits: How many credits the class is worth such as 1.0
@@ -295,7 +295,7 @@ Inherits AssignmentsGridBox.
 }
 ```
 
-#### ClassLevel enum
+### ClassLevel enum
 - Regular
 - PreAP
 - AP
