@@ -245,7 +245,6 @@ class Class{
   String name;
   List<String> grades; //Assumed all terms in parent terms are correct
   double credits;
-  double fourScaleCredits;
   ClassLevel classLevel;
 
   Class(this.name);
@@ -254,7 +253,6 @@ class Class{
       : name = json['name'],
         grades = getGradesFromEncodedGradesList(json['grades']),
         credits = json['credits'],
-        fourScaleCredits = json['fourScaleCredits'],
         classLevel = json['classLevel'];
 
   Map<String, dynamic> toJson() =>
@@ -262,7 +260,6 @@ class Class{
         'name': name,
         'grades': grades,
         'credits': credits,
-        'fourScaleCredits': fourScaleCredits,
         'classLevel': classLevel,
       };
 
@@ -276,7 +273,7 @@ class Class{
 
   @override
   String toString() {
-    return 'GPACalculatorClass{name: $name, grades: $grades, credits: $credits, fourScaleCredits: $fourScaleCredits, classLevel: $classLevel}';
+    return 'GPACalculatorClass{name: $name, grades: $grades, credits: $credits, classLevel: $classLevel}';
   }
 }
 

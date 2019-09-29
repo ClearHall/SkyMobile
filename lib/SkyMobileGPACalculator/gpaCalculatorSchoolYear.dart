@@ -43,7 +43,7 @@ class _GPACalculatorSchoolYearState extends State<GPACalculatorSchoolYear> {
     List<String> stringList = _getSelectableTermsString(enabledSchoolYears);
     _checkTerms(stringList);
     List<double> averages =
-        getAveragesOfTermsCountingTowardGPA(enabledSchoolYears);
+        getAveragesOfTermsCountingTowardGPA100PointScale(enabledSchoolYears);
 
     return Scaffold(
         appBar: AppBar(
@@ -98,7 +98,7 @@ class _GPACalculatorSchoolYearState extends State<GPACalculatorSchoolYear> {
               ),
               Container(
                 child: Text(
-                  'Hold a school year to modify its settings.',
+                  'Select terms to use toward final GPA. Similarily, select school years to use toward final GPA. To modify classes in each school year, click the arrows.',
                   style: TextStyle(color: Colors.orangeAccent, fontSize: 20),
                 ),
                 padding: EdgeInsets.all(20),

@@ -2,7 +2,7 @@ import 'package:skymobile/SkyMobileHelperUtilities/globalVariables.dart';
 import 'package:skymobile/SkywardScraperAPI/SkywardAPITypes.dart';
 import 'package:skymobile/SkyMobileHelperUtilities/jsonSaver.dart';
 
-List<double> getAveragesOfTermsCountingTowardGPA(List<SchoolYear> enabledSchoolYears){
+List<double> getAveragesOfTermsCountingTowardGPA100PointScale(List<SchoolYear> enabledSchoolYears){
   List<double> averagesRespeciveOfTerms = [];
   for(String term in termIdentifiersCountingTowardGPA){
     double finalGrade = 0;
@@ -42,7 +42,6 @@ int determinePointsFromClassLevel(ClassLevel level){
       return -1;
   }
 }
-
 
 gpaCalculatorSettingsSaveForCurrentSession() async{
   JSONSaver jsonSaver = JSONSaver(FilesAvailable.gpaCalculatorSettings);

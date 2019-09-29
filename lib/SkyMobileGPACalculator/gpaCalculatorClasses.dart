@@ -94,15 +94,80 @@ class GPACalculatorClassesState extends State<GPACalculatorClasses> {
               ),
               padding: EdgeInsets.only(top: 10, left: 20, right: 20),
             ),
+            Expanded(
+              child: ListView(
+                children: buildArrayOfClasses(currentTermIndex + offset),
+              ),
+            )
           ],
         )));
   }
 
-  List<Widget> buildArrayOfClasses(){
+  List<Widget> buildArrayOfClasses(int indexOfTermWithOffset) {
     List<Widget> fin = [];
 
-    for(Class schoolClass in schoolYear.classes){
-      //fin.add();
+    for (Class schoolClass in schoolYear.classes) {
+      fin.add(Card(
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: <Widget>[
+            Container(
+              alignment: Alignment.centerLeft,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Container(
+                    constraints: BoxConstraints(
+                        maxWidth: MediaQuery.of(context).size.width / 6 * 4),
+                    padding: EdgeInsets.only(
+                        top: 10, left: 10, right: 10, bottom: 0),
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      schoolClass.name.trim(),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                          color: Colors.orange,
+                          fontSize: 20,
+                          fontWeight: FontWeight.w700),
+                      textAlign: TextAlign.start,
+                    ),
+                  ),
+                  Container(
+                    padding:
+                        EdgeInsets.only(top: 5, left: 10, right: 10, bottom: 0),
+                    alignment: Alignment.centerLeft,
+                    child: Text(schoolClass.name.trim(),
+                        style: TextStyle(color: Colors.white, fontSize: 15),
+                        textAlign: TextAlign.start),
+                  ),
+                  Container(
+                      padding: EdgeInsets.only(
+                          top: 5, left: 10, right: 10, bottom: 10),
+                      alignment: Alignment.centerLeft,
+                      child: Text(schoolClass.name.trim(),
+                          style: TextStyle(color: Colors.white, fontSize: 15),
+                          textAlign: TextAlign.start))
+                ],
+              ),
+            ),
+            Container(
+              constraints: BoxConstraints(minHeight: 60),
+              padding: EdgeInsets.only(right: 20),
+              alignment: Alignment.centerRight,
+              child: Text(
+                schoolClass.grades[indexOfTermWithOffset].trim(),
+                style: TextStyle(
+                    fontSize: 25,
+                    fontWeight: FontWeight.w700,
+                    color: getColorFrom(
+                        schoolClass.grades[indexOfTermWithOffset].trim())),
+              ),
+            ),
+          ],
+        ),
+        color: Colors.white12,
+      ));
     }
 
     return fin;
