@@ -152,11 +152,11 @@ class GPACalculatorClassesState extends State<GPACalculatorClasses> {
                         child: Text(
                           value.toString(),
                           style:
-                              TextStyle(color: DialogColorMode.getTextColor()),
+                              TextStyle(color: Colors.white),
                         ),
                       );
                     }).toList(),
-                    value: dropDownVal,
+                    value: availableClassLevels[dropDownIndexes[school]],
                     onChanged: (String newVal) {
                       setState(() {
                         dropDownVal = newVal;
