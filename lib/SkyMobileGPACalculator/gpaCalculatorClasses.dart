@@ -31,8 +31,14 @@ class GPACalculatorClassesState extends State<GPACalculatorClasses> {
   void initState() {
     super.initState();
     List.generate(schoolYear.classes.length, (int ind) {
-      return 0;
+      return availableClassLevels.indexOf(schoolYear.classes[ind].classLevel ?? ClassLevel.Regular);
     });
+  }
+
+  void setDropDown(){
+    for(int i = 0; i < schoolYear.classes.length; i++){
+      schoolYear.classes[i].classLevel = availableClassLevels[dropDownIndexes[i]];
+    }
   }
 
   @override
@@ -156,10 +162,10 @@ class GPACalculatorClassesState extends State<GPACalculatorClasses> {
                         ),
                       );
                     }).toList(),
-                    value: availableClassLevels[dropDownIndexes[school]],
+                    value: availableClassLevels[dropDownIndexes[schoolYear.classes.indexOf(schoolClass)]].toString(),
                     onChanged: (String newVal) {
                       setState(() {
-                        dropDownVal = newVal;
+                        dropDownIndexes[schoolYear.classes.indexOf(schoolClass)] = availableClassLevels.indexOf(ClassLevel.values.firstWhere((e) => e.toString() == newVal));
                       });
                     },
                   )
