@@ -239,7 +239,7 @@ class _TermViewer extends State<TermViewerPage> {
                     style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700),
                     textAlign: TextAlign.center,
                   ),
-                  padding: EdgeInsets.all(20),
+                  padding: EdgeInsets.only(top: 20, bottom: 20, left: 30, right: 30),
                 ),
               ),
               onTap: () {
