@@ -17,12 +17,22 @@ class GPACalculatorClassesState extends State<GPACalculatorClasses> {
   int currentTermIndex = 0;
   int offset = 0;
   SchoolYear schoolYear;
+  final availableClassLevels = [
+    ClassLevel.None,
+    ClassLevel.Regular,
+    ClassLevel.PreAP,
+    ClassLevel.AP
+  ];
+  List<int> dropDownIndexes;
 
   GPACalculatorClassesState(this.schoolYear);
 
   @override
   void initState() {
     super.initState();
+    List.generate(schoolYear.classes.length, (int ind) {
+      return 0;
+    });
   }
 
   @override
@@ -133,21 +143,26 @@ class GPACalculatorClassesState extends State<GPACalculatorClasses> {
                       textAlign: TextAlign.start,
                     ),
                   ),
-                  Container(
-                    padding:
-                        EdgeInsets.only(top: 5, left: 10, right: 10, bottom: 0),
-                    alignment: Alignment.centerLeft,
-                    child: Text(schoolClass.name.trim(),
-                        style: TextStyle(color: Colors.white, fontSize: 15),
-                        textAlign: TextAlign.start),
-                  ),
-                  Container(
-                      padding: EdgeInsets.only(
-                          top: 5, left: 10, right: 10, bottom: 10),
-                      alignment: Alignment.centerLeft,
-                      child: Text(schoolClass.name.trim(),
-                          style: TextStyle(color: Colors.white, fontSize: 15),
-                          textAlign: TextAlign.start))
+                  DropdownButton<String>(
+                    items: availableClassLevels
+                        .map<DropdownMenuItem<String>>(
+                            (ClassLevel value) {
+                      return DropdownMenuItem<String>(
+                        value: value.toString(),
+                        child: Text(
+                          value.toString(),
+                          style:
+                              TextStyle(color: DialogColorMode.getTextColor()),
+                        ),
+                      );
+                    }).toList(),
+                    value: dropDownVal,
+                    onChanged: (String newVal) {
+                      setState(() {
+                        dropDownVal = newVal;
+                      });
+                    },
+                  )
                 ],
               ),
             ),
