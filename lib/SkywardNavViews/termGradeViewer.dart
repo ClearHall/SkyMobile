@@ -190,8 +190,7 @@ class _TermViewer extends State<TermViewerPage> {
               style: TextStyle(
                   color: Colors.black,
                   fontSize: 30,
-                  fontWeight: FontWeight.w700,
-                  letterSpacing: 2)),
+                  fontWeight: FontWeight.w700,)),
           actions: <Widget>[
             Theme(
                 data: Theme.of(context).copyWith(

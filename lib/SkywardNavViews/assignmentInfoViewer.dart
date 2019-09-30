@@ -34,7 +34,7 @@ class _AssignmentInfoViewerState extends State<AssignmentInfoViewer> {
             uiMessage,
             maxLines: 2,
             overflow: TextOverflow.ellipsis,
-            style: TextStyle(color: Colors.white, fontSize: 20),
+            style: TextStyle(color: Colors.orange, fontSize: 20),
             textAlign: TextAlign.start,
           ),
         ),
@@ -49,8 +49,7 @@ class _AssignmentInfoViewerState extends State<AssignmentInfoViewer> {
             style: TextStyle(
                 color: Colors.black,
                 fontSize: 30,
-                fontWeight: FontWeight.w700,
-                letterSpacing: 2)),
+                fontWeight: FontWeight.w700)),
         actions: <Widget>[
           Theme(
               data: Theme.of(context).copyWith(
