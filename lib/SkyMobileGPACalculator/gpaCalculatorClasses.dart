@@ -17,12 +17,8 @@ class GPACalculatorClassesState extends State<GPACalculatorClasses> {
   int currentTermIndex = 0;
   int offset = 0;
   SchoolYear schoolYear;
-  final availableClassLevels = [
-    ClassLevel.None,
-    ClassLevel.Regular,
-    ClassLevel.PreAP,
-    ClassLevel.AP
-  ];
+  final availableClassLevels = ClassLevel.values;
+  final List<double> availableCredits = [0.5, 1.0, 1.5, 2.0, 2.5, 3.0];
   List<int> dropDownIndexes;
 
   GPACalculatorClassesState(this.schoolYear);
@@ -30,15 +26,18 @@ class GPACalculatorClassesState extends State<GPACalculatorClasses> {
   @override
   void initState() {
     super.initState();
-    List.generate(schoolYear.classes.length, (int ind) {
-      return availableClassLevels.indexOf(schoolYear.classes[ind].classLevel ?? ClassLevel.Regular);
+    dropDownIndexes = List.generate(schoolYear.classes.length, (int ind) {
+      return availableClassLevels
+          .indexOf(schoolYear.classes[ind].classLevel ?? ClassLevel.Regular);
     });
   }
 
-  void setDropDown(){
-    for(int i = 0; i < schoolYear.classes.length; i++){
-      schoolYear.classes[i].classLevel = availableClassLevels[dropDownIndexes[i]];
+  void setDropDown() {
+    for (int i = 0; i < schoolYear.classes.length; i++) {
+      schoolYear.classes[i].classLevel =
+          availableClassLevels[dropDownIndexes[i]];
     }
+    gpaCalculatorSettingsSaveForCurrentSession();
   }
 
   @override
@@ -149,26 +148,33 @@ class GPACalculatorClassesState extends State<GPACalculatorClasses> {
                       textAlign: TextAlign.start,
                     ),
                   ),
-                  DropdownButton<String>(
-                    items: availableClassLevels
-                        .map<DropdownMenuItem<String>>(
-                            (ClassLevel value) {
-                      return DropdownMenuItem<String>(
-                        value: value.toString(),
-                        child: Text(
-                          value.toString(),
-                          style:
-                              TextStyle(color: Colors.white),
-                        ),
-                      );
-                    }).toList(),
-                    value: availableClassLevels[dropDownIndexes[schoolYear.classes.indexOf(schoolClass)]].toString(),
-                    onChanged: (String newVal) {
-                      setState(() {
-                        dropDownIndexes[schoolYear.classes.indexOf(schoolClass)] = availableClassLevels.indexOf(ClassLevel.values.firstWhere((e) => e.toString() == newVal));
-                      });
-                    },
-                  )
+                  Theme(
+                      data:
+                          Theme.of(context).copyWith(canvasColor: Colors.black),
+                      child: DropdownButton<String>(
+                        items: availableClassLevels
+                            .map<DropdownMenuItem<String>>((ClassLevel value) {
+                          return DropdownMenuItem<String>(
+                            value: value.toString(),
+                            child: Text(
+                              value.toString().substring(11),
+                              style: TextStyle(color: Colors.white),
+                            ),
+                          );
+                        }).toList(),
+                        value: availableClassLevels[dropDownIndexes[
+                                schoolYear.classes.indexOf(schoolClass)]]
+                            .toString(),
+                        onChanged: (String newVal) {
+                          setState(() {
+                            dropDownIndexes[
+                                    schoolYear.classes.indexOf(schoolClass)] =
+                                availableClassLevels.indexOf(ClassLevel.values
+                                    .firstWhere((e) => e.toString() == newVal));
+                            setDropDown();
+                          });
+                        },
+                      ))
                 ],
               ),
             ),

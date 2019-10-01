@@ -253,15 +253,23 @@ class Class{
       : name = json['name'],
         grades = getGradesFromEncodedGradesList(json['grades']),
         credits = json['credits'],
-        classLevel = json['classLevel'];
+        classLevel = getClassLevelFromText(json['classLevel']);
 
   Map<String, dynamic> toJson() =>
       {
         'name': name,
         'grades': grades,
         'credits': credits,
-        'classLevel': classLevel,
+        'classLevel': classLevel.toString(),
       };
+
+  static ClassLevel getClassLevelFromText(String txt){
+    try{
+      return ClassLevel.values.firstWhere((e) => e.toString() == txt);
+    }catch(e, s){
+      return ClassLevel.Regular;
+    }
+  }
 
   static List<String> getGradesFromEncodedGradesList(List grades){
     List<String> fin = [];

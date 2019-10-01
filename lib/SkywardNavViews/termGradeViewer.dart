@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:skymobile/SkywardScraperAPI/SkywardAPITypes.dart';
 import 'package:skymobile/SkyMobileHelperUtilities/globalVariables.dart';
 import 'package:skymobile/SkyMobileHelperUtilities/customDialogOptions.dart';
+import 'package:skymobile/SkyMobileGPACalculator/gpaCalculatorSupportUtils.dart';
 
 class TermViewerPage extends StatefulWidget {
   MaterialColor secondColor;
@@ -27,6 +28,8 @@ class _TermViewer extends State<TermViewerPage> {
 
     historyGrades = await skywardAPI.getHistory();
     if (!isCancelled) {
+      historyGrades = await gpaCalculatorSettingsReadForCurrentSession();
+      await getTermsToRead();
       Navigator.of(context, rootNavigator: true).popUntil((result) {
         return result.settings.name == '/termviewer';
       });

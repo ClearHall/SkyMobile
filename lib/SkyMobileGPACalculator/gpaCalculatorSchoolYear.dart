@@ -17,13 +17,6 @@ class _GPACalculatorSchoolYearState extends State<GPACalculatorSchoolYear> {
   @override
   void initState() {
     super.initState();
-    getHistGrades();
-    getTermsToRead();
-  }
-
-  getHistGrades() async {
-    historyGrades = await gpaCalculatorSettingsReadForCurrentSession();
-    setState(() {});
   }
 
   List<SchoolYear> getEnabledHistGrades() {

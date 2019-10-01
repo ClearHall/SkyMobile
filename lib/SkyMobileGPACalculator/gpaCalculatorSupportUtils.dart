@@ -59,6 +59,7 @@ gpaCalculatorSettingsSaveForCurrentSession() async{
 gpaCalculatorSettingsReadForCurrentSession() async{
   JSONSaver jsonSaver = JSONSaver(FilesAvailable.gpaCalculatorSettings);
   var retrievedFromStorage = await jsonSaver.readListData();
+  print(retrievedFromStorage);
   if(retrievedFromStorage is Map && retrievedFromStorage.containsKey(currentSessionIdentifier)) {
     return List<SchoolYear>.from(retrievedFromStorage[currentSessionIdentifier]);
   }else{
