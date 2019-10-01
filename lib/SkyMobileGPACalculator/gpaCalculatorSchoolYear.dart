@@ -279,7 +279,12 @@ class _GPACalculatorSchoolYearState extends State<GPACalculatorSchoolYear> {
   }
 
   double getFinalGPA(List<double> averages) {
-    return averages.fold(0, (v, e) => v + e) / averages.length;
+    int avgLen = averages.length;
+    return averages.fold(0, (v, e) {
+      if(e == null) avgLen--;
+      else return v + e;
+      return v;
+    }) / avgLen;
   }
 
   Column buildArrayOfTermAverageWidgets(List<double> grades) {
@@ -300,7 +305,7 @@ class _GPACalculatorSchoolYearState extends State<GPACalculatorSchoolYear> {
     return Container(
       width: double.infinity,
       child: Text(
-        "$term: ${grade.toString()}",
+        "$term: ${grade.toString() != 'null' ? grade.toString() : 'N/A'}",
         style: TextStyle(color: Colors.orange, fontSize: 20),
       ),
       padding: EdgeInsets.only(left: 10, top: 10, right: 10, bottom: 10),

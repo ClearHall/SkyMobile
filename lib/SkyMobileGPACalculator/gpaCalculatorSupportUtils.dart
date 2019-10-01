@@ -26,7 +26,7 @@ List<double> getAveragesOfTermsCountingTowardGPA100PointScale(List<SchoolYear> e
         }
       }
     }
-    if(credits == 0) averagesRespeciveOfTerms.add(0); else averagesRespeciveOfTerms.add(finalGrade/credits);
+    averagesRespeciveOfTerms.add(credits > 0 ? finalGrade/credits : null);
   }
   return averagesRespeciveOfTerms;
 }
