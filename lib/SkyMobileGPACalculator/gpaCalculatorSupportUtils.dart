@@ -13,10 +13,14 @@ List<double> getAveragesOfTermsCountingTowardGPA100PointScale(List<SchoolYear> e
         for (Class classYear in schoolYear.classes) {
           int addOnPoints = determinePointsFromClassLevel(classYear.classLevel ?? ClassLevel.Regular);
           if (addOnPoints >= 0) {
-            double attemptedDoubleParse = double.tryParse(classYear.grades[indexOfTerm]);
-            if(attemptedDoubleParse != null){
-              finalGrade += attemptedDoubleParse + addOnPoints;
-              credits += classYear.credits ?? 1.0;
+            if (indexOfTerm < classYear.grades.length) {
+              double attemptedDoubleParse = double.tryParse(
+                  classYear.grades[indexOfTerm]);
+              if (attemptedDoubleParse != null) {
+                finalGrade += (attemptedDoubleParse + addOnPoints) *
+                    (classYear.credits ?? 1.0);
+                credits += classYear.credits ?? 1.0;
+              }
             }
           }
         }
@@ -59,7 +63,6 @@ gpaCalculatorSettingsSaveForCurrentSession() async{
 gpaCalculatorSettingsReadForCurrentSession() async{
   JSONSaver jsonSaver = JSONSaver(FilesAvailable.gpaCalculatorSettings);
   var retrievedFromStorage = await jsonSaver.readListData();
-  print(retrievedFromStorage);
   if(retrievedFromStorage is Map && retrievedFromStorage.containsKey(currentSessionIdentifier)) {
     return List<SchoolYear>.from(retrievedFromStorage[currentSessionIdentifier]);
   }else{

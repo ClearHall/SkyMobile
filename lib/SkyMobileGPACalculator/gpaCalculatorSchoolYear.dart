@@ -17,6 +17,30 @@ class _GPACalculatorSchoolYearState extends State<GPACalculatorSchoolYear> {
   @override
   void initState() {
     super.initState();
+    SchoolYear first = SchoolYear();
+    first.classes = [];
+    first.description = 'Current Year';
+    first.terms = terms;
+    Class tmpClass;
+    for(GridBox gridBox in gradeBoxes){
+      if(gridBox is TeacherIDBox){
+        if(tmpClass != null)
+          first.classes.add(tmpClass);
+        tmpClass = Class(gridBox.courseName);
+        tmpClass.grades = List.filled(terms.length, "\n");
+      }else if(gridBox is GradeBox){
+        tmpClass.grades[terms.indexOf(gridBox.term)] = (gridBox.grade);
+      }else if(gridBox is LessInfoBox){
+        tmpClass.grades[terms.indexOf(gridBox.term)] = (gridBox.behavior);
+      }
+    }
+    if(historyGrades.length == 0){
+      historyGrades.add(first);
+    }else{
+      String name = historyGrades[0].description;
+      first.description = name;
+      historyGrades[0] = first;
+    }
   }
 
   List<SchoolYear> getEnabledHistGrades() {
