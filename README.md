@@ -12,6 +12,14 @@ Changelog for SKYSCRAPEAPI and SkyMobile.
 
 Main scraping API for SkyMobile cross platform.
 
+### V1.5.4
+
+- Fixed bug where JSON Saver couldn't save ClassLevel
+
+### V1.5.3
+
+- Removed unnecessary 4.0 GPA Credit attribute
+
 ### V1.5.2
 
 - Fixed bug where duplicate SchoolYears were returned.
@@ -58,15 +66,15 @@ Main scraping API for SkyMobile cross platform.
   - HUGE Upgrade from GPA Calculator iOS
   - Adds new window for modifying specific school years
   - Selectable semesters to add into the GPA Calculator
-- Uses SKYSCRAPEAPI V1.5.2
-- Later revisions of 1.0 will include 4.0 scale calculations
+- Uses SKYSCRAPEAPI V1.5.4
 
 ### V1.1.0 Internal Testing
 
 - **WARNING: ALL PREVIOUSLY SAVED ACCOUNTS WILL BE DELETED**
 - Updates JSON Saver to save GPA Calculator modifications
 - Beta GPA Calculator
-- Uses SKYSCRAPEAPI V1.5.2
+- **iOS Beta Build 12** fixes a miscalculation with behavior terms, ending up with an extremely low GPA
+- Uses SKYSCRAPEAPI V1.5.4
 
 ### V1.0.0 Beta
 
@@ -276,7 +284,6 @@ Inherits AssignmentsGridBox.
 - String name: Name of the class such as Precal PreAP
 - List<String> grades: List of grades respective to the parent SchoolYear terms
 - double credits: How many credits the class is worth such as 1.0
-- double fourScaleCredits: How many credits the class is worth counting toward 4.0 scale
 - ClassLevel classLevel: The level of the class
   
 **JSON ENCODING FORMAT**
@@ -291,7 +298,7 @@ Inherits AssignmentsGridBox.
   },
   'credits' : credits,
   'fourScaleCredits' : fourScaleCredits,
-   'classLevel' : classLevel
+   'classLevel' : classLevel.toString()
 }
 ```
 
