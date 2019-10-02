@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:skymobile/SkywardScraperAPI/SkywardAPITypes.dart';
+import 'package:skymobile/SkywardScraperAPI/SkywardAPICore.dart';
 import 'package:skymobile/SkyMobileHelperUtilities/globalVariables.dart';
 import 'package:skymobile/SkyMobileHelperUtilities/customDialogOptions.dart';
 
@@ -31,8 +32,32 @@ class _AssignmentsViewerState extends State<AssignmentsViewer> {
         isCancelled = true;
       });
 
-      assignmentInfoBoxes =
-      await skywardAPI.getAssignmentInfoFromAssignment(box);
+      var result = await skywardAPI.getAssignmentInfoFromAssignment(box);
+      if(result.runtimeType == SkywardAPIErrorCodes){
+        Navigator.of(context).pop(dialog);
+        String errMsg;
+        switch(result){
+          case(SkywardAPIErrorCodes.AssignmentInfoParseFailed):
+            errMsg = 'Failed to get grades. Contact the developer, something is wrong with the Parser.';
+            break;
+          case(SkywardAPIErrorCodes.AssignmentInfoScrapeFailed):
+            errMsg = 'Failed to scrape grades, this is an unusual error. Try logging out and back in.';
+            break;
+          case(SkywardAPIErrorCodes.CouldNotRefresh):
+            errMsg = 'Failed to log back into your account. Try to log back in.';
+            break;
+          default:
+            errMsg = 'An unknown error has occured. Contact the developer with this information ${result.toString()}';
+            break;
+        }
+        showDialog(context: context,builder: (buildContext) {
+          return HuntyDialog(title: 'Uh Oh', description: errMsg, buttonText: 'Ok');
+        });
+        isCancelled = true;
+      }else{
+        historyGrades = result;
+      }
+
       if (!isCancelled) {
         Navigator.of(context, rootNavigator: true).popUntil((result) {
           return result.settings.name == '/assignmentsviewer';

@@ -20,19 +20,17 @@ class GradebookAccessor {
     final String gradebookURL = baseURL + 'sfgradebook001.w';
     final postReq = await http.post(gradebookURL, body: codes);
 
-    if (initGradebookAndGradesHTML(postReq.body) ==
-        SkywardAPIErrorCodes.LoginSessionExpired)
+    if (didSessionExpire(postReq.body)) {
       return SkywardAPIErrorCodes.LoginSessionExpired;
+    }else
+      initGradebookAndGradesHTML(postReq.body);
     return postReq.body;
   }
 
   getTermsFromDocCode() {
     var terms = [];
     terms = _detectTermsFromScriptByParsing();
-    if (terms != null)
-      return terms;
-    else
-      return null;
+    return terms;
   }
 
   //TODO: Implement server quick scrape assignments algorithm from sff.sv() script code.
@@ -40,10 +38,7 @@ class GradebookAccessor {
   getGradeBoxesFromDocCode(String docHtml, List<Term> terms) {
     var gradeBoxes = [];
     gradeBoxes = _scrapeGradeBoxesFromSff(docHtml, terms);
-    if (gradeBoxes != null)
-      return gradeBoxes;
-    else
-      return null;
+    return gradeBoxes;
   }
 
   List<GridBox> _scrapeGradeBoxesFromSff(String docHtml, List<Term> terms) {

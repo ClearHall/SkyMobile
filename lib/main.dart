@@ -100,9 +100,10 @@ class MyHomePageState extends State<MyHomePage> {
             });
       }
       var termRes = await skywardAPI.getGradeBookTerms();
-      var gradebookRes = (await skywardAPI.getGradeBookGrades(terms));
-      if (termRes.runtimeType == SkywardAPIErrorCodes ||
-          gradebookRes.runtimeType == SkywardAPIErrorCodes) {
+      var attemptedTermRes = List.from(termRes);
+      var gradebookRes = (await skywardAPI.getGradeBookGrades(attemptedTermRes));
+
+      if (termRes.runtimeType == SkywardAPIErrorCodes) {
         isCancelled = true;
         Navigator.of(context).pop(dialog);
         await showDialog(
@@ -111,7 +112,7 @@ class MyHomePageState extends State<MyHomePage> {
               return HuntyDialog(
                   title: 'Oh No!',
                   description:
-                      'An error occured and we could not get your grades. Please report this to a developer! Error code: ${gradebookRes.toString()}',
+                      'An error occured and we could not get your grades. Please report this to a developer! Error code: ${termRes.toString()}',
                   buttonText: 'Ok');
             });
       }else{
@@ -170,7 +171,8 @@ class MyHomePageState extends State<MyHomePage> {
     } else {
       //TODO: MAKE THIS A FUNCTION
       var termRes = await skywardAPI.getGradeBookTerms();
-      var gradebookRes = (await skywardAPI.getGradeBookGrades(terms));
+      var gradebookRes = (await skywardAPI.getGradeBookGrades(termRes));
+
       if (termRes.runtimeType == SkywardAPIErrorCodes ||
           gradebookRes.runtimeType == SkywardAPIErrorCodes) {
         isCancelled = true;

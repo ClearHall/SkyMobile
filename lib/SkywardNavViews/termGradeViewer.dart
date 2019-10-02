@@ -4,6 +4,7 @@ import 'package:skymobile/SkywardScraperAPI/SkywardAPITypes.dart';
 import 'package:skymobile/SkyMobileHelperUtilities/globalVariables.dart';
 import 'package:skymobile/SkyMobileHelperUtilities/customDialogOptions.dart';
 import 'package:skymobile/SkyMobileGPACalculator/gpaCalculatorSupportUtils.dart';
+import 'package:skymobile/SkywardScraperAPI/SkywardAPICore.dart';
 
 class TermViewerPage extends StatefulWidget {
   MaterialColor secondColor;
@@ -26,7 +27,32 @@ class _TermViewer extends State<TermViewerPage> {
       isCancelled = true;
     });
 
-    historyGrades = await skywardAPI.getHistory();
+    var result = await skywardAPI.getHistory();
+    if(result.runtimeType == SkywardAPIErrorCodes){
+      Navigator.of(context).pop(dialog);
+      String errMsg;
+      switch(result){
+        case(SkywardAPIErrorCodes.HistoryParseFailed):
+          errMsg = 'Failed to get grades. Contact the developer, something is wrong with the Parser.';
+          break;
+        case(SkywardAPIErrorCodes.HistoryScrapeFailed):
+          errMsg = 'Failed to scrape grades. Your district does not support viewing academic history.';
+          break;
+        case(SkywardAPIErrorCodes.CouldNotRefresh):
+          errMsg = 'Failed to log back into your account. Try to log back in.';
+          break;
+        default:
+          errMsg = 'An unknown error has occured. Contact the developer with this information ${result.toString()}';
+          break;
+      }
+      showDialog(context: context,builder: (buildContext) {
+        return HuntyDialog(title: 'Uh Oh', description: errMsg, buttonText: 'Ok');
+      });
+      isCancelled = true;
+    }else{
+      historyGrades = result;
+    }
+
     if (!isCancelled) {
       historyGrades = await gpaCalculatorSettingsReadForCurrentSession();
       await getTermsToRead();
@@ -48,8 +74,32 @@ class _TermViewer extends State<TermViewerPage> {
       isCancelled = true;
     });
 
-    assignmentsGridBoxes =
-        await skywardAPI.getAssignmentsFromGradeBox(gradeBox);
+    var result = await skywardAPI.getAssignmentsFromGradeBox(gradeBox);
+    if(result.runtimeType == SkywardAPIErrorCodes){
+      Navigator.of(context).pop(dialog);
+      String errMsg;
+      switch(result){
+        case(SkywardAPIErrorCodes.AssignmentParseFailed):
+          errMsg = 'Failed to get assignments. Contact the developer, something is wrong with the Parser.';
+          break;
+        case(SkywardAPIErrorCodes.AssignmentScrapeFailed):
+          errMsg = 'Failed to scrape grades. This is an unsual error, try logging out and logging back in.';
+          break;
+        case(SkywardAPIErrorCodes.CouldNotRefresh):
+          errMsg = 'Failed to log back into your account. Try to log back in.';
+          break;
+        default:
+          errMsg = 'An unknown error has occured. Contact the developer with this information ${result.toString()}';
+          break;
+      }
+      showDialog(context: context,builder: (buildContext) {
+        return HuntyDialog(title: 'Uh Oh', description: errMsg, buttonText: 'Ok');
+      });
+      isCancelled = true;
+    }else{
+      assignmentsGridBoxes = result;
+    }
+
     if (!isCancelled) {
       Navigator.of(context, rootNavigator: true).popUntil((result) {
         return result.settings.name == '/termviewer';

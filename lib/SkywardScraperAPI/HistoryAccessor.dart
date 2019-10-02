@@ -1,7 +1,9 @@
 import 'package:http/http.dart' as http;
 import 'package:html/dom.dart';
+import 'package:skymobile/SkywardScraperAPI/SkywardUniversalFunctions.dart';
 import 'SkywardAPITypes.dart';
 import 'dart:convert';
+import 'SkywardAPICore.dart';
 
 class HistoryAccessor {
   static final _termJsonDeliminater =
@@ -10,6 +12,9 @@ class HistoryAccessor {
   static getGradebookHTML(Map<String, String> codes, String baseURL) async {
     final String gradebookURL = baseURL + 'sfacademichistory001.w';
     final postReq = await http.post(gradebookURL, body: codes);
+
+    if(didSessionExpire(postReq.body)) return SkywardAPIErrorCodes.HistoryScrapeFailed;
+
     return postReq.body;
   }
 
