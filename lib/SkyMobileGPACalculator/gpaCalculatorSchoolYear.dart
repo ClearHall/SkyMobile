@@ -1,3 +1,5 @@
+import 'dart:collection';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:skymobile/SkywardScraperAPI/SkywardAPITypes.dart';
@@ -22,21 +24,20 @@ class _GPACalculatorSchoolYearState extends State<GPACalculatorSchoolYear> {
     first.description = 'Current Year';
     first.terms = terms;
     Class tmpClass;
-    for(GridBox gridBox in gradeBoxes){
-      if(gridBox is TeacherIDBox){
-        if(tmpClass != null)
-          first.classes.add(tmpClass);
+    for (GridBox gridBox in gradeBoxes) {
+      if (gridBox is TeacherIDBox) {
+        if (tmpClass != null) first.classes.add(tmpClass);
         tmpClass = Class(gridBox.courseName);
         tmpClass.grades = List.filled(terms.length, "\n");
-      }else if(gridBox is GradeBox){
+      } else if (gridBox is GradeBox) {
         tmpClass.grades[terms.indexOf(gridBox.term)] = (gridBox.grade);
-      }else if(gridBox is LessInfoBox){
+      } else if (gridBox is LessInfoBox) {
         tmpClass.grades[terms.indexOf(gridBox.term)] = (gridBox.behavior);
       }
     }
-    if(historyGrades.length == 0){
+    if (historyGrades.length == 0) {
       historyGrades.add(first);
-    }else{
+    } else {
       String name = historyGrades[0].description;
       first.description = name;
       historyGrades[0] = first;
@@ -77,7 +78,10 @@ class _GPACalculatorSchoolYearState extends State<GPACalculatorSchoolYear> {
           child: ListView(
             children: <Widget>[
               Container(
-                padding: EdgeInsets.only(top: termIdentifiersCountingTowardGPA.isEmpty ? 0 : 20, left: 20, right: 20),
+                padding: EdgeInsets.only(
+                    top: termIdentifiersCountingTowardGPA.isEmpty ? 0 : 20,
+                    left: 20,
+                    right: 20),
                 child: ConstrainedBox(
                   constraints: BoxConstraints(maxHeight: 100),
                   child: Card(
@@ -193,20 +197,13 @@ class _GPACalculatorSchoolYearState extends State<GPACalculatorSchoolYear> {
   }
 
   List<String> _getSelectableTermsString(List<SchoolYear> enabled) {
-    List<Term> termlist = List.from(enabled.first.terms);
-    List<String> stringList = [];
-    for (int tI = 0; tI < termlist.length; tI++) {
-      for (SchoolYear x in enabled) {
-        if (!x.terms.contains(termlist[tI])) {
-          termlist.removeAt(tI);
-        }
-      }
+    LinkedHashSet<Term> termList = LinkedHashSet<Term>();
+
+    for(SchoolYear year in enabled){
+      termList.addAll(year.terms);
     }
 
-    for (Term term in termlist) {
-      stringList.add(term.termCode);
-    }
-    return stringList;
+    return List.generate(termList.length, (ind) => termList.elementAt(ind).termCode);
   }
 
   Column buildArrayOfSchoolYears() {
@@ -251,12 +248,13 @@ class _GPACalculatorSchoolYearState extends State<GPACalculatorSchoolYear> {
                         }
                       },
                     ),
-                        IconButton(
-                          icon: Icon(Icons.play_circle_filled,color: Colors.white),
-                          onPressed: () {
-                            Navigator.pushNamed(context, '/gpacalculatorclasses', arguments: historyGrades[i]);
-                          },
-                        ),
+                    IconButton(
+                      icon: Icon(Icons.play_circle_filled, color: Colors.white),
+                      onPressed: () {
+                        Navigator.pushNamed(context, '/gpacalculatorclasses',
+                            arguments: historyGrades[i]);
+                      },
+                    ),
                   ])))));
     }
     return Column(
@@ -281,10 +279,13 @@ class _GPACalculatorSchoolYearState extends State<GPACalculatorSchoolYear> {
   double getFinalGPA(List<double> averages) {
     int avgLen = averages.length;
     return averages.fold(0, (v, e) {
-      if(e == null) avgLen--;
-      else return v + e;
-      return v;
-    }) / avgLen;
+          if (e == null)
+            avgLen--;
+          else
+            return v + e;
+          return v;
+        }) /
+        avgLen;
   }
 
   Column buildArrayOfTermAverageWidgets(List<double> grades) {

@@ -28,6 +28,9 @@ class Term {
       return false;
     }
   }
+
+  @override
+  int get hashCode => termCode.hashCode;
 }
 
 class GridBox{
