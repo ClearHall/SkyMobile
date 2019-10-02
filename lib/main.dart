@@ -67,7 +67,7 @@ class MyHomePageState extends State<MyHomePage> {
 
     skywardAPI = SkywardAPICore(district.districtLink);
     if (await skywardAPI.getSkywardAuthenticationCodes(user, pass) ==
-        SkywardAPICodes.LoginFailed) {
+        SkywardAPIErrorCodes.LoginFailed) {
       Navigator.of(context).pop(dialog);
       showDialog(
           context: context,
@@ -99,8 +99,25 @@ class MyHomePageState extends State<MyHomePage> {
               );
             });
       }
-      terms = await skywardAPI.getGradeBookTerms();
-      gradeBoxes = (await skywardAPI.getGradeBookGrades(terms));
+      var termRes = await skywardAPI.getGradeBookTerms();
+      var gradebookRes = (await skywardAPI.getGradeBookGrades(terms));
+      if (termRes.runtimeType == SkywardAPIErrorCodes ||
+          gradebookRes.runtimeType == SkywardAPIErrorCodes) {
+        isCancelled = true;
+        Navigator.of(context).pop(dialog);
+        await showDialog(
+            context: context,
+            builder: (BuildContext) {
+              return HuntyDialog(
+                  title: 'Oh No!',
+                  description:
+                      'An error occured and we could not get your grades. Please report this to a developer! Error code: ${gradebookRes.toString()}',
+                  buttonText: 'Ok');
+            });
+      }else{
+        terms = termRes;
+        gradeBoxes = gradebookRes;
+      }
       if (!isCancelled) {
         currentSessionIdentifier = user;
         Navigator.of(context, rootNavigator: true).popUntil((result) {
@@ -128,11 +145,10 @@ class MyHomePageState extends State<MyHomePage> {
         .then((val) {
       isCancelled = true;
     });
-    ;
 
     skywardAPI = SkywardAPICore(district.districtLink);
     if (await skywardAPI.getSkywardAuthenticationCodes(acc.user, acc.pass) ==
-        SkywardAPICodes.LoginFailed) {
+        SkywardAPIErrorCodes.LoginFailed) {
       Navigator.of(context).pop(dialog);
       showDialog(
           context: context,
@@ -152,8 +168,26 @@ class MyHomePageState extends State<MyHomePage> {
             );
           });
     } else {
-      terms = await skywardAPI.getGradeBookTerms();
-      gradeBoxes = (await skywardAPI.getGradeBookGrades(terms));
+      //TODO: MAKE THIS A FUNCTION
+      var termRes = await skywardAPI.getGradeBookTerms();
+      var gradebookRes = (await skywardAPI.getGradeBookGrades(terms));
+      if (termRes.runtimeType == SkywardAPIErrorCodes ||
+          gradebookRes.runtimeType == SkywardAPIErrorCodes) {
+        isCancelled = true;
+        Navigator.of(context).pop(dialog);
+        await showDialog(
+            context: context,
+            builder: (BuildContext) {
+              return HuntyDialog(
+                  title: 'Oh No!',
+                  description:
+                  'An error occured and we could not get your grades. Please report this to a developer! Error code: ${gradebookRes.toString()}',
+                  buttonText: 'Ok');
+            });
+      }else{
+        terms = termRes;
+        gradeBoxes = gradebookRes;
+      }
       if (!isCancelled) {
         currentSessionIdentifier = acc.user;
         Navigator.of(context, rootNavigator: true).popUntil((result) {

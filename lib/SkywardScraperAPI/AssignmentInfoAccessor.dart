@@ -1,6 +1,8 @@
 import 'package:http/http.dart' as http;
 import 'package:html/dom.dart';
+import 'package:skymobile/SkywardScraperAPI/SkywardUniversalFunctions.dart';
 import 'SkywardAPITypes.dart';
+import 'SkywardAPICore.dart';
 
 class AssignmentInfoAccessor{
 
@@ -14,6 +16,8 @@ class AssignmentInfoAccessor{
     final String gradebookURL = baseURL + 'sfdialogs.w';
 
     var response = await http.post(gradebookURL, body: codes);
+
+    if(didSessionExpire(response.body)) return SkywardAPIErrorCodes.AssignmentInfoScrapeFailed;
 
     return response.body;
   }

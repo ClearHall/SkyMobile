@@ -15,12 +15,17 @@ class SkywardAPICore {
   String _baseURL;
   String _gradebookHTML;
   GradebookAccessor gradebookAccessor = GradebookAccessor();
+  String user, pass;
 
   SkywardAPICore(this._baseURL) {
     if (_verifyBaseURL(this._baseURL)) {
-      this._baseURL = this._baseURL.substring(0, this._baseURL.lastIndexOf('/') + 1);
+      this._baseURL =
+          this._baseURL.substring(0, this._baseURL.lastIndexOf('/') + 1);
     }
-    if(_baseURL.contains("wsEAplus")) _baseURL = _baseURL.substring(0, _baseURL.indexOf('wsEAplus') + 'wsEAplus'.length) + "/";
+    if (_baseURL.contains("wsEAplus"))
+      _baseURL = _baseURL.substring(
+              0, _baseURL.indexOf('wsEAplus') + 'wsEAplus'.length) +
+          "/";
   }
 
   bool _verifyBaseURL(String url) {
@@ -28,64 +33,96 @@ class SkywardAPICore {
   }
 
   //Returns true for success and false for failed.
-  getSkywardAuthenticationCodes(String user, String pass) async {
+  getSkywardAuthenticationCodes(String u, String p) async {
+    user = u;
+    pass = p;
     var loginSessionMap =
         await SkywardAuthenticator.getNewSessionCodes(user, pass, _baseURL);
     if (loginSessionMap == null) {
-      return SkywardAPICodes.LoginFailed;
+      return SkywardAPIErrorCodes.LoginFailed;
     } else {
       loginSessionRequiredBodyElements = loginSessionMap;
-      return SkywardAPICodes.LoginCodesReceived;
     }
   }
 
-  _initGradebook() async {
+  _initGradebook({int timeRan = 0}) async {
+    if (timeRan > 10) return SkywardAPIErrorCodes.CouldNotRefresh;
     if (_gradebookHTML == null) {
-      _gradebookHTML = await gradebookAccessor.getGradebookHTML(
+      var result = await gradebookAccessor.getGradebookHTML(
           loginSessionRequiredBodyElements, _baseURL);
+      if (result == SkywardAPIErrorCodes.LoginSessionExpired) {
+        getSkywardAuthenticationCodes(user, pass);
+        _initGradebook(timeRan: timeRan + 1);
+      }
     }
   }
 
   getGradeBookTerms() async {
-    await _initGradebook();
+    var result = await _initGradebook();
+    if (result == SkywardAPIErrorCodes.CouldNotRefresh)
+      return SkywardAPIErrorCodes.CouldNotRefresh;
     return gradebookAccessor.getTermsFromDocCode();
   }
 
   getGradeBookGrades(List<Term> terms) async {
     try {
-      await _initGradebook();
+      var result = await _initGradebook();
+      if (result == SkywardAPIErrorCodes.CouldNotRefresh)
+        return SkywardAPIErrorCodes.CouldNotRefresh;
       return gradebookAccessor.getGradeBoxesFromDocCode(_gradebookHTML, terms);
     } catch (e) {
-      return SkywardAPICodes.CouldNotScrapeGradeBook;
+      return SkywardAPIErrorCodes.CouldNotScrapeGradeBook;
     }
   }
 
-  getAssignmentsFromGradeBox(GradeBox gradeBox) async {
+  getAssignmentsFromGradeBox(GradeBox gradeBox, {int timesRan = 0}) async {
+    if(timesRan > 10) return SkywardAPIErrorCodes.AssignmentScrapeFailed;
     Map<String, String> assignmentsPostCodes =
         Map.from(loginSessionRequiredBodyElements);
-    String html = await AssignmentAccessor.getAssignmentsHTML(
+    var html = await AssignmentAccessor.getAssignmentsHTML(
         assignmentsPostCodes,
         _baseURL,
         gradeBox.courseNumber,
         gradeBox.term.termName);
-    return AssignmentAccessor.getAssignmentsDialog(html);
+    if(html == SkywardAPIErrorCodes.AssignmentScrapeFailed){
+      getSkywardAuthenticationCodes(user, pass);
+      getAssignmentsFromGradeBox(gradeBox, timesRan: timesRan + 1);
+    }else{
+      try {
+        return AssignmentAccessor.getAssignmentsDialog(html);
+      }catch(e){
+        return SkywardAPIErrorCodes.AssignmentParseFailed;
+      }
+    }
   }
 
-  getAssignmentInfoFromAssignment(Assignment assignment) async {
+  getAssignmentInfoFromAssignment(Assignment assignment, {int timesRan = 0}) async {
     Map<String, String> assignmentsPostCodes =
         Map.from(loginSessionRequiredBodyElements);
-    return AssignmentInfoAccessor.getAssignmentInfoBoxesFromHTML(
-        await AssignmentInfoAccessor.getAssignmentsDialogHTML(
-            assignmentsPostCodes, _baseURL, assignment));
+    var html = await AssignmentInfoAccessor.getAssignmentsDialogHTML(
+        assignmentsPostCodes, _baseURL, assignment);
+    if(html == SkywardAPIErrorCodes.AssignmentScrapeFailed){
+      getSkywardAuthenticationCodes(user, pass);
+      getAssignmentInfoFromAssignment(assignment, timesRan: timesRan + 1);
+    }
+    return AssignmentInfoAccessor.getAssignmentInfoBoxesFromHTML();
   }
 
-  getHistory() async{
-    return (await HistoryAccessor.parseGradebookHTML(await HistoryAccessor.getGradebookHTML(loginSessionRequiredBodyElements, _baseURL)));
+  getHistory() async {
+    return (await HistoryAccessor.parseGradebookHTML(
+        await HistoryAccessor.getGradebookHTML(
+            loginSessionRequiredBodyElements, _baseURL)));
   }
 }
 
-enum SkywardAPICodes {
+enum SkywardAPIErrorCodes {
+  Succeeded, //Placeholder
   LoginFailed,
-  LoginCodesReceived,
-  CouldNotScrapeGradeBook
+  LoginSessionExpired,
+  CouldNotScrapeGradeBook,
+  CouldNotRefresh,
+  AssignmentScrapeFailed,
+  AssignmentParseFailed,
+  AssignmentInfoScrapeFailed,
+  AssignmentInfoParseFailed
 }
