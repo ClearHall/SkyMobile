@@ -55,7 +55,7 @@ class _AssignmentsViewerState extends State<AssignmentsViewer> {
         });
         isCancelled = true;
       }else{
-        historyGrades = result;
+        assignmentInfoBoxes = result;
       }
 
       if (!isCancelled) {

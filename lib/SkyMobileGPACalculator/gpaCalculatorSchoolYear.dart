@@ -19,6 +19,7 @@ class _GPACalculatorSchoolYearState extends State<GPACalculatorSchoolYear> {
   @override
   void initState() {
     super.initState();
+    if(historyGrades == null) historyGrades = [];
     SchoolYear first = SchoolYear();
     first.classes = [];
     first.description = 'Current Year';

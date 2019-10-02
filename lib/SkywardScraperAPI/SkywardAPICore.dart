@@ -78,54 +78,53 @@ class SkywardAPICore {
   }
 
   getAssignmentsFromGradeBox(GradeBox gradeBox, {int timesRan = 0}) async {
-    if(timesRan > 10) return SkywardAPIErrorCodes.CouldNotRefresh;
+    if (timesRan > 10) return SkywardAPIErrorCodes.CouldNotRefresh;
     Map<String, String> assignmentsPostCodes =
         Map.from(loginSessionRequiredBodyElements);
-    var html = await AssignmentAccessor.getAssignmentsHTML(
-        assignmentsPostCodes,
-        _baseURL,
-        gradeBox.courseNumber,
-        gradeBox.term.termName);
-    if(html == SkywardAPIErrorCodes.AssignmentScrapeFailed){
+    var html = await AssignmentAccessor.getAssignmentsHTML(assignmentsPostCodes,
+        _baseURL, gradeBox.courseNumber, gradeBox.term.termName);
+    if (html == SkywardAPIErrorCodes.AssignmentScrapeFailed) {
       await getSkywardAuthenticationCodes(user, pass);
       return getAssignmentsFromGradeBox(gradeBox, timesRan: timesRan + 1);
-    }else{
+    } else {
       try {
         return AssignmentAccessor.getAssignmentsDialog(html);
-      }catch(e){
+      } catch (e) {
         return SkywardAPIErrorCodes.AssignmentParseFailed;
       }
     }
   }
 
-  getAssignmentInfoFromAssignment(Assignment assignment, {int timesRan = 0}) async {
-    if(timesRan > 10) return SkywardAPIErrorCodes.CouldNotRefresh;
+  getAssignmentInfoFromAssignment(Assignment assignment,
+      {int timesRan = 0}) async {
+    if (timesRan > 10) return SkywardAPIErrorCodes.CouldNotRefresh;
     Map<String, String> assignmentsPostCodes =
         Map.from(loginSessionRequiredBodyElements);
     var html = await AssignmentInfoAccessor.getAssignmentsDialogHTML(
         assignmentsPostCodes, _baseURL, assignment);
-    if(html == SkywardAPIErrorCodes.AssignmentInfoScrapeFailed){
+    if (html == SkywardAPIErrorCodes.AssignmentInfoScrapeFailed) {
       await getSkywardAuthenticationCodes(user, pass);
-      return getAssignmentInfoFromAssignment(assignment, timesRan: timesRan + 1);
+      return getAssignmentInfoFromAssignment(assignment,
+          timesRan: timesRan + 1);
     }
     try {
       return AssignmentInfoAccessor.getAssignmentInfoBoxesFromHTML(html);
-    } catch(e) {
+    } catch (e) {
       return SkywardAPIErrorCodes.AssignmentParseFailed;
     }
   }
 
   getHistory({int timesRan = 0}) async {
-    if(timesRan > 10) return SkywardAPIErrorCodes.CouldNotRefresh;
+    if (timesRan > 10) return SkywardAPIErrorCodes.CouldNotRefresh;
     var html = await HistoryAccessor.getGradebookHTML(
         loginSessionRequiredBodyElements, _baseURL);
-    if(html == SkywardAPIErrorCodes.HistoryScrapeFailed){
+    if (html == SkywardAPIErrorCodes.HistoryScrapeFailed) {
       await getSkywardAuthenticationCodes(user, pass);
       return getHistory(timesRan: timesRan + 1);
     }
-    try{
+    try {
       return (await HistoryAccessor.parseGradebookHTML(html));
-    }catch(e){
+    } catch (e) {
       return SkywardAPIErrorCodes.HistoryParseFailed;
     }
   }

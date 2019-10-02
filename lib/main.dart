@@ -54,6 +54,8 @@ class MyHomePageState extends State<MyHomePage> {
     _getAccounts();
   }
 
+  //TODO: COMBINE FUNCTIONS
+
   void _getGradeTerms(String user, String pass, BuildContext context) async {
     bool isCancelled = false;
     var dialog = HuntyDialogLoading('Cancel', () {
@@ -100,8 +102,6 @@ class MyHomePageState extends State<MyHomePage> {
             });
       }
       var termRes = await skywardAPI.getGradeBookTerms();
-      var attemptedTermRes = List.from(termRes);
-      var gradebookRes = (await skywardAPI.getGradeBookGrades(attemptedTermRes));
 
       if (termRes.runtimeType == SkywardAPIErrorCodes) {
         isCancelled = true;
@@ -117,7 +117,22 @@ class MyHomePageState extends State<MyHomePage> {
             });
       }else{
         terms = termRes;
-        gradeBoxes = gradebookRes;
+        var gradebookRes = (await skywardAPI.getGradeBookGrades(termRes));
+
+        if(gradebookRes.runtimeType == SkywardAPIErrorCodes){
+          isCancelled = true;
+          Navigator.of(context).pop(dialog);
+          await showDialog(
+              context: context,
+              builder: (BuildContext) {
+                return HuntyDialog(
+                    title: 'Oh No!',
+                    description:
+                    'An error occured and we could not get your grades. Please report this to a developer! An error occured while parsing your grades.',
+                    buttonText: 'Ok');
+              });
+        }else
+          gradeBoxes = gradebookRes;
       }
       if (!isCancelled) {
         currentSessionIdentifier = user;
@@ -171,10 +186,8 @@ class MyHomePageState extends State<MyHomePage> {
     } else {
       //TODO: MAKE THIS A FUNCTION
       var termRes = await skywardAPI.getGradeBookTerms();
-      var gradebookRes = (await skywardAPI.getGradeBookGrades(termRes));
 
-      if (termRes.runtimeType == SkywardAPIErrorCodes ||
-          gradebookRes.runtimeType == SkywardAPIErrorCodes) {
+      if (termRes.runtimeType == SkywardAPIErrorCodes) {
         isCancelled = true;
         Navigator.of(context).pop(dialog);
         await showDialog(
@@ -183,12 +196,27 @@ class MyHomePageState extends State<MyHomePage> {
               return HuntyDialog(
                   title: 'Oh No!',
                   description:
-                  'An error occured and we could not get your grades. Please report this to a developer! Error code: ${gradebookRes.toString()}',
+                  'An error occured and we could not get your grades. Please report this to a developer! Error code: ${termRes.toString()}',
                   buttonText: 'Ok');
             });
       }else{
         terms = termRes;
-        gradeBoxes = gradebookRes;
+        var gradebookRes = (await skywardAPI.getGradeBookGrades(termRes));
+
+        if(gradebookRes.runtimeType == SkywardAPIErrorCodes){
+          isCancelled = true;
+          Navigator.of(context).pop(dialog);
+          await showDialog(
+              context: context,
+              builder: (BuildContext) {
+                return HuntyDialog(
+                    title: 'Oh No!',
+                    description:
+                    'An error occured and we could not get your grades. Please report this to a developer! An error occured while parsing your grades.',
+                    buttonText: 'Ok');
+              });
+        }else
+          gradeBoxes = gradebookRes;
       }
       if (!isCancelled) {
         currentSessionIdentifier = acc.user;
