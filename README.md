@@ -44,3 +44,11 @@ Join the SkyMobile discord server [here](https://discord.gg/Hqvann5).
 Since SkyScrapeAPI has been moved to its own specific package for flutter, the API Documentation is now located [here](https://pub.dev/documentation/skyscrapeapi/latest/).
 
 The documentation is constantly being worked on. If you think there are missing parts or it's incomplete, please contact hunter.han@gmail.com or join the discord channel and chat with the developers.
+
+# Credits
+
+Skyward API Name Credits: @[yquan162](https://github.com/yquan162)
+
+Skyward API & SkyMobile Development: @[lingfeishengtian](https://github.com/lingfeishengtian)
+
+SkyMobile Maintenence: @[PotatoCurry](https://github.com/PotatoCurry)
