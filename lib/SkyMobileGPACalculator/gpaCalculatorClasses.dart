@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:skymobile/SkywardScraperAPI/SkywardAPITypes.dart';
+import 'package:skyscrapeapi/SkywardAPITypes.dart';
 import 'package:skymobile/SkyMobileHelperUtilities/globalVariables.dart';
 import 'gpaCalculatorSupportUtils.dart';
 

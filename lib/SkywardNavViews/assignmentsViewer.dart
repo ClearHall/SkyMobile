@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:skymobile/SkywardScraperAPI/SkywardAPITypes.dart';
-import 'package:skymobile/SkywardScraperAPI/SkywardAPICore.dart';
+import 'package:skyscrapeapi/SkywardAPITypes.dart';
+import 'package:skyscrapeapi/SkywardAPICore.dart';
 import 'package:skymobile/SkyMobileHelperUtilities/globalVariables.dart';
 import 'package:skymobile/SkyMobileHelperUtilities/customDialogOptions.dart';
 

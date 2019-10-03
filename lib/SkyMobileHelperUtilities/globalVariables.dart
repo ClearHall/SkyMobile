@@ -1,5 +1,5 @@
-import '../SkywardScraperAPI/SkywardAPICore.dart';
-import '../SkywardScraperAPI/SkywardAPITypes.dart';
+import 'package:skyscrapeapi/SkywardAPICore.dart';
+import 'package:skyscrapeapi/SkywardAPITypes.dart';
 import 'package:flutter/material.dart';
 import 'package:skymobile/SkyMobileHelperUtilities/jsonSaver.dart';
 

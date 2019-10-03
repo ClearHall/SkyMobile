@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'package:path_provider/path_provider.dart';
 import 'dart:io';
 import 'accountTypes.dart';
-import 'package:skymobile/SkywardScraperAPI/SkywardAPITypes.dart';
+import 'package:skyscrapeapi/SkywardAPITypes.dart';
 
 class JSONSaver{
   FilesAvailable fileName;

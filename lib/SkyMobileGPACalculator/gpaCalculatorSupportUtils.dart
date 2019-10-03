@@ -1,5 +1,5 @@
 import 'package:skymobile/SkyMobileHelperUtilities/globalVariables.dart';
-import 'package:skymobile/SkywardScraperAPI/SkywardAPITypes.dart';
+import 'package:skyscrapeapi/SkywardAPITypes.dart';
 import 'package:skymobile/SkyMobileHelperUtilities/jsonSaver.dart';
 
 List<double> getAveragesOfTermsCountingTowardGPA100PointScale(List<SchoolYear> enabledSchoolYears){
@@ -84,5 +84,4 @@ getTermsToRead() async{
 saveTermsToRead() async{
   JSONSaver jsonSaver = JSONSaver(FilesAvailable.gpaSelectedTerms);
   await jsonSaver.saveListData(termIdentifiersCountingTowardGPA);
-  print(termIdentifiersCountingTowardGPA);
 }

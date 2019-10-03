@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
-import 'SkywardScraperAPI/SkywardAPICore.dart';
+import 'package:skyscrapeapi/SkywardAPICore.dart';
 import 'package:skymobile/SkywardNavViews/termGradeViewer.dart';
 import 'SkyMobileHelperUtilities/customDialogOptions.dart';
 import 'SkyMobileHelperUtilities/globalVariables.dart';
 import 'package:skymobile/SkywardNavViews/assignmentInfoViewer.dart';
 import 'package:skymobile/SkywardNavViews/assignmentsViewer.dart';
-import 'SkywardScraperAPI/SkywardDistrictSearcher.dart';
-import 'SkywardScraperAPI/SkywardAPITypes.dart';
+import 'package:skyscrapeapi/SkywardDistrictSearcher.dart';
+import 'package:skyscrapeapi/SkywardAPITypes.dart';
 import 'package:skymobile/SkyMobileHelperUtilities/accountTypes.dart';
 import 'package:skymobile/SkyMobileHelperUtilities/jsonSaver.dart';
 import 'package:skymobile/SkyMobileGPACalculator/gpaCalculatorSchoolYear.dart';
