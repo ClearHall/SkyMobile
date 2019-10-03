@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:skyscrapeapi/SkywardAPITypes.dart';
+import 'package:skyscrapeapi/skywardAPITypes.dart';
 import 'package:skymobile/SkyMobileHelperUtilities/globalVariables.dart';
 import 'package:skymobile/SkyMobileHelperUtilities/customDialogOptions.dart';
 import 'package:skymobile/SkyMobileGPACalculator/gpaCalculatorSupportUtils.dart';
-import 'package:skyscrapeapi/SkywardAPICore.dart';
 
 class TermViewerPage extends StatefulWidget {
   MaterialColor secondColor;
@@ -27,30 +26,21 @@ class _TermViewer extends State<TermViewerPage> {
       isCancelled = true;
     });
 
-    var result = await skywardAPI.getHistory();
-    if(result.runtimeType == SkywardAPIErrorCodes){
-      Navigator.of(context).pop(dialog);
-      String errMsg;
-      switch(result){
-        case(SkywardAPIErrorCodes.HistoryParseFailed):
-          errMsg = 'Failed to get grades. Contact the developer, something is wrong with the Parser.';
-          break;
-        case(SkywardAPIErrorCodes.HistoryScrapeFailed):
-          errMsg = 'Failed to scrape grades. Your district does not support viewing academic history.';
-          break;
-        case(SkywardAPIErrorCodes.CouldNotRefresh):
-          errMsg = 'Failed to log back into your account. Try to log back in.';
-          break;
-        default:
-          errMsg = 'An unknown error has occured. Contact the developer with this information ${result.toString()}';
-          break;
-      }
-      showDialog(context: context,builder: (buildContext) {
-        return HuntyDialog(title: 'Uh Oh', description: errMsg, buttonText: 'Ok');
-      });
-      isCancelled = true;
-    }else{
+    try {
+      var result = await skywardAPI.getHistory();
       historyGrades = result;
+    } catch (e) {
+      Navigator.of(context).pop(dialog);
+      String errMsg =
+          'An error occured, please contact the developer: ${e.toString()}';
+
+      showDialog(
+          context: context,
+          builder: (buildContext) {
+            return HuntyDialog(
+                title: 'Uh Oh', description: errMsg, buttonText: 'Ok');
+          });
+      isCancelled = true;
     }
 
     if (!isCancelled) {
@@ -74,30 +64,21 @@ class _TermViewer extends State<TermViewerPage> {
       isCancelled = true;
     });
 
-    var result = await skywardAPI.getAssignmentsFromGradeBox(gradeBox);
-    if(result.runtimeType == SkywardAPIErrorCodes){
-      Navigator.of(context).pop(dialog);
-      String errMsg;
-      switch(result){
-        case(SkywardAPIErrorCodes.AssignmentParseFailed):
-          errMsg = 'Failed to get assignments. Contact the developer, something is wrong with the Parser.';
-          break;
-        case(SkywardAPIErrorCodes.AssignmentScrapeFailed):
-          errMsg = 'Failed to scrape grades. This is an unsual error, try logging out and logging back in.';
-          break;
-        case(SkywardAPIErrorCodes.CouldNotRefresh):
-          errMsg = 'Failed to log back into your account. Try to log back in.';
-          break;
-        default:
-          errMsg = 'An unknown error has occured. Contact the developer with this information ${result.toString()}';
-          break;
-      }
-      showDialog(context: context,builder: (buildContext) {
-        return HuntyDialog(title: 'Uh Oh', description: errMsg, buttonText: 'Ok');
-      });
-      isCancelled = true;
-    }else{
+    try {
+      var result = await skywardAPI.getAssignmentsFromGradeBox(gradeBox);
       assignmentsGridBoxes = result;
+    } catch (e) {
+      Navigator.of(context).pop(dialog);
+      String errMsg =
+          'An error occured, please contact the developer: ${e.toString()}';
+
+      showDialog(
+          context: context,
+          builder: (buildContext) {
+            return HuntyDialog(
+                title: 'Uh Oh', description: errMsg, buttonText: 'Ok');
+          });
+      isCancelled = true;
     }
 
     if (!isCancelled) {
@@ -241,9 +222,10 @@ class _TermViewer extends State<TermViewerPage> {
           title: Text('Gradebook',
               textAlign: TextAlign.center,
               style: TextStyle(
-                  color: Colors.black,
-                  fontSize: 30,
-                  fontWeight: FontWeight.w700,)),
+                color: Colors.black,
+                fontSize: 30,
+                fontWeight: FontWeight.w700,
+              )),
           actions: <Widget>[
             Theme(
                 data: Theme.of(context).copyWith(
@@ -261,12 +243,12 @@ class _TermViewer extends State<TermViewerPage> {
                     }
                   },
                   itemBuilder: (_) => <PopupMenuItem<String>>[
-                    PopupMenuItem<String>(
-                        child: const Text(
-                          'Settings',
-                          style: TextStyle(color: Colors.white),
-                        ),
-                        value: 'settings'),
+//                    PopupMenuItem<String>(
+//                        child: const Text(
+//                          'Settings',
+//                          style: TextStyle(color: Colors.white),
+//                        ),
+//                        value: 'settings'),
                     PopupMenuItem<String>(
                         child: const Text(
                           'GPA Calculator',
@@ -292,7 +274,8 @@ class _TermViewer extends State<TermViewerPage> {
                     style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700),
                     textAlign: TextAlign.center,
                   ),
-                  padding: EdgeInsets.only(top: 20, bottom: 20, left: 30, right: 30),
+                  padding:
+                      EdgeInsets.only(top: 20, bottom: 20, left: 30, right: 30),
                 ),
               ),
               onTap: () {

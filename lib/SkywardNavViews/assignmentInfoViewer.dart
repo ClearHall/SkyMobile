@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:skyscrapeapi/SkywardAPITypes.dart';
+import 'package:skyscrapeapi/skywardAPITypes.dart';
 import 'package:skymobile/SkyMobileHelperUtilities/globalVariables.dart';
 
 class AssignmentInfoViewer extends StatefulWidget {
@@ -50,28 +50,6 @@ class _AssignmentInfoViewerState extends State<AssignmentInfoViewer> {
                 color: Colors.black,
                 fontSize: 30,
                 fontWeight: FontWeight.w700)),
-        actions: <Widget>[
-          Theme(
-              data: Theme.of(context).copyWith(
-                cardColor: Colors.black87,
-              ),
-              child: PopupMenuButton(
-                itemBuilder: (_) => <PopupMenuItem<String>>[
-                  PopupMenuItem<String>(
-                      child: const Text(
-                        'Mock Assignment Editing Mode',
-                        style: TextStyle(color: Colors.white),
-                      ),
-                      value: 'mockAssignmentEditingMode'),
-                  PopupMenuItem<String>(
-                      child: const Text(
-                        'Grade Predictor',
-                        style: TextStyle(color: Colors.white),
-                      ),
-                      value: 'gradePredictor'),
-                ],
-              ))
-        ],
       ),
       backgroundColor: Colors.black,
       body: Center(

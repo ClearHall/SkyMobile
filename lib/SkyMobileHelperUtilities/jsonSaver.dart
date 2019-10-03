@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'package:path_provider/path_provider.dart';
 import 'dart:io';
 import 'accountTypes.dart';
-import 'package:skyscrapeapi/SkywardAPITypes.dart';
+import 'package:skyscrapeapi/skywardAPITypes.dart';
 
 class JSONSaver{
   FilesAvailable fileName;
@@ -61,7 +61,7 @@ class JSONSaver{
         }
         return mapOfTargetedObject;
       }
-    } catch (e,s) {
+    } catch (e) {
       return 0;
     }
   }

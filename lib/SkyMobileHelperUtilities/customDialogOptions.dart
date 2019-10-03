@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:skyscrapeapi/SkywardDistrictSearcher.dart';
-import 'package:skyscrapeapi/SkywardAPITypes.dart';
+import 'package:skyscrapeapi/skywardDistrictSearcher.dart';
+import 'package:skyscrapeapi/skywardAPITypes.dart';
 import '../main.dart';
 
 class DialogColorMode {

@@ -1,5 +1,5 @@
 import 'package:skymobile/SkyMobileHelperUtilities/globalVariables.dart';
-import 'package:skyscrapeapi/SkywardAPITypes.dart';
+import 'package:skyscrapeapi/skywardAPITypes.dart';
 import 'package:skymobile/SkyMobileHelperUtilities/jsonSaver.dart';
 
 List<double> getAveragesOfTermsCountingTowardGPA100PointScale(List<SchoolYear> enabledSchoolYears){

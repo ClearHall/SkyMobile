@@ -1,7 +1,6 @@
-import 'package:skyscrapeapi/SkywardAPICore.dart';
-import 'package:skyscrapeapi/SkywardAPITypes.dart';
+import 'package:skyscrapeapi/skywardAPICore.dart';
+import 'package:skyscrapeapi/skywardAPITypes.dart';
 import 'package:flutter/material.dart';
-import 'package:skymobile/SkyMobileHelperUtilities/jsonSaver.dart';
 
 SkywardAPICore skywardAPI;
 String currentSessionIdentifier;
