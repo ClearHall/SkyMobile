@@ -12,6 +12,10 @@ Changelog for SKYSCRAPEAPI and SkyMobile.
 
 Main scraping API for SkyMobile cross platform.
 
+### V1.6.0
+
+- Allows for error checking
+
 ### V1.5.4
 
 - Fixed bug where JSON Saver couldn't save ClassLevel
