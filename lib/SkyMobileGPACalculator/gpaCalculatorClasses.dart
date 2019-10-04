@@ -28,15 +28,17 @@ class GPACalculatorClassesState extends State<GPACalculatorClasses> {
   void initState() {
     super.initState();
 
-    for(int i = 1; i <= 6; i++){
+    for (int i = 1; i <= 6; i++) {
       availableCredits.add(0.5 * i);
     }
 
-    dropDownIndexesClassLevel = List.generate(schoolYear.classes.length, (int ind) {
+    dropDownIndexesClassLevel =
+        List.generate(schoolYear.classes.length, (int ind) {
       return availableClassLevels
           .indexOf(schoolYear.classes[ind].classLevel ?? ClassLevel.Regular);
     });
-    dropDownIndexesCredits = List.generate(schoolYear.classes.length, (int ind) {
+    dropDownIndexesCredits =
+        List.generate(schoolYear.classes.length, (int ind) {
       double credits = schoolYear.classes[ind].credits ?? 1.0;
       return availableCredits
           .indexOf(credits / 0.5 <= 6.0 && credits / 0.5 >= 0 ? credits : 1.0);
@@ -50,7 +52,7 @@ class GPACalculatorClassesState extends State<GPACalculatorClasses> {
     }
     for (int i = 0; i < schoolYear.classes.length; i++) {
       schoolYear.classes[i].credits =
-      availableCredits[dropDownIndexesCredits[i]];
+          availableCredits[dropDownIndexesCredits[i]];
     }
     gpaCalculatorSettingsSaveForCurrentSession();
   }
@@ -91,41 +93,44 @@ class GPACalculatorClassesState extends State<GPACalculatorClasses> {
         body: Center(
             child: Column(
           children: <Widget>[
-            Row(mainAxisSize: MainAxisSize.min,children: <Widget>[
-              Expanded(child: Container(
-                child: InkWell(
-                  child: Card(
-                    color: Colors.orangeAccent,
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(30)),
-                    child: Container(
-                      child: Text(
-                        'Term: ${schoolYear.terms[currentTermIndex + offset].termCode}',
-                        style: TextStyle(
-                            fontSize: 18, fontWeight: FontWeight.w700),
-                        textAlign: TextAlign.center,
+            Row(mainAxisSize: MainAxisSize.min, children: <Widget>[
+              Expanded(
+                child: Container(
+                  child: InkWell(
+                    child: Card(
+                      color: Colors.orangeAccent,
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(30)),
+                      child: Container(
+                        child: Text(
+                          'Term: ${schoolYear.terms[currentTermIndex + offset].termCode}',
+                          style: TextStyle(
+                              fontSize: 18, fontWeight: FontWeight.w700),
+                          textAlign: TextAlign.center,
+                        ),
+                        padding: EdgeInsets.all(20),
                       ),
-                      padding: EdgeInsets.all(20),
                     ),
+                    onTap: () {
+                      showModalBottomSheet(
+                          context: context,
+                          builder: (BuildContext context) => CupertinoPicker(
+                              scrollController: scrollController,
+                              backgroundColor: Colors.black,
+                              children: cupPickerWid,
+                              itemExtent: 50,
+                              onSelectedItemChanged: (int changeTo) {
+                                setState(() {
+                                  currentTermIndex = changeTo;
+                                });
+                              }));
+                    },
                   ),
-                  onTap: () {
-                    showModalBottomSheet(
-                        context: context,
-                        builder: (BuildContext context) => CupertinoPicker(
-                            scrollController: scrollController,
-                            backgroundColor: Colors.black,
-                            children: cupPickerWid,
-                            itemExtent: 50,
-                            onSelectedItemChanged: (int changeTo) {
-                              setState(() {
-                                currentTermIndex = changeTo;
-                              });
-                            }));
-                  },
+                  padding: EdgeInsets.only(top: 10, left: 10, right: 5),
                 ),
-                padding: EdgeInsets.only(top: 10, left: 10, right: 5),
-              ),),
-              Expanded(child: Container(
+              ),
+              Expanded(
+                  child: Container(
                 child: InkWell(
                   child: Card(
                     color: Colors.orangeAccent,
@@ -142,15 +147,19 @@ class GPACalculatorClassesState extends State<GPACalculatorClasses> {
                     ),
                   ),
                   onTap: () {
-                    for(Class classYear in schoolYear.classes){
+                    for (Class classYear in schoolYear.classes) {
                       String courseName = classYear.name;
-                      if(courseName.contains('PreA') || courseName.contains('Honor'))
+                      if (courseName.contains('PreA') ||
+                          courseName.contains('Honor') ||
+                          courseName.contains('Pre AP'))
                         classYear.classLevel = ClassLevel.PreAP;
-                      else if(courseName.contains('AP'))
+                      else if (courseName.contains('AP'))
                         classYear.classLevel = ClassLevel.AP;
                       else
                         classYear.classLevel = ClassLevel.Regular;
-                      dropDownIndexesClassLevel[schoolYear.classes.indexOf(classYear)] = availableClassLevels.indexOf(classYear.classLevel);
+                      dropDownIndexesClassLevel[
+                              schoolYear.classes.indexOf(classYear)] =
+                          availableClassLevels.indexOf(classYear.classLevel);
                     }
                     setState(() {
                       gpaCalculatorSettingsSaveForCurrentSession();
@@ -159,6 +168,37 @@ class GPACalculatorClassesState extends State<GPACalculatorClasses> {
                 ),
                 padding: EdgeInsets.only(top: 10, left: 0, right: 5),
               )),
+              Expanded(
+                  child: Container(
+                child: InkWell(
+                  child: Card(
+                    color: Colors.orangeAccent,
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(30)),
+                    child: Container(
+                      child: Text(
+                        'Deselect All',
+                        style: TextStyle(
+                            fontSize: 18, fontWeight: FontWeight.w700),
+                        textAlign: TextAlign.center,
+                      ),
+                      padding: EdgeInsets.all(20),
+                    ),
+                  ),
+                  onTap: () {
+                    setState(() {
+                      for (Class classYear in schoolYear.classes) {
+                        classYear.classLevel = ClassLevel.None;
+                        dropDownIndexesClassLevel[
+                                schoolYear.classes.indexOf(classYear)] =
+                            availableClassLevels.indexOf(classYear.classLevel);
+                      }
+                      gpaCalculatorSettingsSaveForCurrentSession();
+                    });
+                  },
+                ),
+                padding: EdgeInsets.only(top: 10, left: 0, right: 5),
+              ))
             ]),
             Expanded(
               child: ListView(
@@ -216,8 +256,9 @@ class GPACalculatorClassesState extends State<GPACalculatorClasses> {
                                 ),
                               );
                             }).toList(),
-                            value: availableClassLevels[dropDownIndexesClassLevel[
-                                    schoolYear.classes.indexOf(schoolClass)]]
+                            value: availableClassLevels[
+                                    dropDownIndexesClassLevel[schoolYear.classes
+                                        .indexOf(schoolClass)]]
                                 .toString(),
                             onChanged: (String newVal) {
                               setState(() {
@@ -229,30 +270,32 @@ class GPACalculatorClassesState extends State<GPACalculatorClasses> {
                                 setDropDown();
                               });
                             },
-                          ))),Container(
+                          ))),
+                  Container(
                       padding: EdgeInsets.only(left: 15, bottom: 10),
                       child: Theme(
                           data: Theme.of(context)
                               .copyWith(canvasColor: Colors.black),
                           child: DropdownButton<String>(
                             items: availableCredits
-                                .map<DropdownMenuItem<String>>(
-                                    (double value) {
-                                  return DropdownMenuItem<String>(
-                                    value: value.toString(),
-                                    child: Text(
-                                      value.toString(),
-                                      style: TextStyle(color: Colors.white),
-                                    ),
-                                  );
-                                }).toList(),
+                                .map<DropdownMenuItem<String>>((double value) {
+                              return DropdownMenuItem<String>(
+                                value: value.toString(),
+                                child: Text(
+                                  value.toString(),
+                                  style: TextStyle(color: Colors.white),
+                                ),
+                              );
+                            }).toList(),
                             value: availableCredits[dropDownIndexesCredits[
-                            schoolYear.classes.indexOf(schoolClass)]]
+                                    schoolYear.classes.indexOf(schoolClass)]]
                                 .toString(),
                             onChanged: (String newVal) {
                               setState(() {
                                 dropDownIndexesCredits[schoolYear.classes
-                                    .indexOf(schoolClass)] = availableCredits.indexOf(double.tryParse(newVal) ?? 1.0);
+                                        .indexOf(schoolClass)] =
+                                    availableCredits.indexOf(
+                                        double.tryParse(newVal) ?? 1.0);
                                 setDropDown();
                               });
                             },

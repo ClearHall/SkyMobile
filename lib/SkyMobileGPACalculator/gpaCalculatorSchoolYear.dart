@@ -19,7 +19,7 @@ class _GPACalculatorSchoolYearState extends State<GPACalculatorSchoolYear> {
   @override
   void initState() {
     super.initState();
-    if(historyGrades == null) historyGrades = [];
+    if (historyGrades == null) historyGrades = [];
     SchoolYear first = SchoolYear();
     first.classes = [];
     first.description = 'Current Year';
@@ -36,6 +36,7 @@ class _GPACalculatorSchoolYearState extends State<GPACalculatorSchoolYear> {
         tmpClass.grades[terms.indexOf(gridBox.term)] = (gridBox.behavior);
       }
     }
+    if (tmpClass != null) first.classes.add(tmpClass);
     if (historyGrades.length == 0) {
       historyGrades.add(first);
     } else {
@@ -200,11 +201,12 @@ class _GPACalculatorSchoolYearState extends State<GPACalculatorSchoolYear> {
   List<String> _getSelectableTermsString(List<SchoolYear> enabled) {
     LinkedHashSet<Term> termList = LinkedHashSet<Term>();
 
-    for(SchoolYear year in enabled){
+    for (SchoolYear year in enabled) {
       termList.addAll(year.terms);
     }
 
-    return List.generate(termList.length, (ind) => termList.elementAt(ind).termCode);
+    return List.generate(
+        termList.length, (ind) => termList.elementAt(ind).termCode);
   }
 
   Column buildArrayOfSchoolYears() {

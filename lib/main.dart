@@ -105,7 +105,7 @@ class MyHomePageState extends State<MyHomePage> {
         var gradebookRes = (await skywardAPI.getGradeBookGrades(termRes));
         terms = termRes;
         gradeBoxes = gradebookRes;
-      }catch(e){
+      } catch (e) {
         isCancelled = true;
         Navigator.of(context).pop(dialog);
         await showDialog(
@@ -114,7 +114,7 @@ class MyHomePageState extends State<MyHomePage> {
               return HuntyDialog(
                   title: 'Oh No!',
                   description:
-                  'An error occured and we could not get your grades. Please report this to a developer! An error occured while parsing your grades.',
+                      'An error occured and we could not get your grades. Try restarting the app, if this does not work, please report this to a developer! An error occured while parsing your grades.',
                   buttonText: 'Ok');
             });
       }
@@ -173,7 +173,7 @@ class MyHomePageState extends State<MyHomePage> {
         var gradebookRes = (await skywardAPI.getGradeBookGrades(termRes));
         terms = termRes;
         gradeBoxes = gradebookRes;
-      }catch(e){
+      } catch (e) {
         isCancelled = true;
         Navigator.of(context).pop(dialog);
         await showDialog(
@@ -182,7 +182,7 @@ class MyHomePageState extends State<MyHomePage> {
               return HuntyDialog(
                   title: 'Oh No!',
                   description:
-                  'An error occured and we could not get your grades. Please report this to a developer! An error occured while parsing your grades.',
+                      'An error occured and we could not get your grades. Please report this to a developer! An error occured while parsing your grades.',
                   buttonText: 'Ok');
             });
       }

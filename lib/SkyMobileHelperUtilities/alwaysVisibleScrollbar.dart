@@ -29,10 +29,12 @@ class SingleChildScrollViewWithScrollbar extends StatefulWidget {
   final double scrollbarThickness;
 
   @override
-  _SingleChildScrollViewWithScrollbarState createState() => _SingleChildScrollViewWithScrollbarState();
+  _SingleChildScrollViewWithScrollbarState createState() =>
+      _SingleChildScrollViewWithScrollbarState();
 }
 
-class _SingleChildScrollViewWithScrollbarState extends State<SingleChildScrollViewWithScrollbar> {
+class _SingleChildScrollViewWithScrollbarState
+    extends State<SingleChildScrollViewWithScrollbar> {
   AlwaysVisibleScrollbarPainter _scrollbarPainter;
 
   @override
@@ -95,11 +97,11 @@ class AlwaysVisibleScrollbarPainter extends ScrollbarPainter {
     @required TextDirection textDirection,
     @required double thickness,
   }) : super(
-    color: color,
-    textDirection: textDirection,
-    thickness: thickness,
-    fadeoutOpacityAnimation: const AlwaysStoppedAnimation(1.0),
-  );
+          color: color,
+          textDirection: textDirection,
+          thickness: thickness,
+          fadeoutOpacityAnimation: const AlwaysStoppedAnimation(1.0),
+        );
 
   ScrollableState _scrollable;
 
@@ -118,7 +120,7 @@ class AlwaysVisibleScrollbarPainter extends ScrollbarPainter {
 
   @override
   void dispose() {
-   // _scrollable?.position?.removeListener(notifyListeners);
+    // _scrollable?.position?.removeListener(notifyListeners);
     super.dispose();
   }
 }

@@ -4,52 +4,52 @@ import 'dart:io';
 import 'accountTypes.dart';
 import 'package:skyscrapeapi/skywardAPITypes.dart';
 
-class JSONSaver{
+class JSONSaver {
   FilesAvailable fileName;
 
   JSONSaver(this.fileName);
 
-  getLocalDirectoryPath() async{
+  getLocalDirectoryPath() async {
     final dir = await getApplicationDocumentsDirectory();
 
     return dir.path;
   }
 
-  getFile() async{
+  getFile() async {
     final path = await getLocalDirectoryPath();
     return File('$path/${fileName.toString()}.skymobileDat');
   }
 
-  accountFileExists() async{
+  accountFileExists() async {
     final path = await getLocalDirectoryPath();
     return await File('$path/${fileName.toString()}.skymobileDat').exists();
   }
 
-  saveListData(dynamic savingList) async{
+  saveListData(dynamic savingList) async {
     final File file = await getFile();
     return file.writeAsString(jsonEncode(savingList));
   }
 
-  readListData() async{
-    try{
+  readListData() async {
+    try {
       final File file = await getFile();
       String contents = await file.readAsString();
       var retrievedJSONCoded = jsonDecode(contents);
 
-      if(retrievedJSONCoded is List){
+      if (retrievedJSONCoded is List) {
         List listOfTargetedObject = [];
-        for(var retrieved in retrievedJSONCoded)
-        if(fileName == FilesAvailable.accounts){
-          listOfTargetedObject.add(Account.fromJson(retrieved));
-        }else if(fileName == FilesAvailable.gpaSelectedTerms){
-          listOfTargetedObject.add(retrieved);
-        }
+        for (var retrieved in retrievedJSONCoded)
+          if (fileName == FilesAvailable.accounts) {
+            listOfTargetedObject.add(Account.fromJson(retrieved));
+          } else if (fileName == FilesAvailable.gpaSelectedTerms) {
+            listOfTargetedObject.add(retrieved);
+          }
         return listOfTargetedObject;
       }
 
-      if(retrievedJSONCoded is Map){
+      if (retrievedJSONCoded is Map) {
         Map mapOfTargetedObject = Map();
-        if(fileName == FilesAvailable.gpaCalculatorSettings) {
+        if (fileName == FilesAvailable.gpaCalculatorSettings) {
           retrievedJSONCoded.forEach((key, val) {
             List newVal = [];
             for (var retrieved in val) {
@@ -65,11 +65,6 @@ class JSONSaver{
       return 0;
     }
   }
-
 }
 
-enum FilesAvailable{
-  accounts,
-  gpaCalculatorSettings,
-  gpaSelectedTerms
-}
+enum FilesAvailable { accounts, gpaCalculatorSettings, gpaSelectedTerms }
