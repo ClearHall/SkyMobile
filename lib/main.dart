@@ -151,13 +151,9 @@ class MyHomePageState extends State<MyHomePage> {
     try {
       var termRes = await skywardAPI.getGradeBookTerms();
       var gradebookRes = (await skywardAPI.getGradeBookGrades(termRes));
-
-      print(gradebookRes);
-
       terms = termRes;
       gradeBoxes = gradebookRes;
-    } catch (e,s) {
-      print(s);
+    } catch (e) {
       isCancelled = true;
       Navigator.of(context).pop(dialog);
       await showDialog(
