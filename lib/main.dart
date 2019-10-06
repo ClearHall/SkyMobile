@@ -100,31 +100,7 @@ class MyHomePageState extends State<MyHomePage> {
               );
             });
       }
-      try {
-        var termRes = await skywardAPI.getGradeBookTerms();
-        var gradebookRes = (await skywardAPI.getGradeBookGrades(termRes));
-        terms = termRes;
-        gradeBoxes = gradebookRes;
-      } catch (e) {
-        isCancelled = true;
-        Navigator.of(context).pop(dialog);
-        await showDialog(
-            context: context,
-            builder: (BuildContext) {
-              return HuntyDialog(
-                  title: 'Oh No!',
-                  description:
-                      'An error occured and we could not get your grades. Try restarting the app, if this does not work, please report this to a developer! An error occured while parsing your grades.',
-                  buttonText: 'Ok');
-            });
-      }
-      if (!isCancelled) {
-        currentSessionIdentifier = user;
-        Navigator.of(context, rootNavigator: true).popUntil((result) {
-          return result.settings.name == '/';
-        });
-        Navigator.pushNamed(context, '/termviewer');
-      }
+      await getTermsAndGradeBook(isCancelled, context, dialog, Account(null ,user, pass, district));
     }
   }
 
@@ -167,32 +143,39 @@ class MyHomePageState extends State<MyHomePage> {
             );
           });
     } else {
-      //TODO: MAKE THIS A FUNCTION
-      try {
-        var termRes = await skywardAPI.getGradeBookTerms();
-        var gradebookRes = (await skywardAPI.getGradeBookGrades(termRes));
-        terms = termRes;
-        gradeBoxes = gradebookRes;
-      } catch (e) {
-        isCancelled = true;
-        Navigator.of(context).pop(dialog);
-        await showDialog(
-            context: context,
-            builder: (BuildContext) {
-              return HuntyDialog(
-                  title: 'Oh No!',
-                  description:
-                      'An error occured and we could not get your grades. Please report this to a developer! An error occured while parsing your grades.',
-                  buttonText: 'Ok');
-            });
-      }
-      if (!isCancelled) {
-        currentSessionIdentifier = acc.user;
-        Navigator.of(context, rootNavigator: true).popUntil((result) {
-          return result.settings.name == '/';
-        });
-        Navigator.pushNamed(context, '/termviewer');
-      }
+      await getTermsAndGradeBook(isCancelled, context, dialog, acc);
+    }
+  }
+
+  Future getTermsAndGradeBook(bool isCancelled, BuildContext context, HuntyDialogLoading dialog, Account acc) async {
+    try {
+      var termRes = await skywardAPI.getGradeBookTerms();
+      var gradebookRes = (await skywardAPI.getGradeBookGrades(termRes));
+
+      print(gradebookRes);
+
+      terms = termRes;
+      gradeBoxes = gradebookRes;
+    } catch (e,s) {
+      print(s);
+      isCancelled = true;
+      Navigator.of(context).pop(dialog);
+      await showDialog(
+          context: context,
+          builder: (BuildContext) {
+            return HuntyDialog(
+                title: 'Oh No!',
+                description:
+                    'An error occured and we could not get your grades. Please report this to a developer! An error occured while parsing your grades.',
+                buttonText: 'Ok');
+          });
+    }
+    if (!isCancelled) {
+      currentSessionIdentifier = acc.user;
+      Navigator.of(context, rootNavigator: true).popUntil((result) {
+        return result.settings.name == '/';
+      });
+      Navigator.pushNamed(context, '/termviewer');
     }
   }
 
