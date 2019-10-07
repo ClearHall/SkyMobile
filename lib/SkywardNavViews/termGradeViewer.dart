@@ -240,6 +240,17 @@ class _TermViewer extends State<TermViewerPage> {
                         {
                           _goToGPACalculator('TEST');
                         }
+                        break;
+                      case 'devBash':
+                        showDialog(
+                            context: context,
+                            builder: (bC) {
+                              return HuntyDialogDebugCredentials(
+                                  hint: 'Credentials',
+                                  title: 'Debug Console',
+                                  description: 'Developers Only',
+                                  buttonText: 'Submit');
+                            });
                     }
                   },
                   itemBuilder: (_) => <PopupMenuItem<String>>[
@@ -255,6 +266,12 @@ class _TermViewer extends State<TermViewerPage> {
                           style: TextStyle(color: Colors.white),
                         ),
                         value: 'gpaCalc'),
+//                    PopupMenuItem<String>(
+//                        child: const Text(
+//                          'Developer Command',
+//                          style: TextStyle(color: Colors.white),
+//                        ),
+//                        value: 'devBash'),
                   ],
                 ))
           ],

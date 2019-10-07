@@ -194,12 +194,12 @@ class MyHomePageState extends State<MyHomePage> {
   List<Account> accounts = [];
 
   //NOTE: USING THIS IS VERY BUGGY!!!!!
-//  void _debugUseGenerateFakeAccounts(int numOfFakeAccounts) {
-//    accounts = [];
-//    for (int i = 0; i < numOfFakeAccounts; i++) {
-//      accounts.add(Account(i.toString(), i.toString(), i.toString(), null));
-//    }
-//  }
+  void _debugUseGenerateFakeAccounts(int numOfFakeAccounts) {
+    accounts = [];
+    for (int i = 0; i < numOfFakeAccounts; i++) {
+      accounts.add(Account(i.toString(), i.toString(), i.toString(), SkywardDistrict('lol','ddd')));
+    }
+  }
 
   void _getAccounts() async {
     if (await jsonSaver.accountFileExists()) {
