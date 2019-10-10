@@ -11,6 +11,7 @@ import 'package:skymobile/SkyMobileHelperUtilities/accountTypes.dart';
 import 'package:skymobile/SkyMobileHelperUtilities/jsonSaver.dart';
 import 'package:skymobile/SkyMobileGPACalculator/gpaCalculatorSchoolYear.dart';
 import 'package:skymobile/SkyMobileGPACalculator/gpaCalculatorClasses.dart';
+import 'package:skymobile/SkyMobileGPACalculator/gpaCalculator40ScaleSettings.dart';
 
 void main() => runApp(MyApp());
 
@@ -31,6 +32,7 @@ class MyApp extends StatelessWidget {
         "/gpacalculatorschoolyear": (context) => GPACalculatorSchoolYear(),
         "/gpacalculatorclasses": (context) =>
             GPACalculatorClasses(ModalRoute.of(context).settings.arguments),
+        "/gpacalculator40scalesettings": (context) => GPACalculator40ScaleSettings()
       },
     );
   }
@@ -100,7 +102,8 @@ class MyHomePageState extends State<MyHomePage> {
               );
             });
       }
-      await getTermsAndGradeBook(isCancelled, context, dialog, Account(null ,user, pass, district));
+      await getTermsAndGradeBook(
+          isCancelled, context, dialog, Account(null, user, pass, district));
     }
   }
 
@@ -147,7 +150,8 @@ class MyHomePageState extends State<MyHomePage> {
     }
   }
 
-  Future getTermsAndGradeBook(bool isCancelled, BuildContext context, HuntyDialogLoading dialog, Account acc) async {
+  Future getTermsAndGradeBook(bool isCancelled, BuildContext context,
+      HuntyDialogLoading dialog, Account acc) async {
     try {
       var termRes = await skywardAPI.getGradeBookTerms();
       var gradebookRes = (await skywardAPI.getGradeBookGrades(termRes));
@@ -197,7 +201,8 @@ class MyHomePageState extends State<MyHomePage> {
   void _debugUseGenerateFakeAccounts(int numOfFakeAccounts) {
     accounts = [];
     for (int i = 0; i < numOfFakeAccounts; i++) {
-      accounts.add(Account(i.toString(), i.toString(), i.toString(), SkywardDistrict('lol','ddd')));
+      accounts.add(Account(i.toString(), i.toString(), i.toString(),
+          SkywardDistrict('lol', 'ddd')));
     }
   }
 
