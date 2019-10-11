@@ -109,7 +109,7 @@ class _GPACalculatorSchoolYearState extends State<GPACalculatorSchoolYear> {
                   'Select the terms below that should count toward your final GPA.',
                   style: TextStyle(color: Colors.orangeAccent, fontSize: 20),
                 ),
-                padding: EdgeInsets.all(20),
+                padding: EdgeInsets.all(10),
               ),
               Container(
                 padding: EdgeInsets.only(top: 10, left: 20, right: 20),
@@ -128,10 +128,10 @@ class _GPACalculatorSchoolYearState extends State<GPACalculatorSchoolYear> {
               ),
               Container(
                 child: Text(
-                  'Select which school years count toward final GPA below. To modify which classes',
+                  'Select which school years count toward final GPA below. To modify which classes count toward GPA, click the arrow.',
                   style: TextStyle(color: Colors.orangeAccent, fontSize: 20),
                 ),
-                padding: EdgeInsets.all(20),
+                padding: EdgeInsets.all(10),
               ),
               Container(
                 padding:

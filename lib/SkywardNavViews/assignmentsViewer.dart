@@ -34,7 +34,6 @@ class _AssignmentsViewerState extends State<AssignmentsViewer> {
       try {
         var result = await skywardAPI.getAssignmentInfoFromAssignment(box);
         assignmentInfoBoxes = result;
-        ;
       } catch (e) {
         Navigator.of(context).pop(dialog);
         String errMsg =
@@ -85,7 +84,7 @@ class _AssignmentsViewerState extends State<AssignmentsViewer> {
                       Container(
                         constraints: BoxConstraints(
                             maxWidth:
-                                MediaQuery.of(context).size.width / 6 * 4.4),
+                                MediaQuery.of(context).size.width / 6 * 4),
                         padding: EdgeInsets.only(
                             top: 10,
                             left: 10,
@@ -130,10 +129,10 @@ class _AssignmentsViewerState extends State<AssignmentsViewer> {
                 ),
                 Container(
                   constraints: BoxConstraints(minHeight: 60),
-                  padding: EdgeInsets.only(right: 20),
+                  padding: EdgeInsets.only(right: 10),
                   alignment: Alignment.centerRight,
                   child: Text(
-                    grade == null ? "" : grade,
+                    grade == null ? box.attributes.containsKey('Points Earned') ? box.attributes['Points Earned'] : "" : grade,
                     style: TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.w700,
