@@ -2,6 +2,34 @@ import 'package:skymobile/SkyMobileHelperUtilities/globalVariables.dart';
 import 'package:skyscrapeapi/skywardAPITypes.dart';
 import 'package:skymobile/SkyMobileHelperUtilities/jsonSaver.dart';
 
+//double get40ScaleGPA(List<SchoolYear> enabledSchoolYears){
+//  for (String term in termIdentifiersCountingTowardGPA) {
+//    double finalGrade = 0;
+//    double credits = 0;
+//    for (SchoolYear schoolYear in enabledSchoolYears) {
+//      if (schoolYear.terms.contains(Term(term, null))) {
+//        int indexOfTerm = schoolYear.terms.indexOf(Term(term, null));
+//        for (Class classYear in schoolYear.classes) {
+//          int addOnPoints = determinePointsFromClassLevel(
+//              classYear.classLevel ?? ClassLevel.Regular);
+//          if (addOnPoints >= 0) {
+//            if (indexOfTerm < classYear.grades.length) {
+//              double attemptedDoubleParse =
+//              double.tryParse(classYear.grades[indexOfTerm]);
+//              if (attemptedDoubleParse != null) {
+//                finalGrade += (attemptedDoubleParse + addOnPoints) *
+//                    (classYear.credits ?? 1.0);
+//                credits += classYear.credits ?? 1.0;
+//              }
+//            }
+//          }
+//        }
+//      }
+//    }
+//    averagesRespeciveOfTerms.add(credits > 0 ? finalGrade / credits : null);
+//  }
+//}
+
 List<double> getAveragesOfTermsCountingTowardGPA100PointScale(
     List<SchoolYear> enabledSchoolYears) {
   List<double> averagesRespeciveOfTerms = [];

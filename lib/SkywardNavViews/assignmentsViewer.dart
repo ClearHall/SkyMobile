@@ -84,7 +84,7 @@ class _AssignmentsViewerState extends State<AssignmentsViewer> {
                       Container(
                         constraints: BoxConstraints(
                             maxWidth:
-                                MediaQuery.of(context).size.width / 6 * 4),
+                                MediaQuery.of(context).size.width / 6 * 3.8),
                         padding: EdgeInsets.only(
                             top: 10,
                             left: 10,
@@ -131,13 +131,13 @@ class _AssignmentsViewerState extends State<AssignmentsViewer> {
                   constraints: BoxConstraints(minHeight: 60),
                   padding: EdgeInsets.only(right: 10),
                   alignment: Alignment.centerRight,
-                  child: Text(
+                  child: FittedBox(fit: BoxFit.fitWidth,child: Text(
                     grade == null ? box.attributes.containsKey('Points Earned') ? box.attributes['Points Earned'] : "" : grade,
                     style: TextStyle(
-                        fontSize: 18,
+                        fontSize: 17,
                         fontWeight: FontWeight.w700,
                         color: getColorFrom(grade)),
-                  ),
+                  ),),
                 ),
               ],
             )),

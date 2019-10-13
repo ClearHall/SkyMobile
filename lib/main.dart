@@ -32,7 +32,7 @@ class MyApp extends StatelessWidget {
         "/gpacalculatorschoolyear": (context) => GPACalculatorSchoolYear(),
         "/gpacalculatorclasses": (context) =>
             GPACalculatorClasses(ModalRoute.of(context).settings.arguments),
-        "/gpacalculator40scalesettings": (context) => GPACalculator40ScaleSettings()
+        "/gpacalculatorsettings": (context) => GPACalculatorSettings()
       },
     );
   }

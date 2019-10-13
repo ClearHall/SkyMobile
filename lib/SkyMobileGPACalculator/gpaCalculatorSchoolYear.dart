@@ -105,6 +105,13 @@ class _GPACalculatorSchoolYearState extends State<GPACalculatorSchoolYear> {
                     color: Colors.white12),
               ),
               Container(
+                padding: EdgeInsets.only(top: 10, left: 20, right: 20),
+                child: Card(
+                    child:
+                    buildGradeDisplayWidget('4.0 GPA', getFinalGPA(averages)),
+                    color: Colors.white12),
+              ),
+              Container(
                 child: Text(
                   'Select the terms below that should count toward your final GPA.',
                   style: TextStyle(color: Colors.orangeAccent, fontSize: 20),
@@ -126,6 +133,17 @@ class _GPACalculatorSchoolYearState extends State<GPACalculatorSchoolYear> {
                       )),
                 ),
               ),
+//              Container(
+//                  padding: EdgeInsets.only(top: 10, left: 20, right: 20),
+//                  child: Card(
+//                      color: Colors.white12,
+//                      child: InkWell(
+//                        child: Container(padding: EdgeInsets.all(10),child:Text('4.0 GPA Settings', style: TextStyle(color: Colors.orange, fontSize: 20),),),
+//                        onTap: () {
+//                          Navigator.pushNamed(
+//                              context, '/gpacalculator40scalesettings');
+//                        },
+//                      ))),
               Container(
                 child: Text(
                   'Select which school years count toward final GPA below. To modify which classes count toward GPA, click the arrow.',

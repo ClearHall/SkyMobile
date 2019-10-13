@@ -28,8 +28,6 @@ class GPA40ScaleRangeList{
         }
       }
   }
-
-  analyze
 }
 
 class GPA40ScaleRange{

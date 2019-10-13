@@ -67,10 +67,12 @@ class _TermViewer extends State<TermViewerPage> {
     try {
       var result = await skywardAPI.getAssignmentsFromGradeBox(gradeBox);
       assignmentsGridBoxes = result;
-    } catch (e) {
+    } catch (e, s) {
       Navigator.of(context).pop(dialog);
       String errMsg =
           'An error occured, please contact the developer: ${e.toString()}';
+
+      print(s);
 
       showDialog(
           context: context,
