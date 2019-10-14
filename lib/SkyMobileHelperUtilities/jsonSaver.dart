@@ -58,6 +58,10 @@ class JSONSaver {
             }
             mapOfTargetedObject[key] = newVal;
           });
+        }else if (fileName == FilesAvailable.classLevelValues){
+          retrievedJSONCoded.forEach((key, val) {
+            mapOfTargetedObject[ClassLevel.values.firstWhere((e) => e.toString() == key)] = val;
+          });
         }
         return mapOfTargetedObject;
       }
@@ -67,4 +71,4 @@ class JSONSaver {
   }
 }
 
-enum FilesAvailable { accounts, gpaCalculatorSettings, gpaSelectedTerms }
+enum FilesAvailable { accounts, gpaCalculatorSettings, gpaSelectedTerms, classLevelValues }

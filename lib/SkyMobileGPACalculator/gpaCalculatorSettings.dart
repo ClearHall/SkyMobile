@@ -4,12 +4,10 @@ class GPACalculatorSettings extends StatefulWidget {
   GPACalculatorSettings({Key key}) : super(key: key);
 
   @override
-  _GPACalculatorSettingsState createState() =>
-      _GPACalculatorSettingsState();
+  _GPACalculatorSettingsState createState() => _GPACalculatorSettingsState();
 }
 
-class _GPACalculatorSettingsState
-    extends State<GPACalculatorSettings> {
+class _GPACalculatorSettingsState extends State<GPACalculatorSettings> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -28,11 +26,25 @@ class _GPACalculatorSettingsState
             children: <Widget>[
               Container(
                 child: Text(
-                  'Select the terms below that should count toward your final GPA.',
+                  'Tick or change the settings depending on your district or college. Read descriptions carefully verify that the settings are correct.',
                   style: TextStyle(color: Colors.orangeAccent, fontSize: 20),
                 ),
                 padding: EdgeInsets.all(10),
               ),
+              Container(
+                width: double.infinity,
+                child: Card(
+                    child: Container(
+                      child: Text(
+                        "POP",
+                        style: TextStyle(color: Colors.orange, fontSize: 20),
+                      ),
+                      padding: EdgeInsets.all(10),
+                    ),
+                    color: Colors.white12),
+                padding:
+                    EdgeInsets.only(left: 10, top: 10, right: 10, bottom: 10),
+              )
             ],
           ),
         ));

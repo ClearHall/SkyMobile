@@ -11,7 +11,7 @@ import 'package:skymobile/SkyMobileHelperUtilities/accountTypes.dart';
 import 'package:skymobile/SkyMobileHelperUtilities/jsonSaver.dart';
 import 'package:skymobile/SkyMobileGPACalculator/gpaCalculatorSchoolYear.dart';
 import 'package:skymobile/SkyMobileGPACalculator/gpaCalculatorClasses.dart';
-import 'package:skymobile/SkyMobileGPACalculator/gpaCalculator40ScaleSettings.dart';
+import 'package:skymobile/SkyMobileGPACalculator/gpaCalculatorSettings.dart';
 
 void main() => runApp(MyApp());
 

@@ -2,6 +2,7 @@ import 'dart:collection';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:skymobile/SkyMobileHelperUtilities/customDialogOptions.dart';
 import 'package:skyscrapeapi/skywardAPITypes.dart';
 import 'package:skymobile/SkyMobileHelperUtilities/globalVariables.dart';
 import 'package:skymobile/SkyMobileHelperUtilities/alwaysVisibleScrollbar.dart';
@@ -19,7 +20,12 @@ class _GPACalculatorSchoolYearState extends State<GPACalculatorSchoolYear> {
   @override
   void initState() {
     super.initState();
+
     if (historyGrades == null) historyGrades = [];
+    _updateFirstInList(basedOn: historyGrades.first);
+  }
+
+  _updateFirstInList({SchoolYear basedOn}){
     SchoolYear first = SchoolYear();
     first.classes = [];
     first.description = 'Current Year';
@@ -43,6 +49,13 @@ class _GPACalculatorSchoolYearState extends State<GPACalculatorSchoolYear> {
       String name = historyGrades[0].description;
       first.description = name;
       historyGrades[0] = first;
+    }
+
+    if(basedOn != null && basedOn == historyGrades[0]){
+      for(int i = 0; i < basedOn.classes.length; i++){
+        historyGrades[0].classes[i].classLevel = basedOn.classes[i].classLevel;
+        historyGrades[0].classes[i].credits = basedOn.classes[i].credits;
+      }
     }
   }
 
@@ -74,14 +87,50 @@ class _GPACalculatorSchoolYearState extends State<GPACalculatorSchoolYear> {
                   color: Colors.black,
                   fontSize: 30,
                   fontWeight: FontWeight.w700)),
+          actions: <Widget>[
+            IconButton(
+              icon: Icon(
+                Icons.info_outline,
+                color: Colors.black,
+              ),
+              onPressed: () {
+                showDialog(
+                    context: context,
+                    builder: (bC) => HuntyDialogForMoreText(
+                          title: 'Confused?',
+                          description:
+                              'The GPA Calculator contains many aspects. First, different districts use different TERMS to calculate your GPA. You should select the terms based on what your district uses. Note: Fort Bend ISD uses S1 and S2. Below the term selector, there is a school year selector. Choose which school years contain classes that count toward GPA. To modify the level of your classes in a school year, click the arrow in each school year box. You may see your grades from that school year with the TERM Selector and you can also let SkyMobile autoselect levels for the classes. There is also a Deselect All button for convenience.\n4.0 Scale is based off of College Board scale.',
+                          buttonText: 'Got it!',
+                        ));
+              },
+            )
+          ],
         ),
         backgroundColor: Colors.black,
         body: Center(
           child: ListView(
             children: <Widget>[
               Container(
+                  padding: EdgeInsets.only(top: 20, left: 20, right: 20),
+                  child: Card(
+                      color: Colors.white12,
+                      child: InkWell(
+                        child: Container(
+                          padding: EdgeInsets.all(10),
+                          child: Text(
+                            'GPA Calculator Settings',
+                            style:
+                                TextStyle(color: Colors.orange, fontSize: 20),
+                          ),
+                        ),
+                        onTap: () {
+                          Navigator.pushNamed(
+                              context, '/gpacalculatorsettings');
+                        },
+                      ))),
+              Container(
                 padding: EdgeInsets.only(
-                    top: termIdentifiersCountingTowardGPA.isEmpty ? 0 : 20,
+                    top: termIdentifiersCountingTowardGPA.isEmpty ? 0 : 10,
                     left: 20,
                     right: 20),
                 child: ConstrainedBox(
@@ -98,6 +147,13 @@ class _GPACalculatorSchoolYearState extends State<GPACalculatorSchoolYear> {
                 ),
               ),
               Container(
+                child: Text(
+                  'If your district shows your GPA in portfolio, then your GPA in portfolio is most likely without the current year.',
+                  style: TextStyle(color: Colors.orangeAccent, fontSize: 20),
+                ),
+                padding: EdgeInsets.all(10),
+              ),
+              Container(
                 padding: EdgeInsets.only(top: 10, left: 20, right: 20),
                 child: Card(
                     child:
@@ -107,8 +163,8 @@ class _GPACalculatorSchoolYearState extends State<GPACalculatorSchoolYear> {
               Container(
                 padding: EdgeInsets.only(top: 10, left: 20, right: 20),
                 child: Card(
-                    child:
-                    buildGradeDisplayWidget('4.0 GPA', getFinalGPA(averages)),
+                    child: buildGradeDisplayWidget(
+                        '4.0 GPA', getFinalGPA(averages)),
                     color: Colors.white12),
               ),
               Container(
@@ -133,17 +189,6 @@ class _GPACalculatorSchoolYearState extends State<GPACalculatorSchoolYear> {
                       )),
                 ),
               ),
-//              Container(
-//                  padding: EdgeInsets.only(top: 10, left: 20, right: 20),
-//                  child: Card(
-//                      color: Colors.white12,
-//                      child: InkWell(
-//                        child: Container(padding: EdgeInsets.all(10),child:Text('4.0 GPA Settings', style: TextStyle(color: Colors.orange, fontSize: 20),),),
-//                        onTap: () {
-//                          Navigator.pushNamed(
-//                              context, '/gpacalculator40scalesettings');
-//                        },
-//                      ))),
               Container(
                 child: Text(
                   'Select which school years count toward final GPA below. To modify which classes count toward GPA, click the arrow.',

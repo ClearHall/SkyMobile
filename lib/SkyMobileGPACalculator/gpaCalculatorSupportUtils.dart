@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:skymobile/SkyMobileHelperUtilities/globalVariables.dart';
 import 'package:skyscrapeapi/skywardAPITypes.dart';
 import 'package:skymobile/SkyMobileHelperUtilities/jsonSaver.dart';
@@ -32,6 +34,7 @@ import 'package:skymobile/SkyMobileHelperUtilities/jsonSaver.dart';
 
 List<double> getAveragesOfTermsCountingTowardGPA100PointScale(
     List<SchoolYear> enabledSchoolYears) {
+  _getClassLevelSettings();
   List<double> averagesRespeciveOfTerms = [];
   for (String term in termIdentifiersCountingTowardGPA) {
     double finalGrade = 0;
@@ -40,8 +43,7 @@ List<double> getAveragesOfTermsCountingTowardGPA100PointScale(
       if (schoolYear.terms.contains(Term(term, null))) {
         int indexOfTerm = schoolYear.terms.indexOf(Term(term, null));
         for (Class classYear in schoolYear.classes) {
-          int addOnPoints = determinePointsFromClassLevel(
-              classYear.classLevel ?? ClassLevel.Regular);
+          int addOnPoints = classLevels[classYear.classLevel ?? ClassLevel.Regular];
           if (addOnPoints >= 0) {
             if (indexOfTerm < classYear.grades.length) {
               double attemptedDoubleParse =
@@ -61,19 +63,22 @@ List<double> getAveragesOfTermsCountingTowardGPA100PointScale(
   return averagesRespeciveOfTerms;
 }
 
-int determinePointsFromClassLevel(ClassLevel level) {
-  //TODO: Let user decide the number of points to add for each level!
-  switch (level) {
-    case ClassLevel.AP:
-      return 10;
-    case ClassLevel.PreAP:
-      return 5;
-    case ClassLevel.Regular:
-      return 0;
-    case ClassLevel.None:
-      return -1;
-    default:
-      return -1;
+Map<ClassLevel, int> classLevels = Map.fromIterables(ClassLevel.values, [0, 5, 10, -1]);
+
+_saveClassLevelSettings() async {
+  JSONSaver jsonSaver = JSONSaver(FilesAvailable.classLevelValues);
+  List cLK = classLevels.keys.toList();
+  Map convertedToStringString = Map.fromIterables(List.generate(classLevels.keys.length, (e) => cLK[e].toString()), classLevels.values);
+  await jsonSaver.saveListData(convertedToStringString);
+}
+
+_getClassLevelSettings() async{
+  JSONSaver jsonSaver = JSONSaver(FilesAvailable.classLevelValues);
+  var _result = await jsonSaver.readListData();
+  if(_result.runtimeType == Map){
+    classLevels = _result;
+  }else{
+    _saveClassLevelSettings();
   }
 }
 
