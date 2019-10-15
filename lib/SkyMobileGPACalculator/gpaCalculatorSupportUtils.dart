@@ -1,36 +1,52 @@
-import 'dart:math';
-
 import 'package:skymobile/SkyMobileHelperUtilities/globalVariables.dart';
 import 'package:skyscrapeapi/skywardAPITypes.dart';
 import 'package:skymobile/SkyMobileHelperUtilities/jsonSaver.dart';
+import 'gpaCalculatorTypes.dart';
 
-//double get40ScaleGPA(List<SchoolYear> enabledSchoolYears){
-//  for (String term in termIdentifiersCountingTowardGPA) {
-//    double finalGrade = 0;
-//    double credits = 0;
-//    for (SchoolYear schoolYear in enabledSchoolYears) {
-//      if (schoolYear.terms.contains(Term(term, null))) {
-//        int indexOfTerm = schoolYear.terms.indexOf(Term(term, null));
-//        for (Class classYear in schoolYear.classes) {
-//          int addOnPoints = determinePointsFromClassLevel(
-//              classYear.classLevel ?? ClassLevel.Regular);
-//          if (addOnPoints >= 0) {
-//            if (indexOfTerm < classYear.grades.length) {
-//              double attemptedDoubleParse =
-//              double.tryParse(classYear.grades[indexOfTerm]);
-//              if (attemptedDoubleParse != null) {
-//                finalGrade += (attemptedDoubleParse + addOnPoints) *
-//                    (classYear.credits ?? 1.0);
-//                credits += classYear.credits ?? 1.0;
-//              }
-//            }
-//          }
-//        }
-//      }
-//    }
-//    averagesRespeciveOfTerms.add(credits > 0 ? finalGrade / credits : null);
-//  }
-//}
+double get40Scale(List<SchoolYear> enabledSchoolYears) {
+  _getClassLevelSettings();
+  bool shouldAdd = true;
+  GPA40ScaleRangeList rangeList =
+      GPA40ScaleRangeList(advanced: true, will433: true);
+  List<double> averagesRespeciveOfTerms = [];
+  for (String term in termIdentifiersCountingTowardGPA) {
+    double finalGrade = 0;
+    double credits = 0;
+    for (SchoolYear schoolYear in enabledSchoolYears) {
+      if (schoolYear.terms.contains(Term(term, null))) {
+        int indexOfTerm = schoolYear.terms.indexOf(Term(term, null));
+        for (Class classYear in schoolYear.classes) {
+          int addOnPoints =
+              classLevels[classYear.classLevel ?? ClassLevel.Regular];
+          if (addOnPoints >= 0) {
+            if (indexOfTerm < classYear.grades.length) {
+              double attemptedDoubleParse =
+                  double.tryParse(classYear.grades[indexOfTerm]);
+              if (attemptedDoubleParse != null) {
+                double creditHrs = (classYear.credits ?? 1.0) * 3.0;
+                double x =
+                    (rangeList.findGPAScale(attemptedDoubleParse.toInt()) +
+                        ((shouldAdd ? addOnPoints : 0 ) / 10.0));
+                finalGrade += x * creditHrs;
+                credits += creditHrs;
+              }
+            }
+          }
+        }
+      }
+    }
+    averagesRespeciveOfTerms.add(credits > 0 ? finalGrade / credits : null);
+  }
+  int ln = averagesRespeciveOfTerms.length;
+  return averagesRespeciveOfTerms.fold(0.0, (v, e) {
+        if (e != null)
+          return v + e;
+        else
+          ln--;
+        return v;
+      }) /
+      ln;
+}
 
 List<double> getAveragesOfTermsCountingTowardGPA100PointScale(
     List<SchoolYear> enabledSchoolYears) {
@@ -43,7 +59,8 @@ List<double> getAveragesOfTermsCountingTowardGPA100PointScale(
       if (schoolYear.terms.contains(Term(term, null))) {
         int indexOfTerm = schoolYear.terms.indexOf(Term(term, null));
         for (Class classYear in schoolYear.classes) {
-          int addOnPoints = classLevels[classYear.classLevel ?? ClassLevel.Regular];
+          int addOnPoints =
+              classLevels[classYear.classLevel ?? ClassLevel.Regular];
           if (addOnPoints >= 0) {
             if (indexOfTerm < classYear.grades.length) {
               double attemptedDoubleParse =
@@ -63,21 +80,24 @@ List<double> getAveragesOfTermsCountingTowardGPA100PointScale(
   return averagesRespeciveOfTerms;
 }
 
-Map<ClassLevel, int> classLevels = Map.fromIterables(ClassLevel.values, [0, 5, 10, -1]);
+Map<ClassLevel, int> classLevels =
+    Map.fromIterables(ClassLevel.values, [0, 5, 10, -1]);
 
 _saveClassLevelSettings() async {
   JSONSaver jsonSaver = JSONSaver(FilesAvailable.classLevelValues);
   List cLK = classLevels.keys.toList();
-  Map convertedToStringString = Map.fromIterables(List.generate(classLevels.keys.length, (e) => cLK[e].toString()), classLevels.values);
+  Map convertedToStringString = Map.fromIterables(
+      List.generate(classLevels.keys.length, (e) => cLK[e].toString()),
+      classLevels.values);
   await jsonSaver.saveListData(convertedToStringString);
 }
 
-_getClassLevelSettings() async{
+_getClassLevelSettings() async {
   JSONSaver jsonSaver = JSONSaver(FilesAvailable.classLevelValues);
   var _result = await jsonSaver.readListData();
-  if(_result.runtimeType == Map){
+  if (_result.runtimeType == Map) {
     classLevels = _result;
-  }else{
+  } else {
     _saveClassLevelSettings();
   }
 }

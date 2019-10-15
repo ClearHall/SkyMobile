@@ -164,7 +164,7 @@ class _GPACalculatorSchoolYearState extends State<GPACalculatorSchoolYear> {
                 padding: EdgeInsets.only(top: 10, left: 20, right: 20),
                 child: Card(
                     child: buildGradeDisplayWidget(
-                        '4.0 GPA', getFinalGPA(averages)),
+                        '4.0 GPA', get40Scale(enabledSchoolYears)),
                     color: Colors.white12),
               ),
               Container(

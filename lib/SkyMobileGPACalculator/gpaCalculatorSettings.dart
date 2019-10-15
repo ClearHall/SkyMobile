@@ -39,7 +39,7 @@ class _GPACalculatorSettingsState extends State<GPACalculatorSettings> {
                         "POP",
                         style: TextStyle(color: Colors.orange, fontSize: 20),
                       ),
-                      padding: EdgeInsets.all(10),
+                      padding: EdgeInsets.all(20),
                     ),
                     color: Colors.white12),
                 padding:
@@ -49,4 +49,6 @@ class _GPACalculatorSettingsState extends State<GPACalculatorSettings> {
           ),
         ));
   }
+
+  //Widget _generateSettingsClickable(String setting, )
 }
