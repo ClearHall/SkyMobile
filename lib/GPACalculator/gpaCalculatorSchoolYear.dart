@@ -2,10 +2,10 @@ import 'dart:collection';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:skymobile/SkyMobileHelperUtilities/customDialogOptions.dart';
+import 'package:skymobile/HelperUtilities/customDialogOptions.dart';
 import 'package:skyscrapeapi/skywardAPITypes.dart';
-import 'package:skymobile/SkyMobileHelperUtilities/globalVariables.dart';
-import 'package:skymobile/SkyMobileHelperUtilities/alwaysVisibleScrollbar.dart';
+import 'package:skymobile/HelperUtilities/globalVariables.dart';
+import 'package:skymobile/HelperUtilities/alwaysVisibleScrollbar.dart';
 import 'gpaCalculatorSupportUtils.dart';
 
 class GPACalculatorSchoolYear extends StatefulWidget {
@@ -21,6 +21,7 @@ class _GPACalculatorSchoolYearState extends State<GPACalculatorSchoolYear> {
   void initState() {
     super.initState();
 
+    getExtraGPASettings();
     if (historyGrades == null) historyGrades = [];
     _updateFirstInList(basedOn: historyGrades.first);
   }
@@ -51,11 +52,12 @@ class _GPACalculatorSchoolYearState extends State<GPACalculatorSchoolYear> {
       historyGrades[0] = first;
     }
 
-    if(basedOn != null && basedOn == historyGrades[0]){
+    if(basedOn != null && basedOn == historyGrades[0] && basedOn.classes.length == historyGrades[0].classes.length){
       for(int i = 0; i < basedOn.classes.length; i++){
         historyGrades[0].classes[i].classLevel = basedOn.classes[i].classLevel;
         historyGrades[0].classes[i].credits = basedOn.classes[i].credits;
       }
+      historyGrades[0].isEnabled = basedOn.isEnabled;
     }
   }
 

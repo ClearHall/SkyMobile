@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:skyscrapeapi/skywardAPITypes.dart';
-import 'package:skymobile/SkyMobileHelperUtilities/globalVariables.dart';
+import 'package:skymobile/HelperUtilities/globalVariables.dart';
 import 'gpaCalculatorSupportUtils.dart';
 
 class GPACalculatorClasses extends StatefulWidget {

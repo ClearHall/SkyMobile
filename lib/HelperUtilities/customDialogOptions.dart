@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:skymobile/SkyMobileHelperUtilities/accountTypes.dart';
 import 'package:skyscrapeapi/skywardDistrictSearcher.dart';
 import 'package:skyscrapeapi/skywardAPITypes.dart';
 import '../main.dart';
 import 'globalVariables.dart';
-import 'jsonSaver.dart';
 
 class DialogColorMode {
   static Color getBackgroundColor() {

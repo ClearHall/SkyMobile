@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:skyscrapeapi/skywardAPICore.dart';
-import 'package:skymobile/SkywardNavViews/termGradeViewer.dart';
-import 'SkyMobileHelperUtilities/customDialogOptions.dart';
-import 'SkyMobileHelperUtilities/globalVariables.dart';
-import 'package:skymobile/SkywardNavViews/assignmentInfoViewer.dart';
-import 'package:skymobile/SkywardNavViews/assignmentsViewer.dart';
+import 'package:skymobile/Navigation//termGradeViewer.dart';
+import 'HelperUtilities/customDialogOptions.dart';
+import 'HelperUtilities/globalVariables.dart';
+import 'package:skymobile/Navigation/assignmentInfoViewer.dart';
+import 'package:skymobile/Navigation/assignmentsViewer.dart';
 import 'package:skyscrapeapi/skywardDistrictSearcher.dart';
 import 'package:skyscrapeapi/skywardAPITypes.dart';
-import 'package:skymobile/SkyMobileHelperUtilities/accountTypes.dart';
-import 'package:skymobile/SkyMobileHelperUtilities/jsonSaver.dart';
-import 'package:skymobile/SkyMobileGPACalculator/gpaCalculatorSchoolYear.dart';
-import 'package:skymobile/SkyMobileGPACalculator/gpaCalculatorClasses.dart';
-import 'package:skymobile/SkyMobileGPACalculator/gpaCalculatorSettings.dart';
+import 'package:skymobile/HelperUtilities/accountTypes.dart';
+import 'package:skymobile/HelperUtilities/jsonSaver.dart';
+import 'package:skymobile/GPACalculator/gpaCalculatorSchoolYear.dart';
+import 'package:skymobile/GPACalculator/gpaCalculatorClasses.dart';
+import 'package:skymobile/GPACalculator/gpaCalculatorSettings.dart';
 
 void main() => runApp(MyApp());
 

@@ -62,6 +62,8 @@ class JSONSaver {
           retrievedJSONCoded.forEach((key, val) {
             mapOfTargetedObject[ClassLevel.values.firstWhere((e) => e.toString() == key)] = val;
           });
+        }else if(fileName == FilesAvailable.gpaExtraSettings){
+          mapOfTargetedObject = retrievedJSONCoded;
         }
         return mapOfTargetedObject;
       }
@@ -71,4 +73,4 @@ class JSONSaver {
   }
 }
 
-enum FilesAvailable { accounts, gpaCalculatorSettings, gpaSelectedTerms, classLevelValues }
+enum FilesAvailable { accounts, gpaCalculatorSettings, gpaSelectedTerms, classLevelValues, gpaExtraSettings }

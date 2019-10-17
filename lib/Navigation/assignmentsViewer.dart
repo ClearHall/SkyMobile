@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:skyscrapeapi/skywardAPITypes.dart';
-import 'package:skymobile/SkyMobileHelperUtilities/globalVariables.dart';
-import 'package:skymobile/SkyMobileHelperUtilities/customDialogOptions.dart';
+import 'package:skymobile/HelperUtilities/globalVariables.dart';
+import 'package:skymobile/HelperUtilities/customDialogOptions.dart';
 
 class AssignmentsViewer extends StatefulWidget {
   MaterialColor secondColor;

@@ -1,13 +1,15 @@
-import 'package:skymobile/SkyMobileHelperUtilities/globalVariables.dart';
+import 'package:skymobile/HelperUtilities/globalVariables.dart';
 import 'package:skyscrapeapi/skywardAPITypes.dart';
-import 'package:skymobile/SkyMobileHelperUtilities/jsonSaver.dart';
+import 'package:skymobile/HelperUtilities//jsonSaver.dart';
 import 'gpaCalculatorTypes.dart';
+
+Map<String, dynamic> extraGPASettings = Map.fromIterables(['Use 4.33 for A+', 'Weighted 4.0'], [Map.fromIterables(['description', 'option'], ['College Board uses 4.0 for A+, but sometimes 4.33 is used.', false]), Map.fromIterables(['description', 'option'], ['Weighted GPA. Your district may or may not send weighted GPA to colleges. Fort Bend ISD sends unweighted.', false])]);
 
 double get40Scale(List<SchoolYear> enabledSchoolYears) {
   _getClassLevelSettings();
-  bool shouldAdd = true;
+  bool shouldAdd = false;
   GPA40ScaleRangeList rangeList =
-      GPA40ScaleRangeList(advanced: true, will433: true);
+      GPA40ScaleRangeList(advanced: true, will433: false);
   List<double> averagesRespeciveOfTerms = [];
   for (String term in termIdentifiersCountingTowardGPA) {
     double finalGrade = 0;
@@ -141,4 +143,19 @@ getTermsToRead() async {
 saveTermsToRead() async {
   JSONSaver jsonSaver = JSONSaver(FilesAvailable.gpaSelectedTerms);
   await jsonSaver.saveListData(termIdentifiersCountingTowardGPA);
+}
+
+getExtraGPASettings() async {
+  JSONSaver jsonSaver = JSONSaver(FilesAvailable.gpaExtraSettings);
+  var retrieved = await jsonSaver.readListData();
+  if(retrieved is Map){
+    extraGPASettings = retrieved;
+  }else{
+
+  }
+}
+
+saveExtraGPASettings() async {
+  JSONSaver jsonSaver = JSONSaver(FilesAvailable.gpaExtraSettings);
+  jsonSaver.saveListData(extraGPASettings);
 }
