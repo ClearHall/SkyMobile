@@ -1,5 +1,6 @@
 import 'package:skyscrapeapi/skywardAPICore.dart';
 import 'package:skyscrapeapi/skywardAPITypes.dart';
+import 'themeColorManager.dart';
 import 'package:flutter/material.dart';
 
 SkywardAPICore skywardAPI;
@@ -9,6 +10,7 @@ List<GridBox> gradeBoxes;
 List<AssignmentsGridBox> assignmentsGridBoxes;
 List<AssignmentInfoBox> assignmentInfoBoxes;
 List<SchoolYear> historyGrades;
+ThemeManager themeManager = ThemeManager();
 
 List<String> termIdentifiersCountingTowardGPA = ['S1', 'S2'];
 

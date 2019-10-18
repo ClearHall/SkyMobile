@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:skymobile/HelperUtilities/themeColorManager.dart';
 import 'package:skyscrapeapi/skywardAPITypes.dart';
 import 'package:skymobile/HelperUtilities/globalVariables.dart';
 import 'package:skymobile/HelperUtilities/customDialogOptions.dart';
@@ -100,8 +101,8 @@ class _AssignmentsViewerState extends State<AssignmentsViewer> {
                           style: TextStyle(
                               color: isBoxCatHeader
                                   ? secondContNeeded
-                                      ? Colors.orange[400]
-                                      : Colors.lightBlueAccent
+                                      ? themeManager.getColor(TypeOfWidget.text)
+                                      : themeManager.getColor(TypeOfWidget.button)
                                   : Colors.white,
                               fontSize: isBoxCatHeader ? 20 : 15),
                           textAlign: TextAlign.start,
@@ -118,7 +119,7 @@ class _AssignmentsViewerState extends State<AssignmentsViewer> {
                               alignment: Alignment.centerLeft,
                               child: Text((box as CategoryHeader).weight,
                                   style: TextStyle(
-                                      color: Colors.orange[400], fontSize: 15),
+                                      color: themeManager.getColor(TypeOfWidget.text), fontSize: 15),
                                   textAlign: TextAlign.start),
                             )
                           : Container(
@@ -141,13 +142,13 @@ class _AssignmentsViewerState extends State<AssignmentsViewer> {
                 ),
               ],
             )),
-        color: Colors.white12,
+        color: themeManager.getColor(TypeOfWidget.subBackground),
       ));
     }
 
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.blueAccent,
+        backgroundColor: themeManager.getColor(TypeOfWidget.button),
         title: Text(courseName != null ? courseName : 'Assignments',
             textAlign: TextAlign.center,
             style: TextStyle(

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:skymobile/HelperUtilities/themeColorManager.dart';
 import 'package:skyscrapeapi/skywardAPITypes.dart';
 import 'package:skymobile/HelperUtilities/globalVariables.dart';
 
@@ -24,7 +25,7 @@ class _AssignmentInfoViewerState extends State<AssignmentInfoViewer> {
     for (AssignmentInfoBox box in assignmentInfoBoxes) {
       String uiMessage = box.getUIMessage();
       body.add(Card(
-        color: Colors.white10,
+        color: themeManager.getColor(TypeOfWidget.subBackground),
         child: Container(
           alignment: Alignment.centerLeft,
           constraints: BoxConstraints(
@@ -34,7 +35,7 @@ class _AssignmentInfoViewerState extends State<AssignmentInfoViewer> {
             uiMessage,
             maxLines: 2,
             overflow: TextOverflow.ellipsis,
-            style: TextStyle(color: Colors.orange, fontSize: 20),
+            style: TextStyle(color: themeManager.getColor(TypeOfWidget.text), fontSize: 20),
             textAlign: TextAlign.start,
           ),
         ),
@@ -43,7 +44,7 @@ class _AssignmentInfoViewerState extends State<AssignmentInfoViewer> {
 
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.blueAccent,
+        backgroundColor: themeManager.getColor(TypeOfWidget.button),
         title: Text(courseName != null ? courseName : 'Assignments',
             textAlign: TextAlign.center,
             style: TextStyle(

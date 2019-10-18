@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:skymobile/Settings/settingsWidgetGenerator.dart';
+import 'package:skymobile/HelperUtilities/settingsWidgetGenerator.dart';
 import 'gpaCalculatorSupportUtils.dart';
 
 class GPACalculatorSettings extends StatefulWidget {

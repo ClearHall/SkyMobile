@@ -1,22 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:skymobile/HelperUtilities/themeColorManager.dart';
 import 'package:skyscrapeapi/skywardDistrictSearcher.dart';
 import 'package:skyscrapeapi/skywardAPITypes.dart';
 import '../main.dart';
 import 'globalVariables.dart';
-
-class DialogColorMode {
-  static Color getBackgroundColor() {
-    return Colors.black;
-  }
-
-  static Color getDialogOrWidgetColor() {
-    return Color.fromARGB(255, 21, 21, 21);
-  }
-
-  static Color getTextColor() {
-    return Colors.white;
-  }
-}
 
 class HuntyDialog extends StatelessWidget {
   final String title, description, buttonText;
@@ -201,21 +188,21 @@ class _HuntyDistrictSearcherWidgetState
       Text(
         title,
         style: TextStyle(
-            fontSize: 24.0, fontWeight: FontWeight.w700, color: Colors.blue),
+            fontSize: 24.0, fontWeight: FontWeight.w700, color: themeManager.getColor(TypeOfWidget.button)),
       ),
       SizedBox(height: 16.0),
       Text(
         description,
         textAlign: TextAlign.center,
         style: TextStyle(
-          color: DialogColorMode.getTextColor(),
+          color: Colors.white,
           fontSize: 16.0,
         ),
       ),
       SizedBox(height: 10.0),
       new Theme(
           data: Theme.of(context)
-              .copyWith(canvasColor: DialogColorMode.getDialogOrWidgetColor()),
+              .copyWith(canvasColor: themeManager.getColor(TypeOfWidget.background)),
           child: DropdownButton<String>(
             items: SkywardDistrictSearcher.states
                 .map<DropdownMenuItem<String>>((SkywardSearchState value) {
@@ -223,7 +210,7 @@ class _HuntyDistrictSearcherWidgetState
                 value: value.stateID,
                 child: Text(
                   value.stateName,
-                  style: TextStyle(color: DialogColorMode.getTextColor()),
+                  style: TextStyle(color: Colors.white),
                 ),
               );
             }).toList(),
@@ -239,21 +226,17 @@ class _HuntyDistrictSearcherWidgetState
         child: TextField(
           textAlign: TextAlign.center,
           controller: textController,
-          style: TextStyle(color: DialogColorMode.getTextColor()),
-//          onSubmitted: (String a) {
-//            Navigator.of(context).pop();
-//            okPressed();
-//          },
+          style: TextStyle(color: themeManager.getColor(TypeOfWidget.text)),
           decoration: InputDecoration(
               hintText: 'District Search',
-              hintStyle: TextStyle(color: Colors.white),
+              hintStyle: TextStyle(color: Colors.white70),
               enabledBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(50.0),
-                  borderSide: BorderSide(color: Colors.blue)),
+                  borderSide: BorderSide(color: themeManager.getColor(TypeOfWidget.text))),
               border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(50.0),
                   borderSide:
-                      BorderSide(color: DialogColorMode.getTextColor()))),
+                      BorderSide(color: themeManager.getColor(TypeOfWidget.button)))),
         ),
       ),
       messages != null ? messages : Container(),
@@ -271,7 +254,7 @@ class _HuntyDistrictSearcherWidgetState
               },
               child: Text(
                 'Exit',
-                style: TextStyle(color: Colors.orange),
+                style: TextStyle(color: Colors.red),
               ),
             )),
         Align(
@@ -315,13 +298,13 @@ class _HuntyDistrictSearcherWidgetState
           padding: EdgeInsets.only(top: 30.0, bottom: 16, left: 15, right: 16),
           margin: EdgeInsets.only(top: 20),
           decoration: new BoxDecoration(
-            border: Border.all(color: Colors.orange),
-            color: DialogColorMode.getDialogOrWidgetColor(),
+            border: Border.all(color: themeManager.getColor(TypeOfWidget.text)),
+            color: themeManager.getColor(TypeOfWidget.background),
             shape: BoxShape.rectangle,
             borderRadius: BorderRadius.circular(16),
             boxShadow: [
               BoxShadow(
-                color: DialogColorMode.getBackgroundColor(),
+                color: themeManager.getColor(TypeOfWidget.background),
                 blurRadius: 10.0,
                 offset: const Offset(0.0, 10.0),
               ),

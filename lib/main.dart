@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:skymobile/HelperUtilities/themeColorManager.dart';
 import 'package:skyscrapeapi/skywardAPICore.dart';
 import 'package:skymobile/Navigation//termGradeViewer.dart';
 import 'HelperUtilities/customDialogOptions.dart';
@@ -252,7 +253,7 @@ class MyHomePageState extends State<MyHomePage> {
             child: Material(
               color: Colors.transparent,
               child: InkWell(
-                  splashColor: Colors.orangeAccent,
+                  splashColor: themeManager.getColor(TypeOfWidget.button),
                   borderRadius: BorderRadius.circular(16),
                   onTap:
                       !(accounts.length > 0 && accounts.first.district == null)
@@ -266,20 +267,20 @@ class MyHomePageState extends State<MyHomePage> {
                     alignment: Alignment.center,
                     decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(16.0),
-                        border: Border.all(color: Colors.blueAccent, width: 2)),
+                        border: Border.all(color: themeManager.getColor(TypeOfWidget.text), width: 2)),
                     child: accounts.length > 0 &&
                             accounts.first.district == null
                         ? ListTile(
                             title: Text(
                             acc.nick,
                             style: new TextStyle(
-                                fontSize: 20.0, color: Colors.blueAccent),
+                                fontSize: 20.0, color: themeManager.getColor(TypeOfWidget.text)),
                           ))
                         : ListTile(
                             title: Text(
                               acc.nick,
                               style: new TextStyle(
-                                  fontSize: 20.0, color: Colors.blueAccent),
+                                  fontSize: 20.0, color: themeManager.getColor(TypeOfWidget.text)),
                             ),
                             trailing: Row(
                               mainAxisSize: MainAxisSize.min,
@@ -356,7 +357,7 @@ class MyHomePageState extends State<MyHomePage> {
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(15.0),
             ),
-            color: Colors.white10,
+            color: themeManager.getColor(TypeOfWidget.subBackground),
             child: Column(
               children: <Widget>[
                 widget.length > 5
@@ -378,7 +379,7 @@ class MyHomePageState extends State<MyHomePage> {
                     child: Material(
                       color: Colors.transparent,
                       child: InkWell(
-                          splashColor: Colors.orangeAccent,
+                          splashColor: themeManager.getColor(TypeOfWidget.text),
                           borderRadius: BorderRadius.circular(16),
                           onTap: () => {
                                 setState(() {
@@ -392,11 +393,11 @@ class MyHomePageState extends State<MyHomePage> {
                             decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(16.0),
                                 border: Border.all(
-                                    color: Colors.orangeAccent, width: 2)),
+                                    color: themeManager.getColor(TypeOfWidget.button), width: 2)),
                             child: new Text(
                               'Credential Login',
                               style: new TextStyle(
-                                  fontSize: 20.0, color: Colors.orangeAccent),
+                                  fontSize: 20.0, color: themeManager.getColor(TypeOfWidget.button)),
                             ),
                           )),
                     )),
@@ -443,14 +444,14 @@ class MyHomePageState extends State<MyHomePage> {
                     decoration: InputDecoration(
                         contentPadding: const EdgeInsets.all(18),
                         labelText: "Username",
-                        labelStyle: TextStyle(color: Colors.blue),
+                        labelStyle: TextStyle(color: themeManager.getColor(TypeOfWidget.text)),
                         enabledBorder: OutlineInputBorder(
                             borderSide:
-                                BorderSide(color: Colors.blue, width: 2),
+                                BorderSide(color: themeManager.getColor(TypeOfWidget.text), width: 2),
                             borderRadius: BorderRadius.circular(16)),
                         focusedBorder: OutlineInputBorder(
                             borderSide:
-                                BorderSide(color: Colors.blue, width: 2),
+                                BorderSide(color: themeManager.getColor(TypeOfWidget.text), width: 2),
                             borderRadius: BorderRadius.circular(16))),
                     onFieldSubmitted: (v) {
                       FocusScope.of(context).requestFocus(focus);
@@ -468,14 +469,14 @@ class MyHomePageState extends State<MyHomePage> {
                     decoration: InputDecoration(
                         contentPadding: const EdgeInsets.all(18),
                         labelText: "Password",
-                        labelStyle: TextStyle(color: Colors.blue),
+                        labelStyle: TextStyle(color: themeManager.getColor(TypeOfWidget.text)),
                         enabledBorder: OutlineInputBorder(
                             borderSide:
-                                BorderSide(color: Colors.blue, width: 2),
+                                BorderSide(color: themeManager.getColor(TypeOfWidget.text), width: 2),
                             borderRadius: BorderRadius.circular(16)),
                         focusedBorder: OutlineInputBorder(
                             borderSide:
-                                BorderSide(color: Colors.blue, width: 2),
+                                BorderSide(color: themeManager.getColor(TypeOfWidget.text), width: 2),
                             borderRadius: BorderRadius.circular(16))),
                     onFieldSubmitted: (v) {
                       //if(!focus.hasPrimaryFocus){
@@ -489,7 +490,7 @@ class MyHomePageState extends State<MyHomePage> {
                   child: Material(
                     color: Colors.transparent,
                     child: InkWell(
-                        splashColor: Colors.orangeAccent,
+                        splashColor: themeManager.getColor(TypeOfWidget.button),
                         borderRadius: BorderRadius.circular(16),
                         onTap: () => {
                               focus.unfocus(),
@@ -502,11 +503,11 @@ class MyHomePageState extends State<MyHomePage> {
                           decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(16.0),
                               border: Border.all(
-                                  color: Colors.orangeAccent, width: 2)),
+                                  color: themeManager.getColor(TypeOfWidget.button), width: 2)),
                           child: new Text(
                             'Submit',
                             style: new TextStyle(
-                                fontSize: 20.0, color: Colors.orangeAccent),
+                                fontSize: 20.0, color: themeManager.getColor(TypeOfWidget.button)),
                           ),
                         )),
                   )),
@@ -516,7 +517,7 @@ class MyHomePageState extends State<MyHomePage> {
                   child: Material(
                     color: Colors.transparent,
                     child: InkWell(
-                        splashColor: Colors.orangeAccent,
+                        splashColor: themeManager.getColor(TypeOfWidget.button),
                         borderRadius: BorderRadius.circular(16),
                         onTap: () => {_showDialog()},
                         child: Container(
@@ -525,11 +526,11 @@ class MyHomePageState extends State<MyHomePage> {
                           decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(16.0),
                               border: Border.all(
-                                  color: Colors.orangeAccent, width: 2)),
+                                  color: themeManager.getColor(TypeOfWidget.button), width: 2)),
                           child: new Text(
                             'Search District',
                             style: new TextStyle(
-                                fontSize: 20.0, color: Colors.orangeAccent),
+                                fontSize: 20.0, color: themeManager.getColor(TypeOfWidget.button)),
                           ),
                         )),
                   )),
@@ -539,7 +540,7 @@ class MyHomePageState extends State<MyHomePage> {
                   child: Material(
                     color: Colors.transparent,
                     child: InkWell(
-                        splashColor: Colors.orangeAccent,
+                        splashColor: themeManager.getColor(TypeOfWidget.text),
                         borderRadius: BorderRadius.circular(16),
                         onTap: () => {
                               setState(() {
@@ -553,11 +554,11 @@ class MyHomePageState extends State<MyHomePage> {
                           decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(16.0),
                               border: Border.all(
-                                  color: Colors.orangeAccent, width: 2)),
+                                  color: themeManager.getColor(TypeOfWidget.button), width: 2)),
                           child: new Text(
                             'Choose Accounts',
                             style: new TextStyle(
-                                fontSize: 20.0, color: Colors.orangeAccent),
+                                fontSize: 20.0, color: themeManager.getColor(TypeOfWidget.button)),
                           ),
                         )),
                   )),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:skymobile/HelperUtilities/themeColorManager.dart';
 import 'package:skyscrapeapi/skywardAPITypes.dart';
 import 'package:skymobile/HelperUtilities/globalVariables.dart';
 import 'package:skymobile/HelperUtilities/customDialogOptions.dart';
@@ -173,7 +174,7 @@ class _TermViewer extends State<TermViewerPage> {
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                             style: TextStyle(
-                                color: Colors.orange,
+                                color: themeManager.getColor(TypeOfWidget.text),
                                 fontSize: 20,
                                 fontWeight: FontWeight.w700),
                             textAlign: TextAlign.start,
@@ -256,12 +257,12 @@ class _TermViewer extends State<TermViewerPage> {
                     }
                   },
                   itemBuilder: (_) => <PopupMenuItem<String>>[
-//                    PopupMenuItem<String>(
-//                        child: const Text(
-//                          'Settings',
-//                          style: TextStyle(color: Colors.white),
-//                        ),
-//                        value: 'settings'),
+                    PopupMenuItem<String>(
+                        child: const Text(
+                          'Settings',
+                          style: TextStyle(color: Colors.white),
+                        ),
+                        value: 'settings'),
                     PopupMenuItem<String>(
                         child: const Text(
                           'GPA Calculator',
@@ -284,7 +285,7 @@ class _TermViewer extends State<TermViewerPage> {
           Container(
             child: InkWell(
               child: Card(
-                color: Colors.orangeAccent,
+                color: themeManager.getColor(TypeOfWidget.text),
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(30)),
                 child: Container(

@@ -3,6 +3,7 @@ import 'dart:collection';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:skymobile/HelperUtilities/customDialogOptions.dart';
+import 'package:skymobile/HelperUtilities/themeColorManager.dart';
 import 'package:skyscrapeapi/skywardAPITypes.dart';
 import 'package:skymobile/HelperUtilities/globalVariables.dart';
 import 'package:skymobile/HelperUtilities/alwaysVisibleScrollbar.dart';
@@ -82,7 +83,7 @@ class _GPACalculatorSchoolYearState extends State<GPACalculatorSchoolYear> {
 
     return Scaffold(
         appBar: AppBar(
-          backgroundColor: Colors.lightBlue,
+          backgroundColor: themeManager.getColor(TypeOfWidget.button),
           title: Text('GPA Calculator',
               textAlign: TextAlign.center,
               style: TextStyle(
@@ -108,21 +109,21 @@ class _GPACalculatorSchoolYearState extends State<GPACalculatorSchoolYear> {
             )
           ],
         ),
-        backgroundColor: Colors.black,
+        backgroundColor: themeManager.getColor(TypeOfWidget.background),
         body: Center(
           child: ListView(
             children: <Widget>[
               Container(
                   padding: EdgeInsets.only(top: 20, left: 20, right: 20),
                   child: Card(
-                      color: Colors.white12,
+                      color: themeManager.getColor(TypeOfWidget.subBackground),
                       child: InkWell(
                         child: Container(
                           padding: EdgeInsets.all(10),
                           child: Text(
                             'GPA Calculator Settings',
                             style:
-                                TextStyle(color: Colors.orange, fontSize: 20),
+                                TextStyle(color: themeManager.getColor(TypeOfWidget.text), fontSize: 20),
                           ),
                         ),
                         onTap: () {
@@ -139,7 +140,7 @@ class _GPACalculatorSchoolYearState extends State<GPACalculatorSchoolYear> {
                   constraints: BoxConstraints(maxHeight: 100),
                   child: Card(
                       //shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-                      color: Colors.white12,
+                      color: themeManager.getColor(TypeOfWidget.subBackground),
                       child: SingleChildScrollViewWithScrollbar(
                         scrollbarColor: Colors.white30.withOpacity(0.75),
                         scrollbarThickness: 8.0,
@@ -151,7 +152,7 @@ class _GPACalculatorSchoolYearState extends State<GPACalculatorSchoolYear> {
               Container(
                 child: Text(
                   'If your district shows your GPA in portfolio, then your GPA in portfolio is most likely without the current year.',
-                  style: TextStyle(color: Colors.orangeAccent, fontSize: 20),
+                  style: TextStyle(color: themeManager.getColor(TypeOfWidget.text), fontSize: 20),
                 ),
                 padding: EdgeInsets.all(10),
               ),
@@ -160,19 +161,19 @@ class _GPACalculatorSchoolYearState extends State<GPACalculatorSchoolYear> {
                 child: Card(
                     child:
                         buildGradeDisplayWidget('GPA', getFinalGPA(averages)),
-                    color: Colors.white12),
+                    color: themeManager.getColor(TypeOfWidget.subBackground)),
               ),
               Container(
                 padding: EdgeInsets.only(top: 10, left: 20, right: 20),
                 child: Card(
                     child: buildGradeDisplayWidget(
                         '4.0 GPA', get40Scale(enabledSchoolYears)),
-                    color: Colors.white12),
+                    color: themeManager.getColor(TypeOfWidget.subBackground)),
               ),
               Container(
                 child: Text(
                   'Select the terms below that should count toward your final GPA.',
-                  style: TextStyle(color: Colors.orangeAccent, fontSize: 20),
+                  style: TextStyle(color: themeManager.getColor(TypeOfWidget.text), fontSize: 20),
                 ),
                 padding: EdgeInsets.all(10),
               ),
@@ -182,7 +183,7 @@ class _GPACalculatorSchoolYearState extends State<GPACalculatorSchoolYear> {
                   constraints: BoxConstraints(maxHeight: 200),
                   child: Card(
                       //shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-                      color: Colors.white12,
+                      color: themeManager.getColor(TypeOfWidget.subBackground),
                       child: SingleChildScrollViewWithScrollbar(
                         scrollbarColor: Colors.white30.withOpacity(0.75),
                         scrollbarThickness: 8.0,
@@ -194,7 +195,7 @@ class _GPACalculatorSchoolYearState extends State<GPACalculatorSchoolYear> {
               Container(
                 child: Text(
                   'Select which school years count toward final GPA below. To modify which classes count toward GPA, click the arrow.',
-                  style: TextStyle(color: Colors.orangeAccent, fontSize: 20),
+                  style: TextStyle(color: themeManager.getColor(TypeOfWidget.text), fontSize: 20),
                 ),
                 padding: EdgeInsets.all(10),
               ),
@@ -206,7 +207,7 @@ class _GPACalculatorSchoolYearState extends State<GPACalculatorSchoolYear> {
                     // constraints: BoxConstraints(maxHeight: 100),
                     child: Card(
                         //shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-                        color: Colors.white12,
+                        color: themeManager.getColor(TypeOfWidget.subBackground),
                         child: buildArrayOfSchoolYears())),
               ),
             ],
@@ -223,7 +224,7 @@ class _GPACalculatorSchoolYearState extends State<GPACalculatorSchoolYear> {
           child: ListTile(
             title: Text(
               "$term",
-              style: TextStyle(color: Colors.orange, fontSize: 20),
+              style: TextStyle(color: themeManager.getColor(TypeOfWidget.text), fontSize: 20),
             ),
             trailing: IconButton(
               icon: Icon(
@@ -291,14 +292,14 @@ class _GPACalculatorSchoolYearState extends State<GPACalculatorSchoolYear> {
               top: 5.0,
               bottom: i == historyGrades.length - 1 ? 5 : 0),
           child: Card(
-              color: Colors.black,
+              color: themeManager.getColor(TypeOfWidget.background),
               child: ListTile(
                   title: Container(
                     width: double.infinity,
                     padding: EdgeInsets.only(top: 5, bottom: 5),
                     child: Text(
                       "${i == 0 ? 'Current: ' : ''}${historyGrades[i].description}",
-                      style: TextStyle(color: Colors.orange, fontSize: 20),
+                      style: TextStyle(color: themeManager.getColor(TypeOfWidget.text), fontSize: 20),
                     ),
                   ),
                   trailing:
@@ -382,7 +383,7 @@ class _GPACalculatorSchoolYearState extends State<GPACalculatorSchoolYear> {
       width: double.infinity,
       child: Text(
         "$term: ${grade.toString() != 'null' ? grade.toString() : 'N/A'}",
-        style: TextStyle(color: Colors.orange, fontSize: 20),
+        style: TextStyle(color: themeManager.getColor(TypeOfWidget.text), fontSize: 20),
       ),
       padding: EdgeInsets.only(left: 10, top: 10, right: 10, bottom: 10),
     );
