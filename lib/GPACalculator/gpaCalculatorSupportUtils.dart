@@ -3,13 +3,34 @@ import 'package:skyscrapeapi/skywardAPITypes.dart';
 import 'package:skymobile/HelperUtilities//jsonSaver.dart';
 import 'gpaCalculatorTypes.dart';
 
-Map<String, dynamic> extraGPASettings = Map.fromIterables(['Use 4.33 for A+', 'Weighted 4.0'], [Map.fromIterables(['description', 'option'], ['College Board uses 4.0 for A+, but sometimes 4.33 is used.', false]), Map.fromIterables(['description', 'option'], ['Weighted GPA. Your district may or may not send weighted GPA to colleges. Fort Bend ISD sends unweighted.', false])]);
+Map<String, dynamic> extraGPASettings = Map.fromIterables([
+  'Advanced 4.0 GPA',
+  'Use 4.33 for A+',
+  'Weighted 4.0'
+], [
+  Map.fromIterables([
+    'description',
+    'option'
+  ], [
+    '4.0 GPA is usually calculated with the Advanced mode on. It calculates your GPA with + and - and more advanced intervals. All the intervals are from College Board.',
+    true
+  ]),
+  Map.fromIterables(['description', 'option'],
+      ['College Board uses 4.0 for A+, but sometimes 4.33 is used.', false]),
+  Map.fromIterables([
+    'description',
+    'option'
+  ], [
+    'Weighted GPA. Your district may or may not send weighted GPA to colleges. Fort Bend ISD sends unweighted.',
+    false
+  ])
+]);
 
 double get40Scale(List<SchoolYear> enabledSchoolYears) {
   _getClassLevelSettings();
-  bool shouldAdd = false;
+  bool shouldAdd = extraGPASettings['Weighted 4.0']['option'];
   GPA40ScaleRangeList rangeList =
-      GPA40ScaleRangeList(advanced: true, will433: false);
+      GPA40ScaleRangeList(advanced: extraGPASettings['Advanced 4.0 GPA']['option'], will433: extraGPASettings['Use 4.33 for A+']['option']);
   List<double> averagesRespeciveOfTerms = [];
   for (String term in termIdentifiersCountingTowardGPA) {
     double finalGrade = 0;
@@ -28,7 +49,7 @@ double get40Scale(List<SchoolYear> enabledSchoolYears) {
                 double creditHrs = (classYear.credits ?? 1.0) * 3.0;
                 double x =
                     (rangeList.findGPAScale(attemptedDoubleParse.toInt()) +
-                        ((shouldAdd ? addOnPoints : 0 ) / 10.0));
+                        ((shouldAdd ? addOnPoints : 0) / 10.0));
                 finalGrade += x * creditHrs;
                 credits += creditHrs;
               }
@@ -148,11 +169,9 @@ saveTermsToRead() async {
 getExtraGPASettings() async {
   JSONSaver jsonSaver = JSONSaver(FilesAvailable.gpaExtraSettings);
   var retrieved = await jsonSaver.readListData();
-  if(retrieved is Map){
+  if (retrieved is Map) {
     extraGPASettings = retrieved;
-  }else{
-
-  }
+  } else {}
 }
 
 saveExtraGPASettings() async {

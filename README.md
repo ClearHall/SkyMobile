@@ -10,6 +10,15 @@ Join the SkyMobile discord server [here](https://discord.gg/Hqvann5).
 
 # Changelog
 
+### V1.1 Release
+
+- Fixes bugs in the GPA Calculator
+- Added "out of" score if integer and double grade isn't found for iOS (Already added in Android)
+- 4.0 GPA Added
+- GPA Calculator Settings for 4.0 GPA: Advanced, 4.33, and weighted
+- Fixes bug where first school year settings aren't saved
+- Added instructions for GPA Calculator
+
 ### V1.0 Release
 
 - Updates JSON Saver to save GPA Calculator modifications
