@@ -190,7 +190,9 @@ class MyHomePageState extends State<MyHomePage> {
               description:
                   "Select your state and enter your district's name. (Ex: Fort Bend ISD)",
               buttonText: 'OK');
-        }));
+        })).then((val){
+          setState(() { });
+    });
   }
 
   TextEditingController _controllerUsername = TextEditingController();
