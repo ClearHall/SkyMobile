@@ -24,7 +24,7 @@ class _GPACalculatorSchoolYearState extends State<GPACalculatorSchoolYear> {
 
     getExtraGPASettings();
     if (historyGrades == null) historyGrades = [];
-    _updateFirstInList(basedOn: historyGrades.first);
+    _updateFirstInList(basedOn: historyGrades.length > 0 ? historyGrades.first : null);
   }
 
   _updateFirstInList({SchoolYear basedOn}){
