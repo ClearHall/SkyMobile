@@ -20,7 +20,7 @@ class JSONSaver {
     return File('$path/${fileName.toString()}.skymobileDat');
   }
 
-  accountFileExists() async {
+  doesFileExist() async {
     final path = await getLocalDirectoryPath();
     return await File('$path/${fileName.toString()}.skymobileDat').exists();
   }
@@ -58,12 +58,15 @@ class JSONSaver {
             }
             mapOfTargetedObject[key] = newVal;
           });
-        }else if (fileName == FilesAvailable.classLevelValues){
+        } else if (fileName == FilesAvailable.classLevelValues) {
           retrievedJSONCoded.forEach((key, val) {
-            mapOfTargetedObject[ClassLevel.values.firstWhere((e) => e.toString() == key)] = val;
+            mapOfTargetedObject[
+                ClassLevel.values.firstWhere((e) => e.toString() == key)] = val;
           });
-        }else if(fileName == FilesAvailable.gpaExtraSettings){
+        } else if (fileName == FilesAvailable.gpaExtraSettings) {
           mapOfTargetedObject = retrievedJSONCoded;
+        } else if (fileName == FilesAvailable.previousDistrict) {
+           return SkywardDistrict.fromJson(retrievedJSONCoded);
         }
         return mapOfTargetedObject;
       }
@@ -73,4 +76,11 @@ class JSONSaver {
   }
 }
 
-enum FilesAvailable { accounts, gpaCalculatorSettings, gpaSelectedTerms, classLevelValues, gpaExtraSettings }
+enum FilesAvailable {
+  accounts, /// Stores stored account files
+  gpaCalculatorSettings, /// Stores GPA Calculator class settings
+  gpaSelectedTerms, /// GPA Terms that have been selected that count toward GPA
+  classLevelValues, /// Class level values +5 +10 or +0
+  gpaExtraSettings, /// GPA extra modifiers
+  previousDistrict /// The district previously stored
+}

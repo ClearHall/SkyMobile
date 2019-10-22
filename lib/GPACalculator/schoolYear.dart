@@ -7,7 +7,7 @@ import 'package:skymobile/HelperUtilities/themeColorManager.dart';
 import 'package:skyscrapeapi/skywardAPITypes.dart';
 import 'package:skymobile/HelperUtilities/globalVariables.dart';
 import 'package:skymobile/HelperUtilities/alwaysVisibleScrollbar.dart';
-import 'gpaCalculatorSupportUtils.dart';
+import 'supportUtils.dart';
 
 class GPACalculatorSchoolYear extends StatefulWidget {
   MaterialColor secondColor;

@@ -10,9 +10,9 @@ import 'package:skyscrapeapi/skywardDistrictSearcher.dart';
 import 'package:skyscrapeapi/skywardAPITypes.dart';
 import 'package:skymobile/HelperUtilities/accountTypes.dart';
 import 'package:skymobile/HelperUtilities/jsonSaver.dart';
-import 'package:skymobile/GPACalculator/gpaCalculatorSchoolYear.dart';
-import 'package:skymobile/GPACalculator/gpaCalculatorClasses.dart';
-import 'package:skymobile/GPACalculator/gpaCalculatorSettings.dart';
+import 'package:skymobile/GPACalculator/schoolYear.dart';
+import 'package:skymobile/GPACalculator/classes.dart';
+import 'package:skymobile/GPACalculator/settings.dart';
 
 void main() => runApp(MyApp());
 
@@ -54,10 +54,22 @@ class MyHomePageState extends State<MyHomePage> {
 
   void initState() {
     super.initState();
+    _getPreviouslySavedDistrict();
     _getAccounts();
   }
 
-  //TODO: COMBINE FUNCTIONS
+  void _getPreviouslySavedDistrict() async{
+    JSONSaver jsonSaver = JSONSaver(FilesAvailable.previousDistrict);
+    var districta = await jsonSaver.readListData();
+
+    if(districta is SkywardDistrict)
+      district = districta;
+  }
+
+  void _saveDistrict() async{
+    JSONSaver jsonSaver = JSONSaver(FilesAvailable.previousDistrict);
+    await jsonSaver.saveListData(district);
+  }
 
   void _getGradeTerms(String user, String pass, BuildContext context) async {
     bool isCancelled = false;
@@ -191,7 +203,10 @@ class MyHomePageState extends State<MyHomePage> {
                   "Select your state and enter your district's name. (Ex: Fort Bend ISD)",
               buttonText: 'OK');
         })).then((val){
-          setState(() { });
+          setState(() {
+          });
+    }).then((val) {
+      _saveDistrict();
     });
   }
 
@@ -210,7 +225,7 @@ class MyHomePageState extends State<MyHomePage> {
   }
 
   void _getAccounts() async {
-    if (await jsonSaver.accountFileExists()) {
+    if (await jsonSaver.doesFileExist()) {
       var unconverted = (await jsonSaver.readListData());
       if (unconverted is List) accounts = List<Account>.from(unconverted);
     } else {

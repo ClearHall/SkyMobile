@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:skymobile/HelperUtilities/globalVariables.dart';
 import 'package:skymobile/HelperUtilities/settingsWidgetGenerator.dart';
-import 'gpaCalculatorSupportUtils.dart';
+import 'package:skymobile/HelperUtilities/themeColorManager.dart';
+import 'supportUtils.dart';
 
 class GPACalculatorSettings extends StatefulWidget {
   GPACalculatorSettings({Key key}) : super(key: key);
@@ -18,17 +20,23 @@ class _GPACalculatorSettingsState extends State<GPACalculatorSettings> {
         child: Container(
           child: Text(
             'Tick or change the settings depending on your district or college. Read descriptions carefully verify that the settings are correct.',
-            style: TextStyle(color: Colors.orange, fontSize: 20),
+            style: TextStyle(color: themeManager.getColor(TypeOfWidget.text), fontSize: 20),
           ),
           padding: EdgeInsets.all(10),
         ),
       ), padding: EdgeInsets.only(left: 10, right: 10, top: 10),)
     ];
     for (String k in extraGPASettings.keys) {
-      widgets.add(SettingsWidgetGenerator.generateSingleSettingsWidget(
-          k, extraGPASettings[k], run: (){
-            saveExtraGPASettings();
-      }));
+      if(extraGPASettings[k]['option'] is Map){
+        widgets.add(SettingsWidgetGenerator.generateListSettingsWidget(k, extraGPASettings[k], run: () {
+          saveExtraGPASettings();
+        }));
+      }else {
+        widgets.add(SettingsWidgetGenerator.generateSingleSettingsWidget(
+            k, extraGPASettings[k], run: () {
+          saveExtraGPASettings();
+        }));
+      }
     }
 
     return Scaffold(

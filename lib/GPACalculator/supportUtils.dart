@@ -1,13 +1,21 @@
 import 'package:skymobile/HelperUtilities/globalVariables.dart';
 import 'package:skyscrapeapi/skywardAPITypes.dart';
 import 'package:skymobile/HelperUtilities//jsonSaver.dart';
-import 'gpaCalculatorTypes.dart';
+import 'types.dart';
 
 Map<String, dynamic> extraGPASettings = Map.fromIterables([
+  'Class Level Worth',
   'Advanced 4.0 GPA',
   'Use 4.33 for A+',
-  'Weighted 4.0'
+  'Weighted 4.0',
 ], [
+  Map.fromIterables([
+    'description',
+    'option'
+  ], [
+    'Change how many points are added for different class levels.',
+    {"AP": 10, "PreAP": 5, "Regular": 0}
+  ]),
   Map.fromIterables([
     'description',
     'option'
@@ -29,8 +37,9 @@ Map<String, dynamic> extraGPASettings = Map.fromIterables([
 double get40Scale(List<SchoolYear> enabledSchoolYears) {
   _getClassLevelSettings();
   bool shouldAdd = extraGPASettings['Weighted 4.0']['option'];
-  GPA40ScaleRangeList rangeList =
-      GPA40ScaleRangeList(advanced: extraGPASettings['Advanced 4.0 GPA']['option'], will433: extraGPASettings['Use 4.33 for A+']['option']);
+  GPA40ScaleRangeList rangeList = GPA40ScaleRangeList(
+      advanced: extraGPASettings['Advanced 4.0 GPA']['option'],
+      will433: extraGPASettings['Use 4.33 for A+']['option']);
   List<double> averagesRespeciveOfTerms = [];
   for (String term in termIdentifiersCountingTowardGPA) {
     double finalGrade = 0;
@@ -103,8 +112,12 @@ List<double> getAveragesOfTermsCountingTowardGPA100PointScale(
   return averagesRespeciveOfTerms;
 }
 
-Map<ClassLevel, int> classLevels =
-    Map.fromIterables(ClassLevel.values, [0, 5, 10, -1]);
+Map<ClassLevel, int> classLevels = Map.fromIterables(ClassLevel.values, [
+  extraGPASettings['Class Level Worth']['Regular'],
+  extraGPASettings['Class Level Worth']['PreAP'],
+  extraGPASettings['Class Level Worth']['AP'],
+  -1
+]);
 
 _saveClassLevelSettings() async {
   JSONSaver jsonSaver = JSONSaver(FilesAvailable.classLevelValues);

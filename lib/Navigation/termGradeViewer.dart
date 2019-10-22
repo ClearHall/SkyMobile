@@ -4,7 +4,7 @@ import 'package:skymobile/HelperUtilities/themeColorManager.dart';
 import 'package:skyscrapeapi/skywardAPITypes.dart';
 import 'package:skymobile/HelperUtilities/globalVariables.dart';
 import 'package:skymobile/HelperUtilities/customDialogOptions.dart';
-import 'package:skymobile/GPACalculator/gpaCalculatorSupportUtils.dart';
+import 'package:skymobile/GPACalculator/supportUtils.dart';
 
 class TermViewerPage extends StatefulWidget {
   MaterialColor secondColor;

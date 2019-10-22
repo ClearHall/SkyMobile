@@ -1,8 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:skymobile/HelperUtilities/themeColorManager.dart';
 import 'package:skyscrapeapi/skywardAPITypes.dart';
 import 'package:skymobile/HelperUtilities/globalVariables.dart';
-import 'gpaCalculatorSupportUtils.dart';
+import 'supportUtils.dart';
 
 class GPACalculatorClasses extends StatefulWidget {
   MaterialColor secondColor;
@@ -98,7 +99,7 @@ class GPACalculatorClassesState extends State<GPACalculatorClasses> {
                 child: Container(
                   child: InkWell(
                     child: Card(
-                      color: Colors.orangeAccent,
+                      color: themeManager.getColor(TypeOfWidget.text),
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(30)),
                       child: Container(
@@ -133,7 +134,7 @@ class GPACalculatorClassesState extends State<GPACalculatorClasses> {
                   child: Container(
                 child: InkWell(
                   child: Card(
-                    color: Colors.orangeAccent,
+                    color: themeManager.getColor(TypeOfWidget.text),
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(30)),
                     child: Container(
@@ -172,7 +173,7 @@ class GPACalculatorClassesState extends State<GPACalculatorClasses> {
                   child: Container(
                 child: InkWell(
                   child: Card(
-                    color: Colors.orangeAccent,
+                    color: themeManager.getColor(TypeOfWidget.text),
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(30)),
                     child: Container(
@@ -233,7 +234,7 @@ class GPACalculatorClassesState extends State<GPACalculatorClasses> {
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                       style: TextStyle(
-                          color: Colors.orange,
+                          color: themeManager.getColor(TypeOfWidget.text),
                           fontSize: 20,
                           fontWeight: FontWeight.w700),
                       textAlign: TextAlign.start,
