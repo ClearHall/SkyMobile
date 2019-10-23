@@ -48,7 +48,7 @@ double get40Scale(List<SchoolYear> enabledSchoolYears) {
         int indexOfTerm = schoolYear.terms.indexOf(Term(term, null));
         for (Class classYear in schoolYear.classes) {
           int addOnPoints =
-               extraGPASettings['Class Level Worth']['option'][classYear.classLevel.toString().substring(11) ?? ClassLevel.Regular.toString().substring(11)];
+               extraGPASettings['Class Level Worth']['option'][classYear.classLevel != null ? classYear.classLevel.toString().substring(11) : ClassLevel.Regular.toString().substring(11)];
           if(addOnPoints == null) addOnPoints = -1;
           if (addOnPoints >= 0) {
             if (indexOfTerm < classYear.grades.length) {
@@ -91,7 +91,7 @@ List<double> getAveragesOfTermsCountingTowardGPA100PointScale(
         int indexOfTerm = schoolYear.terms.indexOf(Term(term, null));
         for (Class classYear in schoolYear.classes) {
           int addOnPoints =
-              extraGPASettings['Class Level Worth']['option'][classYear.classLevel.toString().substring(11) ?? ClassLevel.Regular.toString().substring(11)];
+              extraGPASettings['Class Level Worth']['option'][classYear.classLevel != null ? classYear.classLevel.toString().substring(11) : ClassLevel.Regular.toString().substring(11)];
           if(addOnPoints == null) addOnPoints = -1;
           if (addOnPoints >= 0) {
             if (indexOfTerm < classYear.grades.length) {
@@ -162,7 +162,6 @@ getExtraGPASettings() async {
         retrieved[k] = extraGPASettings[k];
       }
     }
-    print(retrieved);
     extraGPASettings = retrieved;
   } else {
     saveExtraGPASettings();
