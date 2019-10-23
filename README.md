@@ -10,6 +10,11 @@ Join the SkyMobile discord server [here](https://discord.gg/Hqvann5).
 
 # Changelog
 
+### V1.1.2 Release (V1.1.1 withdrawn)
+
+- Fixes GPA Calculator for districts without academic history
+- Fixes District Searcher
+
 ### V1.1 Release
 
 - Fixes bugs in the GPA Calculator
