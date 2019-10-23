@@ -35,7 +35,6 @@ Map<String, dynamic> extraGPASettings = Map.fromIterables([
 ]);
 
 double get40Scale(List<SchoolYear> enabledSchoolYears) {
-  _getClassLevelSettings();
   bool shouldAdd = extraGPASettings['Weighted 4.0']['option'];
   GPA40ScaleRangeList rangeList = GPA40ScaleRangeList(
       advanced: extraGPASettings['Advanced 4.0 GPA']['option'],
@@ -49,7 +48,8 @@ double get40Scale(List<SchoolYear> enabledSchoolYears) {
         int indexOfTerm = schoolYear.terms.indexOf(Term(term, null));
         for (Class classYear in schoolYear.classes) {
           int addOnPoints =
-              classLevels[classYear.classLevel ?? ClassLevel.Regular];
+               extraGPASettings['Class Level Worth']['option'][classYear.classLevel.toString().substring(11) ?? ClassLevel.Regular.toString().substring(11)];
+          if(addOnPoints == null) addOnPoints = -1;
           if (addOnPoints >= 0) {
             if (indexOfTerm < classYear.grades.length) {
               double attemptedDoubleParse =
@@ -82,7 +82,6 @@ double get40Scale(List<SchoolYear> enabledSchoolYears) {
 
 List<double> getAveragesOfTermsCountingTowardGPA100PointScale(
     List<SchoolYear> enabledSchoolYears) {
-  _getClassLevelSettings();
   List<double> averagesRespeciveOfTerms = [];
   for (String term in termIdentifiersCountingTowardGPA) {
     double finalGrade = 0;
@@ -92,7 +91,8 @@ List<double> getAveragesOfTermsCountingTowardGPA100PointScale(
         int indexOfTerm = schoolYear.terms.indexOf(Term(term, null));
         for (Class classYear in schoolYear.classes) {
           int addOnPoints =
-              classLevels[classYear.classLevel ?? ClassLevel.Regular];
+              extraGPASettings['Class Level Worth']['option'][classYear.classLevel.toString().substring(11) ?? ClassLevel.Regular.toString().substring(11)];
+          if(addOnPoints == null) addOnPoints = -1;
           if (addOnPoints >= 0) {
             if (indexOfTerm < classYear.grades.length) {
               double attemptedDoubleParse =
@@ -110,32 +110,6 @@ List<double> getAveragesOfTermsCountingTowardGPA100PointScale(
     averagesRespeciveOfTerms.add(credits > 0 ? finalGrade / credits : null);
   }
   return averagesRespeciveOfTerms;
-}
-
-Map<ClassLevel, int> classLevels = Map.fromIterables(ClassLevel.values, [
-  extraGPASettings['Class Level Worth']['Regular'],
-  extraGPASettings['Class Level Worth']['PreAP'],
-  extraGPASettings['Class Level Worth']['AP'],
-  -1
-]);
-
-_saveClassLevelSettings() async {
-  JSONSaver jsonSaver = JSONSaver(FilesAvailable.classLevelValues);
-  List cLK = classLevels.keys.toList();
-  Map convertedToStringString = Map.fromIterables(
-      List.generate(classLevels.keys.length, (e) => cLK[e].toString()),
-      classLevels.values);
-  await jsonSaver.saveListData(convertedToStringString);
-}
-
-_getClassLevelSettings() async {
-  JSONSaver jsonSaver = JSONSaver(FilesAvailable.classLevelValues);
-  var _result = await jsonSaver.readListData();
-  if (_result.runtimeType == Map) {
-    classLevels = _result;
-  } else {
-    _saveClassLevelSettings();
-  }
 }
 
 gpaCalculatorSettingsSaveForCurrentSession() async {
@@ -183,8 +157,16 @@ getExtraGPASettings() async {
   JSONSaver jsonSaver = JSONSaver(FilesAvailable.gpaExtraSettings);
   var retrieved = await jsonSaver.readListData();
   if (retrieved is Map) {
+    for(String k in extraGPASettings.keys){
+      if(!retrieved.keys.contains(k)){
+        retrieved[k] = extraGPASettings[k];
+      }
+    }
+    print(retrieved);
     extraGPASettings = retrieved;
-  } else {}
+  } else {
+    saveExtraGPASettings();
+  }
 }
 
 saveExtraGPASettings() async {

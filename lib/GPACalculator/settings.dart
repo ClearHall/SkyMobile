@@ -29,12 +29,14 @@ class _GPACalculatorSettingsState extends State<GPACalculatorSettings> {
     for (String k in extraGPASettings.keys) {
       if(extraGPASettings[k]['option'] is Map){
         widgets.add(SettingsWidgetGenerator.generateListSettingsWidget(k, extraGPASettings[k], run: () {
-          saveExtraGPASettings();
+          setState(() {
+            saveExtraGPASettings();
+          });
         }));
-      }else {
+      } else {
         widgets.add(SettingsWidgetGenerator.generateSingleSettingsWidget(
             k, extraGPASettings[k], run: () {
-          saveExtraGPASettings();
+              saveExtraGPASettings();
         }));
       }
     }
