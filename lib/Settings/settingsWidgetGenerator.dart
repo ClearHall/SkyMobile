@@ -181,4 +181,67 @@ class SettingsWidgetGenerator {
       padding: EdgeInsets.only(left: 10, right: 10),
     );
   }
+
+  static Widget generateListSelectableSettings(
+      String settings, Map attributes,
+      {Function run, int maxAmountSelectable}) {
+    List<Widget> widgets = [];
+
+    for (String x in attributes['option'].keys) {
+      widgets.add(Container(
+          child: Row(children: <Widget>[
+            SizedBox(
+              width: 20,
+            ),
+            Text(
+              x + ": ",
+              style: TextStyle(
+                  color: themeManager.getColor(TypeOfWidget.text), fontSize: 20),
+            ),
+            SizedBox(
+              width: 10,
+            ),
+            SizedBox(
+              width: 10,
+            ),
+            Expanded(
+              child: Switch(value: attributes['option'][x],onChanged: (newVal){
+                int valSelected = 0;
+                //for(int i = 0; i < attributes['option'][x])
+                attributes['option'][x] = newVal;
+                run();
+              },)
+            ),
+            SizedBox(
+              width: 20,
+            ),
+          ])));
+    }
+
+    return Container(
+      child: Column(
+        children: <Widget>[
+          Container(
+            child: Card(
+              child: Column(
+                children: widgets,
+              ),
+              color: themeManager.getColor(TypeOfWidget.subBackground),
+            ),
+          ),
+          Container(
+              child: Container(
+                child: Text(
+                  attributes['description'] ?? '',
+                  style: TextStyle(
+                      color: themeManager.getColor(TypeOfWidget.text),
+                      fontSize: 20),
+                ),
+                padding: EdgeInsets.all(10),
+              ))
+        ],
+      ),
+      padding: EdgeInsets.only(left: 10, right: 10),
+    );
+  }
 }

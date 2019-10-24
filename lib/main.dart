@@ -73,14 +73,14 @@ class MyHomePageState extends State<MyHomePage> {
   }
 
   void _getGradeTerms(String user, String pass, BuildContext context) async {
-    bool isCancelled = false;
+    List<bool> isCancelled = [false];
     var dialog = HuntyDialogLoading('Cancel', () {
-      isCancelled = true;
+      isCancelled[0] = true;
     }, title: 'Loading', description: ('Getting your grades..'));
 
     showDialog(context: context, builder: (BuildContext context) => dialog)
         .then((val) {
-      isCancelled = true;
+      isCancelled[0] = true;
     });
 
     skywardAPI = SkywardAPICore(district.districtLink);
@@ -129,14 +129,14 @@ class MyHomePageState extends State<MyHomePage> {
   }
 
   void _getGradeTermsFromAccount(Account acc, BuildContext context) async {
-    bool isCancelled = false;
+    List<bool> isCancelled = [false];
     var dialog = HuntyDialogLoading('Cancel', () {
-      isCancelled = true;
+      isCancelled[0] = true;
     }, title: 'Loading', description: ('Getting your grades..'));
 
     showDialog(context: context, builder: (BuildContext context) => dialog)
         .then((val) {
-      isCancelled = true;
+      isCancelled[0] = true;
     });
 
     skywardAPI = SkywardAPICore(district.districtLink);
@@ -164,7 +164,7 @@ class MyHomePageState extends State<MyHomePage> {
     }
   }
 
-  Future getTermsAndGradeBook(bool isCancelled, BuildContext context,
+  Future getTermsAndGradeBook(List<bool> isCancelled, BuildContext context,
       HuntyDialogLoading dialog, Account acc) async {
     try {
       var termRes = await skywardAPI.getGradeBookTerms();
@@ -172,7 +172,7 @@ class MyHomePageState extends State<MyHomePage> {
       terms = termRes;
       gradeBoxes = gradebookRes;
     } catch (e) {
-      isCancelled = true;
+      isCancelled[0] = true;
       Navigator.of(context).pop(dialog);
       await showDialog(
           context: context,
@@ -184,7 +184,7 @@ class MyHomePageState extends State<MyHomePage> {
                 buttonText: 'Ok');
           });
     }
-    if (!isCancelled) {
+    if (!(isCancelled.first)) {
       currentSessionIdentifier = acc.user;
       Navigator.of(context, rootNavigator: true).popUntil((result) {
         return result.settings.name == '/';

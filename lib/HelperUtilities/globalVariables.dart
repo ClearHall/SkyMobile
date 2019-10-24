@@ -12,6 +12,35 @@ List<AssignmentInfoBox> assignmentInfoBoxes;
 List<SchoolYear> historyGrades;
 ThemeManager themeManager = ThemeManager();
 
+Map<String, dynamic> settings = Map.fromIterables([
+  'Biometric Authentication',
+  'Theme'
+], [
+  Map.fromIterables([
+    'description',
+    'option'
+  ], [
+    'Biometric authentication to protect your gradebook! Biometric authentication will only be required for logging into a saved account.',
+    false
+  ]),
+  Map.fromIterables([
+    'description',
+    'option'
+  ], [
+    'Change the color scheme used for the app.',
+    Map.fromIterables(
+        List.generate(ThemeManager.defaultThemes.length, (i) {
+          return ThemeManager.defaultThemes[i].primary.toString();
+        }),
+        List.generate(ThemeManager.defaultThemes.length, (i) {
+          if (themeManager.currentTheme == ThemeManager.defaultThemes[i])
+            return true;
+          else
+            return false;
+        }))
+  ])
+]);
+
 List<String> termIdentifiersCountingTowardGPA = ['S1', 'S2'];
 
 Color getColorFrom(String grade) {
