@@ -207,9 +207,12 @@ class SettingsWidgetGenerator {
             Expanded(
               child: Switch(value: attributes['option'][x],onChanged: (newVal){
                 int valSelected = 0;
-                //for(int i = 0; i < attributes['option'][x])
-                attributes['option'][x] = newVal;
-                run();
+                for(int i = 0; i < attributes['option'].length; i++)
+                  if(attributes['option'] == true) valSelected++;
+                if(maxAmountSelectable != null && valSelected <= maxAmountSelectable) {
+                  attributes['option'][x] = newVal;
+                  run();
+                }
               },)
             ),
             SizedBox(
