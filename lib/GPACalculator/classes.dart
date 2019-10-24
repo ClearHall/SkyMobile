@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:skymobile/HelperUtilities/themeColorManager.dart';
+import 'package:skymobile/Settings/themeColorManager.dart';
 import 'package:skyscrapeapi/skywardAPITypes.dart';
 import 'package:skymobile/HelperUtilities/globalVariables.dart';
 import 'supportUtils.dart';
@@ -47,8 +47,7 @@ class GPACalculatorClassesState extends State<GPACalculatorClasses> {
 
     offset = 0;
     for (Term term in schoolYear.terms) {
-      if (term.termCode.contains('\n'))
-        offset++;
+      if (term.termCode.contains('\n')) offset++;
     }
     currentTermIndex = schoolYear.terms.length - 1 - offset;
   }
@@ -89,18 +88,19 @@ class GPACalculatorClassesState extends State<GPACalculatorClasses> {
 
     return Scaffold(
         appBar: AppBar(
-        iconTheme: IconThemeData(
-        color: themeManager.getColor(TypeOfWidget.text), size: 30),
-    backgroundColor: themeManager.getColor(TypeOfWidget.background),
-    title: Align(
-    alignment: Alignment.centerLeft,
-    child: Text(schoolYear.description,
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                  color: themeManager.getColor(TypeOfWidget.text),
-                  fontSize: 30,
-                  fontWeight: FontWeight.w700)),
-        ),),
+          iconTheme: IconThemeData(
+              color: themeManager.getColor(TypeOfWidget.text), size: 30),
+          backgroundColor: themeManager.getColor(TypeOfWidget.background),
+          title: Align(
+            alignment: Alignment.centerLeft,
+            child: Text(schoolYear.description,
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                    color: themeManager.getColor(TypeOfWidget.text),
+                    fontSize: 30,
+                    fontWeight: FontWeight.w700)),
+          ),
+        ),
         backgroundColor: Colors.black,
         body: Center(
             child: Column(
@@ -252,67 +252,70 @@ class GPACalculatorClassesState extends State<GPACalculatorClasses> {
                     ),
                   ),
                   Row(children: <Widget>[
-                  Container(
-                      padding: EdgeInsets.only(left: 15, bottom: 5),
-                      child: Theme(
-                          data: Theme.of(context)
-                              .copyWith(canvasColor: Colors.black),
-                          child: DropdownButton<String>(
-                            items: availableClassLevels
-                                .map<DropdownMenuItem<String>>(
-                                    (ClassLevel value) {
-                              return DropdownMenuItem<String>(
-                                value: value.toString(),
-                                child: Text(
-                                  value.toString().substring(11),
-                                  style: TextStyle(color: Colors.white),
-                                ),
-                              );
-                            }).toList(),
-                            value: availableClassLevels[
-                                    dropDownIndexesClassLevel[schoolYear.classes
-                                        .indexOf(schoolClass)]]
-                                .toString(),
-                            onChanged: (String newVal) {
-                              setState(() {
-                                dropDownIndexesClassLevel[schoolYear.classes
-                                        .indexOf(schoolClass)] =
-                                    availableClassLevels.indexOf(
-                                        ClassLevel.values.firstWhere(
-                                            (e) => e.toString() == newVal));
-                                setDropDown();
-                              });
-                            },
-                          ))),
-                  Container(
-                      padding: EdgeInsets.only(left: 15, bottom: 5),
-                      child: Theme(
-                          data: Theme.of(context)
-                              .copyWith(canvasColor: Colors.black),
-                          child: DropdownButton<String>(
-                            items: availableCredits
-                                .map<DropdownMenuItem<String>>((double value) {
-                              return DropdownMenuItem<String>(
-                                value: value.toString(),
-                                child: Text(
-                                  value.toString(),
-                                  style: TextStyle(color: Colors.white),
-                                ),
-                              );
-                            }).toList(),
-                            value: availableCredits[dropDownIndexesCredits[
-                                    schoolYear.classes.indexOf(schoolClass)]]
-                                .toString(),
-                            onChanged: (String newVal) {
-                              setState(() {
-                                dropDownIndexesCredits[schoolYear.classes
-                                        .indexOf(schoolClass)] =
-                                    availableCredits.indexOf(
-                                        double.tryParse(newVal) ?? 1.0);
-                                setDropDown();
-                              });
-                            },
-                          )))]),
+                    Container(
+                        padding: EdgeInsets.only(left: 15, bottom: 5),
+                        child: Theme(
+                            data: Theme.of(context)
+                                .copyWith(canvasColor: Colors.black),
+                            child: DropdownButton<String>(
+                              items: availableClassLevels
+                                  .map<DropdownMenuItem<String>>(
+                                      (ClassLevel value) {
+                                return DropdownMenuItem<String>(
+                                  value: value.toString(),
+                                  child: Text(
+                                    value.toString().substring(11),
+                                    style: TextStyle(color: Colors.white),
+                                  ),
+                                );
+                              }).toList(),
+                              value: availableClassLevels[
+                                      dropDownIndexesClassLevel[schoolYear
+                                          .classes
+                                          .indexOf(schoolClass)]]
+                                  .toString(),
+                              onChanged: (String newVal) {
+                                setState(() {
+                                  dropDownIndexesClassLevel[schoolYear.classes
+                                          .indexOf(schoolClass)] =
+                                      availableClassLevels.indexOf(
+                                          ClassLevel.values.firstWhere(
+                                              (e) => e.toString() == newVal));
+                                  setDropDown();
+                                });
+                              },
+                            ))),
+                    Container(
+                        padding: EdgeInsets.only(left: 15, bottom: 5),
+                        child: Theme(
+                            data: Theme.of(context)
+                                .copyWith(canvasColor: Colors.black),
+                            child: DropdownButton<String>(
+                              items: availableCredits
+                                  .map<DropdownMenuItem<String>>(
+                                      (double value) {
+                                return DropdownMenuItem<String>(
+                                  value: value.toString(),
+                                  child: Text(
+                                    value.toString(),
+                                    style: TextStyle(color: Colors.white),
+                                  ),
+                                );
+                              }).toList(),
+                              value: availableCredits[dropDownIndexesCredits[
+                                      schoolYear.classes.indexOf(schoolClass)]]
+                                  .toString(),
+                              onChanged: (String newVal) {
+                                setState(() {
+                                  dropDownIndexesCredits[schoolYear.classes
+                                          .indexOf(schoolClass)] =
+                                      availableCredits.indexOf(
+                                          double.tryParse(newVal) ?? 1.0);
+                                  setDropDown();
+                                });
+                              },
+                            )))
+                  ]),
                 ],
               ),
             ),

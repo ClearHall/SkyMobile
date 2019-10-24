@@ -47,9 +47,11 @@ double get40Scale(List<SchoolYear> enabledSchoolYears) {
       if (schoolYear.terms.contains(Term(term, null))) {
         int indexOfTerm = schoolYear.terms.indexOf(Term(term, null));
         for (Class classYear in schoolYear.classes) {
-          int addOnPoints =
-               extraGPASettings['Class Level Worth']['option'][classYear.classLevel != null ? classYear.classLevel.toString().substring(11) : ClassLevel.Regular.toString().substring(11)];
-          if(addOnPoints == null) addOnPoints = -1;
+          int addOnPoints = extraGPASettings['Class Level Worth']['option'][
+              classYear.classLevel != null
+                  ? classYear.classLevel.toString().substring(11)
+                  : ClassLevel.Regular.toString().substring(11)];
+          if (addOnPoints == null) addOnPoints = -1;
           if (addOnPoints >= 0) {
             if (indexOfTerm < classYear.grades.length) {
               double attemptedDoubleParse =
@@ -90,9 +92,11 @@ List<double> getAveragesOfTermsCountingTowardGPA100PointScale(
       if (schoolYear.terms.contains(Term(term, null))) {
         int indexOfTerm = schoolYear.terms.indexOf(Term(term, null));
         for (Class classYear in schoolYear.classes) {
-          int addOnPoints =
-              extraGPASettings['Class Level Worth']['option'][classYear.classLevel != null ? classYear.classLevel.toString().substring(11) : ClassLevel.Regular.toString().substring(11)];
-          if(addOnPoints == null) addOnPoints = -1;
+          int addOnPoints = extraGPASettings['Class Level Worth']['option'][
+              classYear.classLevel != null
+                  ? classYear.classLevel.toString().substring(11)
+                  : ClassLevel.Regular.toString().substring(11)];
+          if (addOnPoints == null) addOnPoints = -1;
           if (addOnPoints >= 0) {
             if (indexOfTerm < classYear.grades.length) {
               double attemptedDoubleParse =
@@ -157,8 +161,8 @@ getExtraGPASettings() async {
   JSONSaver jsonSaver = JSONSaver(FilesAvailable.gpaExtraSettings);
   var retrieved = await jsonSaver.readListData();
   if (retrieved is Map) {
-    for(String k in extraGPASettings.keys){
-      if(!retrieved.keys.contains(k)){
+    for (String k in extraGPASettings.keys) {
+      if (!retrieved.keys.contains(k)) {
         retrieved[k] = extraGPASettings[k];
       }
     }

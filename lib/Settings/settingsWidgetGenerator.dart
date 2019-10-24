@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:skymobile/HelperUtilities/globalVariables.dart';
-import 'package:skymobile/HelperUtilities/themeColorManager.dart';
+import 'package:skymobile/Settings/themeColorManager.dart';
 
 class SettingsWidgetGenerator {
   static Widget generateSingleSettingsWidget(String settings, Map attributes,

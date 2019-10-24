@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:skymobile/HelperUtilities/themeColorManager.dart';
+import 'package:skymobile/Settings/themeColorManager.dart';
 import 'package:skyscrapeapi/skywardDistrictSearcher.dart';
 import 'package:skyscrapeapi/skywardAPITypes.dart';
 import '../main.dart';

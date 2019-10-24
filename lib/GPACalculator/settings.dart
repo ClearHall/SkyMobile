@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:skymobile/HelperUtilities/globalVariables.dart';
-import 'package:skymobile/HelperUtilities/settingsWidgetGenerator.dart';
-import 'package:skymobile/HelperUtilities/themeColorManager.dart';
+import 'package:skymobile/Settings/settingsWidgetGenerator.dart';
+import 'package:skymobile/Settings/themeColorManager.dart';
 import 'supportUtils.dart';
 
 class GPACalculatorSettings extends StatefulWidget {

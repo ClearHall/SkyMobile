@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:skymobile/HelperUtilities/themeColorManager.dart';
+import 'package:skymobile/Settings/themeColorManager.dart';
 import 'package:skyscrapeapi/skywardAPITypes.dart';
 import 'package:skymobile/HelperUtilities/globalVariables.dart';
 import 'package:skymobile/HelperUtilities/customDialogOptions.dart';
@@ -249,6 +249,7 @@ class _TermViewer extends State<TermViewerPage> {
                   onSelected: (String selected) {
                     switch (selected) {
                       case 'settings':
+                        Navigator.pushNamed(context, '/settings');
                         break;
                       case 'gpaCalc':
                         {
@@ -292,48 +293,50 @@ class _TermViewer extends State<TermViewerPage> {
         ),
         backgroundColor: Colors.black,
         body: Center(
-            child: Column(crossAxisAlignment: CrossAxisAlignment.stretch,children: <Widget>[
-            Container(
-              child: InkWell(
-                child: Card(
-                  color: themeManager.getColor(TypeOfWidget.text),
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(30)),
-                  child: Container(
-                    child: Text(
-                      'Term: ${terms[currentTermIndex].termCode} / ${terms[currentTermIndex].termName}',
-                      style:
-                          TextStyle(fontSize: 18, fontWeight: FontWeight.w700),
-                      textAlign: TextAlign.center,
+            child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: <Widget>[
+              Container(
+                child: InkWell(
+                  child: Card(
+                    color: themeManager.getColor(TypeOfWidget.text),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(30)),
+                    child: Container(
+                      child: Text(
+                        'Term: ${terms[currentTermIndex].termCode} / ${terms[currentTermIndex].termName}',
+                        style: TextStyle(
+                            fontSize: 18, fontWeight: FontWeight.w700),
+                        textAlign: TextAlign.center,
+                      ),
+                      padding: EdgeInsets.only(
+                          top: 20, bottom: 20, left: 0, right: 0),
                     ),
-                    padding: EdgeInsets.only(
-                        top: 20, bottom: 20, left: 0, right: 0),
                   ),
+                  onTap: () {
+                    showModalBottomSheet(
+                        context: context,
+                        builder: (BuildContext context) => CupertinoPicker(
+                            scrollController: scrollController,
+                            backgroundColor: Colors.black,
+                            children: cupPickerWid,
+                            itemExtent: 50,
+                            onSelectedItemChanged: (int changeTo) {
+                              setState(() {
+                                currentTermIndex = changeTo;
+                              });
+                            }));
+                  },
                 ),
-                onTap: () {
-                  showModalBottomSheet(
-                      context: context,
-                      builder: (BuildContext context) => CupertinoPicker(
-                          scrollController: scrollController,
-                          backgroundColor: Colors.black,
-                          children: cupPickerWid,
-                          itemExtent: 50,
-                          onSelectedItemChanged: (int changeTo) {
-                            setState(() {
-                              currentTermIndex = changeTo;
-                            });
-                          }));
-                },
+                padding:
+                    EdgeInsets.only(top: 10, left: 20, right: 20, bottom: 10),
               ),
-              padding:
-                  EdgeInsets.only(top: 10, left: 20, right: 20, bottom: 10),
-            ),
-          Expanded(
-            child: ListView(
-              padding: EdgeInsets.only(left: 10, right: 10, bottom: 10),
-              children: body,
-            ),
-          )
-        ])));
+              Expanded(
+                child: ListView(
+                  padding: EdgeInsets.only(left: 10, right: 10, bottom: 10),
+                  children: body,
+                ),
+              )
+            ])));
   }
 }

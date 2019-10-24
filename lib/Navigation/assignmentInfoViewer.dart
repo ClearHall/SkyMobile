@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:skymobile/HelperUtilities/themeColorManager.dart';
+import 'package:skymobile/Settings/themeColorManager.dart';
 import 'package:skyscrapeapi/skywardAPITypes.dart';
 import 'package:skymobile/HelperUtilities/globalVariables.dart';
 
@@ -35,7 +35,8 @@ class _AssignmentInfoViewerState extends State<AssignmentInfoViewer> {
             uiMessage,
             maxLines: 2,
             overflow: TextOverflow.ellipsis,
-            style: TextStyle(color: themeManager.getColor(TypeOfWidget.text), fontSize: 20),
+            style: TextStyle(
+                color: themeManager.getColor(TypeOfWidget.text), fontSize: 20),
             textAlign: TextAlign.start,
           ),
         ),
@@ -44,17 +45,18 @@ class _AssignmentInfoViewerState extends State<AssignmentInfoViewer> {
     return Scaffold(
       appBar: AppBar(
         iconTheme: IconThemeData(
-        color: themeManager.getColor(TypeOfWidget.text), size: 30),
-    backgroundColor: themeManager.getColor(TypeOfWidget.background),
-    title: Align(
-    alignment: Alignment.centerLeft,
-    child: Text(courseName != null ? courseName : 'Assignments',
-            textAlign: TextAlign.center,
-            style: TextStyle(
-                color: themeManager.getColor(TypeOfWidget.text),
-                fontSize: 30,
-                fontWeight: FontWeight.w700)),
-      ),),
+            color: themeManager.getColor(TypeOfWidget.text), size: 30),
+        backgroundColor: themeManager.getColor(TypeOfWidget.background),
+        title: Align(
+          alignment: Alignment.centerLeft,
+          child: Text(courseName != null ? courseName : 'Assignments',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                  color: themeManager.getColor(TypeOfWidget.text),
+                  fontSize: 30,
+                  fontWeight: FontWeight.w700)),
+        ),
+      ),
       backgroundColor: Colors.black,
       body: Center(
         child: ListView(

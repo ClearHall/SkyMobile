@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:skymobile/HelperUtilities/themeColorManager.dart';
+import 'package:skymobile/Settings/themeColorManager.dart';
 import 'package:skyscrapeapi/skywardAPITypes.dart';
 import 'package:skymobile/HelperUtilities/globalVariables.dart';
 import 'package:skymobile/HelperUtilities/customDialogOptions.dart';
@@ -135,17 +135,17 @@ class _AssignmentsViewerState extends State<AssignmentsViewer> {
                   constraints: BoxConstraints(minHeight: 60),
                   padding: EdgeInsets.only(right: 10),
                   alignment: Alignment.centerRight,
-                  child:Text(
-                      grade == null
-                          ? box.attributes.containsKey('Points Earned')
-                              ? box.attributes['Points Earned']
-                              : ""
-                          : grade,
-                      style: TextStyle(
-                          fontSize: 17,
-                          fontWeight: FontWeight.w700,
-                          color: getColorFrom(grade)),
-                    ),
+                  child: Text(
+                    grade == null
+                        ? box.attributes.containsKey('Points Earned')
+                            ? box.attributes['Points Earned']
+                            : ""
+                        : grade,
+                    style: TextStyle(
+                        fontSize: 17,
+                        fontWeight: FontWeight.w700,
+                        color: getColorFrom(grade)),
+                  ),
                 ),
               ],
             )),

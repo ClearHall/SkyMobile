@@ -1,6 +1,6 @@
 import 'package:skyscrapeapi/skywardAPICore.dart';
 import 'package:skyscrapeapi/skywardAPITypes.dart';
-import 'themeColorManager.dart';
+import '../Settings/themeColorManager.dart';
 import 'package:flutter/material.dart';
 
 SkywardAPICore skywardAPI;

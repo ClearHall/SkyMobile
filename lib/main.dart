@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:skymobile/HelperUtilities/themeColorManager.dart';
+import 'package:skymobile/Settings/themeColorManager.dart';
 import 'package:skyscrapeapi/skywardAPICore.dart';
 import 'package:skymobile/Navigation//termGradeViewer.dart';
 import 'HelperUtilities/customDialogOptions.dart';
@@ -13,6 +13,7 @@ import 'package:skymobile/HelperUtilities/jsonSaver.dart';
 import 'package:skymobile/GPACalculator/schoolYear.dart';
 import 'package:skymobile/GPACalculator/classes.dart';
 import 'package:skymobile/GPACalculator/settings.dart';
+import 'package:skymobile/Settings/settings_viewer.dart';
 
 void main() => runApp(MyApp());
 
@@ -33,7 +34,8 @@ class MyApp extends StatelessWidget {
         "/gpacalculatorschoolyear": (context) => GPACalculatorSchoolYear(),
         "/gpacalculatorclasses": (context) =>
             GPACalculatorClasses(ModalRoute.of(context).settings.arguments),
-        "/gpacalculatorsettings": (context) => GPACalculatorSettings()
+        "/gpacalculatorsettings": (context) => GPACalculatorSettings(),
+        "/settings": (context) => SettingsViewer()
       },
     );
   }
@@ -58,15 +60,14 @@ class MyHomePageState extends State<MyHomePage> {
     _getAccounts();
   }
 
-  void _getPreviouslySavedDistrict() async{
+  void _getPreviouslySavedDistrict() async {
     JSONSaver jsonSaver = JSONSaver(FilesAvailable.previousDistrict);
     var districta = await jsonSaver.readListData();
 
-    if(districta is SkywardDistrict)
-      district = districta;
+    if (districta is SkywardDistrict) district = districta;
   }
 
-  void _saveDistrict() async{
+  void _saveDistrict() async {
     JSONSaver jsonSaver = JSONSaver(FilesAvailable.previousDistrict);
     await jsonSaver.saveListData(district);
   }
@@ -195,16 +196,16 @@ class MyHomePageState extends State<MyHomePage> {
   _showDialog() async {
     await SkywardDistrictSearcher.getStatesAndPostRequiredBodyElements();
     showDialog(
-        context: context,
-        builder: ((BuildContext context) {
-          return HuntyDistrictSearcherWidget(
-              title: 'District Searcher',
-              description:
-                  "Select your state and enter your district's name. (Ex: Fort Bend ISD)",
-              buttonText: 'OK');
-        })).then((val){
-          setState(() {
-          });
+            context: context,
+            builder: ((BuildContext context) {
+              return HuntyDistrictSearcherWidget(
+                  title: 'District Searcher',
+                  description:
+                      "Select your state and enter your district's name. (Ex: Fort Bend ISD)",
+                  buttonText: 'OK');
+            }))
+        .then((val) {
+      setState(() {});
     }).then((val) {
       _saveDistrict();
     });
@@ -284,20 +285,26 @@ class MyHomePageState extends State<MyHomePage> {
                     alignment: Alignment.center,
                     decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(16.0),
-                        border: Border.all(color: themeManager.getColor(TypeOfWidget.text), width: 2)),
+                        border: Border.all(
+                            color: themeManager.getColor(TypeOfWidget.text),
+                            width: 2)),
                     child: accounts.length > 0 &&
                             accounts.first.district == null
                         ? ListTile(
                             title: Text(
                             acc.nick,
                             style: new TextStyle(
-                                fontSize: 20.0, color: themeManager.getColor(TypeOfWidget.text)),
+                                fontSize: 20.0,
+                                color:
+                                    themeManager.getColor(TypeOfWidget.text)),
                           ))
                         : ListTile(
                             title: Text(
                               acc.nick,
                               style: new TextStyle(
-                                  fontSize: 20.0, color: themeManager.getColor(TypeOfWidget.text)),
+                                  fontSize: 20.0,
+                                  color:
+                                      themeManager.getColor(TypeOfWidget.text)),
                             ),
                             trailing: Row(
                               mainAxisSize: MainAxisSize.min,
@@ -410,11 +417,15 @@ class MyHomePageState extends State<MyHomePage> {
                             decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(16.0),
                                 border: Border.all(
-                                    color: themeManager.getColor(TypeOfWidget.button), width: 2)),
+                                    color: themeManager
+                                        .getColor(TypeOfWidget.button),
+                                    width: 2)),
                             child: new Text(
                               'Credential Login',
                               style: new TextStyle(
-                                  fontSize: 20.0, color: themeManager.getColor(TypeOfWidget.button)),
+                                  fontSize: 20.0,
+                                  color: themeManager
+                                      .getColor(TypeOfWidget.button)),
                             ),
                           )),
                     )),
@@ -461,14 +472,17 @@ class MyHomePageState extends State<MyHomePage> {
                     decoration: InputDecoration(
                         contentPadding: const EdgeInsets.all(18),
                         labelText: "Username",
-                        labelStyle: TextStyle(color: themeManager.getColor(TypeOfWidget.text)),
+                        labelStyle: TextStyle(
+                            color: themeManager.getColor(TypeOfWidget.text)),
                         enabledBorder: OutlineInputBorder(
-                            borderSide:
-                                BorderSide(color: themeManager.getColor(TypeOfWidget.text), width: 2),
+                            borderSide: BorderSide(
+                                color: themeManager.getColor(TypeOfWidget.text),
+                                width: 2),
                             borderRadius: BorderRadius.circular(16)),
                         focusedBorder: OutlineInputBorder(
-                            borderSide:
-                                BorderSide(color: themeManager.getColor(TypeOfWidget.text), width: 2),
+                            borderSide: BorderSide(
+                                color: themeManager.getColor(TypeOfWidget.text),
+                                width: 2),
                             borderRadius: BorderRadius.circular(16))),
                     onFieldSubmitted: (v) {
                       FocusScope.of(context).requestFocus(focus);
@@ -486,14 +500,17 @@ class MyHomePageState extends State<MyHomePage> {
                     decoration: InputDecoration(
                         contentPadding: const EdgeInsets.all(18),
                         labelText: "Password",
-                        labelStyle: TextStyle(color: themeManager.getColor(TypeOfWidget.text)),
+                        labelStyle: TextStyle(
+                            color: themeManager.getColor(TypeOfWidget.text)),
                         enabledBorder: OutlineInputBorder(
-                            borderSide:
-                                BorderSide(color: themeManager.getColor(TypeOfWidget.text), width: 2),
+                            borderSide: BorderSide(
+                                color: themeManager.getColor(TypeOfWidget.text),
+                                width: 2),
                             borderRadius: BorderRadius.circular(16)),
                         focusedBorder: OutlineInputBorder(
-                            borderSide:
-                                BorderSide(color: themeManager.getColor(TypeOfWidget.text), width: 2),
+                            borderSide: BorderSide(
+                                color: themeManager.getColor(TypeOfWidget.text),
+                                width: 2),
                             borderRadius: BorderRadius.circular(16))),
                     onFieldSubmitted: (v) {
                       //if(!focus.hasPrimaryFocus){
@@ -520,11 +537,15 @@ class MyHomePageState extends State<MyHomePage> {
                           decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(16.0),
                               border: Border.all(
-                                  color: themeManager.getColor(TypeOfWidget.button), width: 2)),
+                                  color: themeManager
+                                      .getColor(TypeOfWidget.button),
+                                  width: 2)),
                           child: new Text(
                             'Submit',
                             style: new TextStyle(
-                                fontSize: 20.0, color: themeManager.getColor(TypeOfWidget.button)),
+                                fontSize: 20.0,
+                                color:
+                                    themeManager.getColor(TypeOfWidget.button)),
                           ),
                         )),
                   )),
@@ -543,11 +564,15 @@ class MyHomePageState extends State<MyHomePage> {
                           decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(16.0),
                               border: Border.all(
-                                  color: themeManager.getColor(TypeOfWidget.button), width: 2)),
+                                  color: themeManager
+                                      .getColor(TypeOfWidget.button),
+                                  width: 2)),
                           child: new Text(
                             'Search District',
                             style: new TextStyle(
-                                fontSize: 20.0, color: themeManager.getColor(TypeOfWidget.button)),
+                                fontSize: 20.0,
+                                color:
+                                    themeManager.getColor(TypeOfWidget.button)),
                           ),
                         )),
                   )),
@@ -571,11 +596,15 @@ class MyHomePageState extends State<MyHomePage> {
                           decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(16.0),
                               border: Border.all(
-                                  color: themeManager.getColor(TypeOfWidget.button), width: 2)),
+                                  color: themeManager
+                                      .getColor(TypeOfWidget.button),
+                                  width: 2)),
                           child: new Text(
                             'Choose Accounts',
                             style: new TextStyle(
-                                fontSize: 20.0, color: themeManager.getColor(TypeOfWidget.button)),
+                                fontSize: 20.0,
+                                color:
+                                    themeManager.getColor(TypeOfWidget.button)),
                           ),
                         )),
                   )),

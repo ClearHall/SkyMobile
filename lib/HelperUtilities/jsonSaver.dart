@@ -66,7 +66,7 @@ class JSONSaver {
         } else if (fileName == FilesAvailable.gpaExtraSettings) {
           mapOfTargetedObject = retrievedJSONCoded;
         } else if (fileName == FilesAvailable.previousDistrict) {
-           return SkywardDistrict.fromJson(retrievedJSONCoded);
+          return SkywardDistrict.fromJson(retrievedJSONCoded);
         }
         return mapOfTargetedObject;
       }
@@ -77,10 +77,22 @@ class JSONSaver {
 }
 
 enum FilesAvailable {
-  accounts, /// Stores stored account files
-  gpaCalculatorSettings, /// Stores GPA Calculator class settings
-  gpaSelectedTerms, /// GPA Terms that have been selected that count toward GPA
-  classLevelValues, /// Class level values +5 +10 or +0
-  gpaExtraSettings, /// GPA extra modifiers
-  previousDistrict /// The district previously stored
+  accounts,
+
+  /// Stores stored account files
+  gpaCalculatorSettings,
+
+  /// Stores GPA Calculator class settings
+  gpaSelectedTerms,
+
+  /// GPA Terms that have been selected that count toward GPA
+  classLevelValues,
+
+  /// Class level values +5 +10 or +0
+  gpaExtraSettings,
+
+  /// GPA extra modifiers
+  previousDistrict
+
+  /// The district previously stored
 }
