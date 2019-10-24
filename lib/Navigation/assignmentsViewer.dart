@@ -102,7 +102,8 @@ class _AssignmentsViewerState extends State<AssignmentsViewer> {
                               color: isBoxCatHeader
                                   ? secondContNeeded
                                       ? themeManager.getColor(TypeOfWidget.text)
-                                      : themeManager.getColor(TypeOfWidget.button)
+                                      : themeManager
+                                          .getColor(TypeOfWidget.button)
                                   : Colors.white,
                               fontSize: isBoxCatHeader ? 20 : 15),
                           textAlign: TextAlign.start,
@@ -119,7 +120,9 @@ class _AssignmentsViewerState extends State<AssignmentsViewer> {
                               alignment: Alignment.centerLeft,
                               child: Text((box as CategoryHeader).weight,
                                   style: TextStyle(
-                                      color: themeManager.getColor(TypeOfWidget.text), fontSize: 15),
+                                      color: themeManager
+                                          .getColor(TypeOfWidget.text),
+                                      fontSize: 15),
                                   textAlign: TextAlign.start),
                             )
                           : Container(
@@ -132,13 +135,17 @@ class _AssignmentsViewerState extends State<AssignmentsViewer> {
                   constraints: BoxConstraints(minHeight: 60),
                   padding: EdgeInsets.only(right: 10),
                   alignment: Alignment.centerRight,
-                  child: FittedBox(fit: BoxFit.fitWidth,child: Text(
-                    grade == null ? box.attributes.containsKey('Points Earned') ? box.attributes['Points Earned'] : "" : grade,
-                    style: TextStyle(
-                        fontSize: 17,
-                        fontWeight: FontWeight.w700,
-                        color: getColorFrom(grade)),
-                  ),),
+                  child:Text(
+                      grade == null
+                          ? box.attributes.containsKey('Points Earned')
+                              ? box.attributes['Points Earned']
+                              : ""
+                          : grade,
+                      style: TextStyle(
+                          fontSize: 17,
+                          fontWeight: FontWeight.w700,
+                          color: getColorFrom(grade)),
+                    ),
                 ),
               ],
             )),
@@ -148,35 +155,18 @@ class _AssignmentsViewerState extends State<AssignmentsViewer> {
 
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: themeManager.getColor(TypeOfWidget.button),
-        title: Text(courseName != null ? courseName : 'Assignments',
-            textAlign: TextAlign.center,
-            style: TextStyle(
-                color: Colors.black,
-                fontSize: 30,
-                fontWeight: FontWeight.w700)),
-//        actions: <Widget>[
-//          Theme(
-//              data: Theme.of(context).copyWith(
-//                cardColor: Colors.black87,
-//              ),
-//              child: PopupMenuButton(
-//                itemBuilder: (_) => <PopupMenuItem<String>>[
-//                  PopupMenuItem<String>(
-//                      child: const Text(
-//                        'Mock Assignment Editing Mode',
-//                        style: TextStyle(color: Colors.white),
-//                      ),
-//                      value: 'mockAssignmentEditingMode'),
-//                  PopupMenuItem<String>(
-//                      child: const Text(
-//                        'Grade Predictor',
-//                        style: TextStyle(color: Colors.white),
-//                      ),
-//                      value: 'gradePredictor'),
-//                ],
-//              ))
-//        ],
+        iconTheme: IconThemeData(
+            color: themeManager.getColor(TypeOfWidget.text), size: 30),
+        backgroundColor: themeManager.getColor(TypeOfWidget.background),
+        title: Align(
+          alignment: Alignment.centerLeft,
+          child: Text(courseName != null ? courseName : 'Assignments',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                  color: themeManager.getColor(TypeOfWidget.text),
+                  fontSize: 30,
+                  fontWeight: FontWeight.w700)),
+        ),
       ),
       backgroundColor: Colors.black,
       body: Center(

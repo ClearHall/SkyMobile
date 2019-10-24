@@ -36,9 +36,7 @@ class SettingsWidgetGenerator {
             //padding: EdgeInsets.only(left: 5, top: 10, right: 5, bottom: 10),
           ),
           Container(
-              child: Card(
-                  color: Colors.white12,
-                  child: Container(
+              child: Container(
                     child: Text(
                       attributes['description'] ?? '',
                       style: TextStyle(
@@ -46,7 +44,7 @@ class SettingsWidgetGenerator {
                           fontSize: 20),
                     ),
                     padding: EdgeInsets.all(10),
-                  )))
+                  ))
         ],
       ),
       padding: EdgeInsets.only(left: 10, right: 10),
@@ -64,7 +62,7 @@ class SettingsWidgetGenerator {
       widgets.add(Container(
           child: Row(children: <Widget>[
         SizedBox(
-          width: 10,
+          width: 20,
         ),
         Text(
           x + ": ",
@@ -99,7 +97,7 @@ class SettingsWidgetGenerator {
           ),
         ),
         SizedBox(
-          width: 10,
+          width: 20,
         ),
       ])));
     }
@@ -107,7 +105,7 @@ class SettingsWidgetGenerator {
     widgets.add(
       Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: <Widget>[
         Container(
-            padding: EdgeInsets.all(20),
+            padding: EdgeInsets.only(left: 20, right: 20),
             child: Align(
               alignment: Alignment.bottomRight,
               child: InkWell(
@@ -157,8 +155,6 @@ class SettingsWidgetGenerator {
             ),
           ),
           Container(
-              child: Card(
-                  color: themeManager.getColor(TypeOfWidget.subBackground),
                   child: Container(
                     child: Text(
                       attributes['description'] ?? '',
@@ -167,7 +163,7 @@ class SettingsWidgetGenerator {
                           fontSize: 20),
                     ),
                     padding: EdgeInsets.all(10),
-                  ))),
+                  ))
         ],
       ),
       padding: EdgeInsets.only(left: 10, right: 10),

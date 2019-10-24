@@ -149,11 +149,10 @@ class _TermViewer extends State<TermViewerPage> {
             : '';
 
         body.add(Card(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10)
-          ),
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
           child: InkWell(
-            borderRadius: BorderRadius.circular(10),
+              borderRadius: BorderRadius.circular(10),
               onTap: () {
                 if (gradeBox != null && gradeBox is GradeBox)
                   _goToAssignmentsViewer(gradeBox, teacherIDBox.courseName);
@@ -225,22 +224,28 @@ class _TermViewer extends State<TermViewerPage> {
 
     return Scaffold(
         appBar: AppBar(
-        iconTheme: IconThemeData(color: themeManager.getColor(TypeOfWidget.text), size: 30),
-    backgroundColor: themeManager.getColor(TypeOfWidget.background),
-    title: Align(alignment: Alignment.center,child: Text('Gradebook',
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                color: themeManager.getColor(TypeOfWidget.text),
-                fontSize: 30,
-                fontWeight: FontWeight.w700,
-              ))),
+          iconTheme: IconThemeData(
+              color: themeManager.getColor(TypeOfWidget.text), size: 30),
+          backgroundColor: themeManager.getColor(TypeOfWidget.background),
+          title: Align(
+              alignment: Alignment.center,
+              child: Text('Gradebook',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: themeManager.getColor(TypeOfWidget.text),
+                    fontSize: 30,
+                    fontWeight: FontWeight.w700,
+                  ))),
           actions: <Widget>[
             Theme(
                 data: Theme.of(context).copyWith(
                   cardColor: Colors.black,
                 ),
                 child: PopupMenuButton(
-                  icon: Icon(Icons.more_vert, color: themeManager.getColor(TypeOfWidget.text),),
+                  icon: Icon(
+                    Icons.more_vert,
+                    color: themeManager.getColor(TypeOfWidget.text),
+                  ),
                   onSelected: (String selected) {
                     switch (selected) {
                       case 'settings':
@@ -287,40 +292,42 @@ class _TermViewer extends State<TermViewerPage> {
         ),
         backgroundColor: Colors.black,
         body: Center(
-            child: Column(children: <Widget>[
-          Container(
-            child: InkWell(
-              child: Card(
-                color: themeManager.getColor(TypeOfWidget.text),
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(30)),
-                child: Container(
-                  child: Text(
-                    'Term: ${terms[currentTermIndex].termCode} / ${terms[currentTermIndex].termName}',
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700),
-                    textAlign: TextAlign.center,
+            child: Column(crossAxisAlignment: CrossAxisAlignment.stretch,children: <Widget>[
+            Container(
+              child: InkWell(
+                child: Card(
+                  color: themeManager.getColor(TypeOfWidget.text),
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(30)),
+                  child: Container(
+                    child: Text(
+                      'Term: ${terms[currentTermIndex].termCode} / ${terms[currentTermIndex].termName}',
+                      style:
+                          TextStyle(fontSize: 18, fontWeight: FontWeight.w700),
+                      textAlign: TextAlign.center,
+                    ),
+                    padding: EdgeInsets.only(
+                        top: 20, bottom: 20, left: 0, right: 0),
                   ),
-                  padding:
-                      EdgeInsets.only(top: 20, bottom: 20, left: 30, right: 30),
                 ),
+                onTap: () {
+                  showModalBottomSheet(
+                      context: context,
+                      builder: (BuildContext context) => CupertinoPicker(
+                          scrollController: scrollController,
+                          backgroundColor: Colors.black,
+                          children: cupPickerWid,
+                          itemExtent: 50,
+                          onSelectedItemChanged: (int changeTo) {
+                            setState(() {
+                              currentTermIndex = changeTo;
+                            });
+                          }));
+                },
               ),
-              onTap: () {
-                showModalBottomSheet(
-                    context: context,
-                    builder: (BuildContext context) => CupertinoPicker(
-                        scrollController: scrollController,
-                        backgroundColor: Colors.black,
-                        children: cupPickerWid,
-                        itemExtent: 50,
-                        onSelectedItemChanged: (int changeTo) {
-                          setState(() {
-                            currentTermIndex = changeTo;
-                          });
-                        }));
-              },
+              padding:
+                  EdgeInsets.only(top: 10, left: 20, right: 20, bottom: 10),
             ),
-            padding: EdgeInsets.only(top: 10, left: 20, right: 20,bottom: 10),
-          ),
           Expanded(
             child: ListView(
               padding: EdgeInsets.only(left: 10, right: 10, bottom: 10),

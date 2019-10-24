@@ -24,10 +24,11 @@ class _GPACalculatorSchoolYearState extends State<GPACalculatorSchoolYear> {
 
     getExtraGPASettings();
     if (historyGrades == null) historyGrades = [];
-    _updateFirstInList(basedOn: historyGrades.length > 0 ? historyGrades.first : null);
+    _updateFirstInList(
+        basedOn: historyGrades.length > 0 ? historyGrades.first : null);
   }
 
-  _updateFirstInList({SchoolYear basedOn}){
+  _updateFirstInList({SchoolYear basedOn}) {
     SchoolYear first = SchoolYear();
     first.classes = [];
     first.description = 'Current Year';
@@ -53,8 +54,10 @@ class _GPACalculatorSchoolYearState extends State<GPACalculatorSchoolYear> {
       historyGrades[0] = first;
     }
 
-    if(basedOn != null && basedOn == historyGrades[0] && basedOn.classes.length == historyGrades[0].classes.length){
-      for(int i = 0; i < basedOn.classes.length; i++){
+    if (basedOn != null &&
+        basedOn == historyGrades[0] &&
+        basedOn.classes.length == historyGrades[0].classes.length) {
+      for (int i = 0; i < basedOn.classes.length; i++) {
         historyGrades[0].classes[i].classLevel = basedOn.classes[i].classLevel;
         historyGrades[0].classes[i].credits = basedOn.classes[i].credits;
       }
@@ -83,14 +86,17 @@ class _GPACalculatorSchoolYearState extends State<GPACalculatorSchoolYear> {
 
     return Scaffold(
         appBar: AppBar(
-          iconTheme: IconThemeData(color: themeManager.getColor(TypeOfWidget.text), size: 30),
+          iconTheme: IconThemeData(
+              color: themeManager.getColor(TypeOfWidget.text), size: 30),
           backgroundColor: themeManager.getColor(TypeOfWidget.background),
-          title: Align(alignment: Alignment.center,child: Text('GPA Calculator',
-              textAlign: TextAlign.left,
-              style: TextStyle(
-                  color: themeManager.getColor(TypeOfWidget.text),
-                  fontSize: 30,
-                  fontWeight: FontWeight.w700))),
+          title: Align(
+              alignment: Alignment.center,
+              child: Text('GPA Calculator',
+                  textAlign: TextAlign.left,
+                  style: TextStyle(
+                      color: themeManager.getColor(TypeOfWidget.text),
+                      fontSize: 30,
+                      fontWeight: FontWeight.w700))),
           actions: <Widget>[
             IconButton(
               icon: Icon(
@@ -107,6 +113,13 @@ class _GPACalculatorSchoolYearState extends State<GPACalculatorSchoolYear> {
                           buttonText: 'Got it!',
                         ));
               },
+            ),
+            IconButton(
+              icon: Icon(Icons.settings),
+              color: themeManager.getColor(TypeOfWidget.text),
+              onPressed: () {
+                Navigator.pushNamed(context, '/gpacalculatorsettings');
+              },
             )
           ],
         ),
@@ -114,24 +127,28 @@ class _GPACalculatorSchoolYearState extends State<GPACalculatorSchoolYear> {
         body: Center(
           child: ListView(
             children: <Widget>[
-              Container(
-                  padding: EdgeInsets.only(top: 20, left: 20, right: 20),
-                  child: Card(
-                      color: themeManager.getColor(TypeOfWidget.subBackground),
-                      child: InkWell(
-                        child: Container(
-                          padding: EdgeInsets.all(10),
-                          child: Text(
-                            'GPA Calculator Settings',
-                            style:
-                                TextStyle(color: themeManager.getColor(TypeOfWidget.text), fontSize: 20),
-                          ),
-                        ),
-                        onTap: () {
-                          Navigator.pushNamed(
-                              context, '/gpacalculatorsettings');
-                        },
-                      ))),
+              Row(children: <Widget>[
+                Expanded(
+                  child: Container(
+                    padding: EdgeInsets.only(top: 10, left: 20, right: 0),
+                    child: Card(
+                        child: buildGradeDisplayWidget(
+                            'GPA', getFinalGPA(averages), bold: true),
+                        color:
+                            themeManager.getColor(TypeOfWidget.subBackground)),
+                  ),
+                ),
+                Expanded(
+                  child: Container(
+                    padding: EdgeInsets.only(top: 10, left: 0, right: 20),
+                    child: Card(
+                        child: buildGradeDisplayWidget(
+                            '4.0 GPA', get40Scale(enabledSchoolYears), bold: true),
+                        color:
+                            themeManager.getColor(TypeOfWidget.subBackground)),
+                  ),
+                )
+              ]),
               Container(
                 padding: EdgeInsets.only(
                     top: termIdentifiersCountingTowardGPA.isEmpty ? 0 : 10,
@@ -153,30 +170,20 @@ class _GPACalculatorSchoolYearState extends State<GPACalculatorSchoolYear> {
               Container(
                 child: Text(
                   'If your district shows your GPA in portfolio, then your GPA in portfolio is most likely without the current year.',
-                  style: TextStyle(color: themeManager.getColor(TypeOfWidget.text), fontSize: 20),
+                  style: TextStyle(
+                      color: themeManager.getColor(TypeOfWidget.text),
+                      fontSize: 20),
                 ),
-                padding: EdgeInsets.all(10),
-              ),
-              Container(
-                padding: EdgeInsets.only(top: 10, left: 20, right: 20),
-                child: Card(
-                    child:
-                        buildGradeDisplayWidget('GPA', getFinalGPA(averages)),
-                    color: themeManager.getColor(TypeOfWidget.subBackground)),
-              ),
-              Container(
-                padding: EdgeInsets.only(top: 10, left: 20, right: 20),
-                child: Card(
-                    child: buildGradeDisplayWidget(
-                        '4.0 GPA', get40Scale(enabledSchoolYears)),
-                    color: themeManager.getColor(TypeOfWidget.subBackground)),
+                padding: EdgeInsets.only(left: 20, right: 20, top: 10),
               ),
               Container(
                 child: Text(
                   'Select the terms below that should count toward your final GPA.',
-                  style: TextStyle(color: themeManager.getColor(TypeOfWidget.text), fontSize: 20),
+                  style: TextStyle(
+                      color: themeManager.getColor(TypeOfWidget.text),
+                      fontSize: 20),
                 ),
-                padding: EdgeInsets.all(10),
+                padding: EdgeInsets.only(left: 20, right: 20, top: 10),
               ),
               Container(
                 padding: EdgeInsets.only(top: 10, left: 20, right: 20),
@@ -196,9 +203,11 @@ class _GPACalculatorSchoolYearState extends State<GPACalculatorSchoolYear> {
               Container(
                 child: Text(
                   'Select which school years count toward final GPA below. To modify which classes count toward GPA, click the arrow.',
-                  style: TextStyle(color: themeManager.getColor(TypeOfWidget.text), fontSize: 20),
+                  style: TextStyle(
+                      color: themeManager.getColor(TypeOfWidget.text),
+                      fontSize: 20),
                 ),
-                padding: EdgeInsets.all(10),
+                padding: EdgeInsets.all(20),
               ),
               Container(
                 padding:
@@ -208,7 +217,8 @@ class _GPACalculatorSchoolYearState extends State<GPACalculatorSchoolYear> {
                     // constraints: BoxConstraints(maxHeight: 100),
                     child: Card(
                         //shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-                        color: themeManager.getColor(TypeOfWidget.subBackground),
+                        color:
+                            themeManager.getColor(TypeOfWidget.subBackground),
                         child: buildArrayOfSchoolYears())),
               ),
             ],
@@ -216,7 +226,7 @@ class _GPACalculatorSchoolYearState extends State<GPACalculatorSchoolYear> {
         ));
   }
 
-  Column buildArrayOfSelectableTerms(List<String> stringList) {
+  Row buildArrayOfSelectableTerms(List<String> stringList) {
     List<Widget> widgets = [];
 
     for (String term in stringList) {
@@ -225,7 +235,9 @@ class _GPACalculatorSchoolYearState extends State<GPACalculatorSchoolYear> {
           child: ListTile(
             title: Text(
               "$term",
-              style: TextStyle(color: themeManager.getColor(TypeOfWidget.text), fontSize: 20),
+              style: TextStyle(
+                  color: themeManager.getColor(TypeOfWidget.text),
+                  fontSize: 20),
             ),
             trailing: IconButton(
               icon: Icon(
@@ -259,8 +271,28 @@ class _GPACalculatorSchoolYearState extends State<GPACalculatorSchoolYear> {
           ),
         ));
     }
-    return Column(
-      children: widgets,
+    List<Widget> first, second;
+    first = [];
+    second = [];
+    for (int i = 0; i < widgets.length; i++) {
+      if (i <= widgets.length / 2) {
+        first.add(widgets[i]);
+      } else {
+        second.add(widgets[i]);
+      }
+    }
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Expanded(
+            child: Column(
+          children: first,
+        )),
+        Expanded(
+            child: Column(
+          children: second,
+        )),
+      ],
     );
   }
 
@@ -300,7 +332,9 @@ class _GPACalculatorSchoolYearState extends State<GPACalculatorSchoolYear> {
                     padding: EdgeInsets.only(top: 5, bottom: 5),
                     child: Text(
                       "${i == 0 ? 'Current: ' : ''}${historyGrades[i].description}",
-                      style: TextStyle(color: themeManager.getColor(TypeOfWidget.text), fontSize: 20),
+                      style: TextStyle(
+                          color: themeManager.getColor(TypeOfWidget.text),
+                          fontSize: 20),
                     ),
                   ),
                   trailing:
@@ -379,12 +413,15 @@ class _GPACalculatorSchoolYearState extends State<GPACalculatorSchoolYear> {
     );
   }
 
-  Widget buildGradeDisplayWidget(String term, double grade) {
+  Widget buildGradeDisplayWidget(String term, double grade,
+      {Color colorOverride, bool bold = false}) {
     return Container(
       width: double.infinity,
       child: Text(
-        "$term: ${grade.toString() != 'null' ? grade.toString() : 'N/A'}",
-        style: TextStyle(color: themeManager.getColor(TypeOfWidget.text), fontSize: 20),
+        "$term: ${grade.toString() != 'null' ? grade.toStringAsFixed(3) : 'N/A'}",
+        style: TextStyle(
+            color: colorOverride ?? themeManager.getColor(TypeOfWidget.text),
+            fontSize: 20, fontWeight: bold ? FontWeight.w700 : FontWeight.normal),
       ),
       padding: EdgeInsets.only(left: 10, top: 10, right: 10, bottom: 10),
     );

@@ -41,17 +41,20 @@ class _AssignmentInfoViewerState extends State<AssignmentInfoViewer> {
         ),
       ));
     }
-
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: themeManager.getColor(TypeOfWidget.button),
-        title: Text(courseName != null ? courseName : 'Assignments',
+        iconTheme: IconThemeData(
+        color: themeManager.getColor(TypeOfWidget.text), size: 30),
+    backgroundColor: themeManager.getColor(TypeOfWidget.background),
+    title: Align(
+    alignment: Alignment.centerLeft,
+    child: Text(courseName != null ? courseName : 'Assignments',
             textAlign: TextAlign.center,
             style: TextStyle(
-                color: Colors.black,
+                color: themeManager.getColor(TypeOfWidget.text),
                 fontSize: 30,
                 fontWeight: FontWeight.w700)),
-      ),
+      ),),
       backgroundColor: Colors.black,
       body: Center(
         child: ListView(

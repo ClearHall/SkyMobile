@@ -44,6 +44,13 @@ class GPACalculatorClassesState extends State<GPACalculatorClasses> {
       return availableCredits
           .indexOf(credits / 0.5 <= 6.0 && credits / 0.5 >= 0 ? credits : 1.0);
     });
+
+    offset = 0;
+    for (Term term in schoolYear.terms) {
+      if (term.termCode.contains('\n'))
+        offset++;
+    }
+    currentTermIndex = schoolYear.terms.length - 1 - offset;
   }
 
   void setDropDown() {
@@ -82,14 +89,18 @@ class GPACalculatorClassesState extends State<GPACalculatorClasses> {
 
     return Scaffold(
         appBar: AppBar(
-          backgroundColor: Colors.lightBlue,
-          title: Text(schoolYear.description,
+        iconTheme: IconThemeData(
+        color: themeManager.getColor(TypeOfWidget.text), size: 30),
+    backgroundColor: themeManager.getColor(TypeOfWidget.background),
+    title: Align(
+    alignment: Alignment.centerLeft,
+    child: Text(schoolYear.description,
               textAlign: TextAlign.center,
               style: TextStyle(
-                  color: Colors.black,
+                  color: themeManager.getColor(TypeOfWidget.text),
                   fontSize: 30,
                   fontWeight: FontWeight.w700)),
-        ),
+        ),),
         backgroundColor: Colors.black,
         body: Center(
             child: Column(
@@ -109,7 +120,7 @@ class GPACalculatorClassesState extends State<GPACalculatorClasses> {
                               fontSize: 18, fontWeight: FontWeight.w700),
                           textAlign: TextAlign.center,
                         ),
-                        padding: EdgeInsets.all(20),
+                        padding: EdgeInsets.all(15),
                       ),
                     ),
                     onTap: () {
@@ -136,15 +147,15 @@ class GPACalculatorClassesState extends State<GPACalculatorClasses> {
                   child: Card(
                     color: themeManager.getColor(TypeOfWidget.text),
                     shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(30)),
+                        borderRadius: BorderRadius.circular(20)),
                     child: Container(
                       child: Text(
-                        'Predict Class',
+                        'Guess Class Levels',
                         style: TextStyle(
                             fontSize: 18, fontWeight: FontWeight.w700),
                         textAlign: TextAlign.center,
                       ),
-                      padding: EdgeInsets.all(20),
+                      padding: EdgeInsets.all(10),
                     ),
                   ),
                   onTap: () {
@@ -175,15 +186,15 @@ class GPACalculatorClassesState extends State<GPACalculatorClasses> {
                   child: Card(
                     color: themeManager.getColor(TypeOfWidget.text),
                     shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(30)),
+                        borderRadius: BorderRadius.circular(20)),
                     child: Container(
                       child: Text(
-                        'Deselect All',
+                        'Set Class Levels to None',
                         style: TextStyle(
                             fontSize: 18, fontWeight: FontWeight.w700),
                         textAlign: TextAlign.center,
                       ),
-                      padding: EdgeInsets.all(20),
+                      padding: EdgeInsets.all(10),
                     ),
                   ),
                   onTap: () {
@@ -240,8 +251,9 @@ class GPACalculatorClassesState extends State<GPACalculatorClasses> {
                       textAlign: TextAlign.start,
                     ),
                   ),
+                  Row(children: <Widget>[
                   Container(
-                      padding: EdgeInsets.only(left: 15, top: 5),
+                      padding: EdgeInsets.only(left: 15, bottom: 5),
                       child: Theme(
                           data: Theme.of(context)
                               .copyWith(canvasColor: Colors.black),
@@ -273,7 +285,7 @@ class GPACalculatorClassesState extends State<GPACalculatorClasses> {
                             },
                           ))),
                   Container(
-                      padding: EdgeInsets.only(left: 15, bottom: 10),
+                      padding: EdgeInsets.only(left: 15, bottom: 5),
                       child: Theme(
                           data: Theme.of(context)
                               .copyWith(canvasColor: Colors.black),
@@ -300,7 +312,7 @@ class GPACalculatorClassesState extends State<GPACalculatorClasses> {
                                 setDropDown();
                               });
                             },
-                          )))
+                          )))]),
                 ],
               ),
             ),
