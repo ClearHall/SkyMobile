@@ -61,7 +61,8 @@ class HuntyDialog extends StatelessWidget {
               EdgeInsets.only(top: 16.0 + 66, bottom: 16, left: 15, right: 16),
           margin: EdgeInsets.only(top: 66),
           decoration: new BoxDecoration(
-            color: Colors.white,
+            border: Border.all(color: themeManager.getColor(TypeOfWidget.text)),
+            color: themeManager.getColor(TypeOfWidget.background),
             shape: BoxShape.rectangle,
             borderRadius: BorderRadius.circular(16),
             boxShadow: [
@@ -95,17 +96,15 @@ class HuntyDialogLoading extends HuntyDialog {
       Text(
         title,
         style: TextStyle(
-          fontSize: 24.0,
-          fontWeight: FontWeight.w700,
-        ),
+            fontSize: 24.0,
+            fontWeight: FontWeight.w700,
+            color: themeManager.getColor(null)),
       ),
       SizedBox(height: 16.0),
       Text(
         description,
         textAlign: TextAlign.center,
-        style: TextStyle(
-          fontSize: 16.0,
-        ),
+        style: TextStyle(fontSize: 16.0, color: themeManager.getColor(null)),
       ),
       SizedBox(height: 24.0),
       CircularProgressIndicator(),
@@ -188,7 +187,9 @@ class _HuntyDistrictSearcherWidgetState
       Text(
         title,
         style: TextStyle(
-            fontSize: 24.0, fontWeight: FontWeight.w700, color: themeManager.getColor(TypeOfWidget.button)),
+            fontSize: 24.0,
+            fontWeight: FontWeight.w700,
+            color: themeManager.getColor(TypeOfWidget.button)),
       ),
       SizedBox(height: 16.0),
       Text(
@@ -201,8 +202,8 @@ class _HuntyDistrictSearcherWidgetState
       ),
       SizedBox(height: 10.0),
       new Theme(
-          data: Theme.of(context)
-              .copyWith(canvasColor: themeManager.getColor(TypeOfWidget.background)),
+          data: Theme.of(context).copyWith(
+              canvasColor: themeManager.getColor(TypeOfWidget.background)),
           child: DropdownButton<String>(
             items: SkywardDistrictSearcher.states
                 .map<DropdownMenuItem<String>>((SkywardSearchState value) {
@@ -232,11 +233,12 @@ class _HuntyDistrictSearcherWidgetState
               hintStyle: TextStyle(color: Colors.white70),
               enabledBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(50.0),
-                  borderSide: BorderSide(color: themeManager.getColor(TypeOfWidget.text))),
+                  borderSide: BorderSide(
+                      color: themeManager.getColor(TypeOfWidget.text))),
               border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(50.0),
-                  borderSide:
-                      BorderSide(color: themeManager.getColor(TypeOfWidget.button)))),
+                  borderSide: BorderSide(
+                      color: themeManager.getColor(TypeOfWidget.button)))),
         ),
       ),
       messages != null ? messages : Container(),
@@ -342,17 +344,15 @@ class HuntyDialogForConfirmation extends HuntyDialog {
       Text(
         title,
         style: TextStyle(
-          fontSize: 24.0,
-          fontWeight: FontWeight.w700,
-        ),
+            fontSize: 24.0,
+            fontWeight: FontWeight.w700,
+            color: themeManager.getColor(null)),
       ),
       SizedBox(height: 16.0),
       Text(
         description,
         textAlign: TextAlign.center,
-        style: TextStyle(
-          fontSize: 16.0,
-        ),
+        style: TextStyle(fontSize: 16.0, color: themeManager.getColor(null)),
       ),
       SizedBox(
         height: 24.0,
@@ -364,7 +364,10 @@ class HuntyDialogForConfirmation extends HuntyDialog {
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              child: Text(btnTextForCancel),
+              child: Text(
+                btnTextForCancel,
+                style: TextStyle(color: themeManager.getColor(null)),
+              ),
             )),
         Align(
           alignment: Alignment.bottomRight,
@@ -373,7 +376,8 @@ class HuntyDialogForConfirmation extends HuntyDialog {
               Navigator.of(context).pop();
               runIfUserConfirms();
             },
-            child: Text(btnTextForConfirmation),
+            child: Text(btnTextForConfirmation,
+                style: TextStyle(color: themeManager.getColor(null))),
           ),
         )
       ]),
@@ -395,17 +399,15 @@ class HuntyDialogForMoreText extends HuntyDialog {
       Text(
         title,
         style: TextStyle(
-          fontSize: 16.0,
-          fontWeight: FontWeight.w700,
-        ),
+            fontSize: 16.0,
+            fontWeight: FontWeight.w700,
+            color: themeManager.getColor(null)),
       ),
       SizedBox(height: 16.0),
       Text(
         description,
         textAlign: TextAlign.center,
-        style: TextStyle(
-          fontSize: 14.0,
-        ),
+        style: TextStyle(fontSize: 14.0, color: themeManager.getColor(null)),
       ),
       SizedBox(height: 24.0),
       Align(
@@ -442,21 +444,20 @@ class HuntyDialogWithText extends HuntyDialog {
       Text(
         title,
         style: TextStyle(
-          fontSize: 24.0,
-          fontWeight: FontWeight.w700,
-        ),
+            fontSize: 24.0,
+            fontWeight: FontWeight.w700,
+            color: themeManager.getColor(null)),
       ),
       SizedBox(height: 16.0),
       Text(
         description,
         textAlign: TextAlign.center,
-        style: TextStyle(
-          fontSize: 16.0,
-        ),
+        style: TextStyle(fontSize: 16.0, color: themeManager.getColor(null)),
       ),
       Container(
         padding: EdgeInsets.only(top: 16),
         child: TextField(
+          style: TextStyle(color: themeManager.getColor(null)),
           controller: textController,
           onSubmitted: (String a) {
             Navigator.of(context).pop();
@@ -465,8 +466,14 @@ class HuntyDialogWithText extends HuntyDialog {
           },
           decoration: InputDecoration(
               hintText: hint,
+              enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(50.0),
+                  borderSide: BorderSide(
+                      color: themeManager.getColor(TypeOfWidget.text))),
               border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(50.0))),
+                  borderRadius: BorderRadius.circular(50.0),
+                  borderSide: BorderSide(
+                      color: themeManager.getColor(TypeOfWidget.text)))),
         ),
       ),
       SizedBox(height: 16.0),
@@ -477,7 +484,10 @@ class HuntyDialogWithText extends HuntyDialog {
             Navigator.of(context).pop();
             okPressed();
           },
-          child: Text(buttonText),
+          child: Text(
+            buttonText,
+            style: TextStyle(color: themeManager.getColor(null)),
+          ),
         ),
       ),
     ];

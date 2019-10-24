@@ -22,7 +22,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'SkyMobile',
-      theme: ThemeData(primarySwatch: Colors.orange),
+      theme: ThemeData(primarySwatch: themeManager.getColor(TypeOfWidget.text),),
       initialRoute: "/",
       debugShowCheckedModeBanner: false,
       routes: {

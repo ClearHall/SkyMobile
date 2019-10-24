@@ -95,7 +95,7 @@ class _GPACalculatorSchoolYearState extends State<GPACalculatorSchoolYear> {
                   textAlign: TextAlign.left,
                   style: TextStyle(
                       color: themeManager.getColor(TypeOfWidget.text),
-                      fontSize: 30,
+                      fontSize: 25,
                       fontWeight: FontWeight.w700))),
           actions: <Widget>[
             IconButton(
@@ -133,7 +133,7 @@ class _GPACalculatorSchoolYearState extends State<GPACalculatorSchoolYear> {
                     padding: EdgeInsets.only(top: 10, left: 20, right: 0),
                     child: Card(
                         child: buildGradeDisplayWidget(
-                            'GPA', getFinalGPA(averages), bold: true),
+                            '100 Point', getFinalGPA(averages), bold: true),
                         color:
                             themeManager.getColor(TypeOfWidget.subBackground)),
                   ),
@@ -143,7 +143,8 @@ class _GPACalculatorSchoolYearState extends State<GPACalculatorSchoolYear> {
                     padding: EdgeInsets.only(top: 10, left: 0, right: 20),
                     child: Card(
                         child: buildGradeDisplayWidget(
-                            '4.0 GPA', get40Scale(enabledSchoolYears), bold: true),
+                            '4.0 Scale', get40Scale(enabledSchoolYears),
+                            bold: true),
                         color:
                             themeManager.getColor(TypeOfWidget.subBackground)),
                   ),
@@ -421,7 +422,8 @@ class _GPACalculatorSchoolYearState extends State<GPACalculatorSchoolYear> {
         "$term: ${grade.toString() != 'null' ? grade.toStringAsFixed(3) : 'N/A'}",
         style: TextStyle(
             color: colorOverride ?? themeManager.getColor(TypeOfWidget.text),
-            fontSize: 20, fontWeight: bold ? FontWeight.w700 : FontWeight.normal),
+            fontSize: 20,
+            fontWeight: bold ? FontWeight.w700 : FontWeight.normal),
       ),
       padding: EdgeInsets.only(left: 10, top: 10, right: 10, bottom: 10),
     );

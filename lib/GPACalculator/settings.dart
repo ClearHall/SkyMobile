@@ -12,6 +12,8 @@ class GPACalculatorSettings extends StatefulWidget {
 }
 
 class _GPACalculatorSettingsState extends State<GPACalculatorSettings> {
+  Map<String, TextEditingController> mapEditable = Map();
+
   @override
   Widget build(BuildContext context) {
     List<Widget> widgets = [
@@ -19,13 +21,14 @@ class _GPACalculatorSettingsState extends State<GPACalculatorSettings> {
           child: Text(
             'Tick or change the settings depending on your district or college. Read descriptions carefully verify that the settings are correct.',
             style: TextStyle(color: themeManager.getColor(TypeOfWidget.text), fontSize: 20),
-          ),padding: EdgeInsets.only(left: 20, right: 20, top: 10))
+          ),padding: EdgeInsets.only(left: 20, right: 20, top: 10, bottom: 10))
     ];
     for (String k in extraGPASettings.keys) {
       if(extraGPASettings[k]['option'] is Map){
-        widgets.add(SettingsWidgetGenerator.generateListSettingsWidget(k, extraGPASettings[k], run: () {
+        widgets.add(SettingsWidgetGenerator.generateListSettingsWidget(k, extraGPASettings[k], mapEditable, run: () {
           setState(() {
             saveExtraGPASettings();
+            mapEditable.forEach((k, controller){controller.text = '';});
           });
         }));
       } else {

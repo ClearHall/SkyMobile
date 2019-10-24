@@ -37,28 +37,31 @@ class SettingsWidgetGenerator {
           ),
           Container(
               child: Container(
-                    child: Text(
-                      attributes['description'] ?? '',
-                      style: TextStyle(
-                          color: themeManager.getColor(TypeOfWidget.text),
-                          fontSize: 20),
-                    ),
-                    padding: EdgeInsets.all(10),
-                  ))
+            child: Text(
+              attributes['description'] ?? '',
+              style: TextStyle(
+                  color: themeManager.getColor(TypeOfWidget.text),
+                  fontSize: 20),
+            ),
+            padding: EdgeInsets.all(10),
+          ))
         ],
       ),
       padding: EdgeInsets.only(left: 10, right: 10),
     );
   }
 
-  static Widget generateListSettingsWidget(String settings, Map attributes,
+  static Widget generateListSettingsWidget(
+      String settings, Map attributes, Map<String, TextEditingController> arr,
       {Function run}) {
     List<Widget> widgets = [];
-    Map<String, TextEditingController> arr = Map();
 
     for (String x in attributes['option'].keys) {
-      TextEditingController y = TextEditingController();
-      arr[x] = y;
+      TextEditingController y = arr[x];
+      if (y == null) {
+        arr[x] = TextEditingController();
+        y = arr[x];
+      }
       widgets.add(Container(
           child: Row(children: <Widget>[
         SizedBox(
@@ -81,19 +84,26 @@ class SettingsWidgetGenerator {
             keyboardType: TextInputType.number,
             style: TextStyle(color: themeManager.getColor(TypeOfWidget.text)),
             decoration: InputDecoration(
-                hintText: attributes['option'][x].toString(),
-                hintStyle:
-                    TextStyle(color: themeManager.getColor(TypeOfWidget.text)),
+                hintText: 'Number of points',
+                hintStyle: TextStyle(
+                    color: themeManager
+                        .getColor(TypeOfWidget.text)
+                        .withAlpha(150)),
                 enabledBorder: UnderlineInputBorder(
                     borderSide: BorderSide(
                         color: themeManager.getColor(TypeOfWidget.text))),
                 focusedBorder: UnderlineInputBorder(
                     borderSide: BorderSide(
                         color: themeManager.getColor(TypeOfWidget.text))),
-                labelText: "Number of Points",
+                labelText: "${attributes['option'][x]}",
                 labelStyle: TextStyle(
-                    color: themeManager.getColor(TypeOfWidget.text),
+                    color: themeManager
+                        .getColor(TypeOfWidget.text)
+                        .withOpacity(.5),
                     fontSize: 20)),
+            onSubmitted: (sub) {
+              y.text = sub;
+            },
           ),
         ),
         SizedBox(
@@ -129,7 +139,9 @@ class SettingsWidgetGenerator {
               child: InkWell(
                 onTap: () {
                   arr.forEach((k, controller) {
-                    attributes['option'][k] = int.tryParse(controller.text) ?? 0;
+                    if (controller.text.isNotEmpty)
+                      attributes['option'][k] =
+                          int.tryParse(controller.text) ?? 0;
                   });
 
                   run();
@@ -155,15 +167,15 @@ class SettingsWidgetGenerator {
             ),
           ),
           Container(
-                  child: Container(
-                    child: Text(
-                      attributes['description'] ?? '',
-                      style: TextStyle(
-                          color: themeManager.getColor(TypeOfWidget.text),
-                          fontSize: 20),
-                    ),
-                    padding: EdgeInsets.all(10),
-                  ))
+              child: Container(
+            child: Text(
+              attributes['description'] ?? '',
+              style: TextStyle(
+                  color: themeManager.getColor(TypeOfWidget.text),
+                  fontSize: 20),
+            ),
+            padding: EdgeInsets.all(10),
+          ))
         ],
       ),
       padding: EdgeInsets.only(left: 10, right: 10),
