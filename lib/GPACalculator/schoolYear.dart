@@ -83,18 +83,19 @@ class _GPACalculatorSchoolYearState extends State<GPACalculatorSchoolYear> {
 
     return Scaffold(
         appBar: AppBar(
-          backgroundColor: themeManager.getColor(TypeOfWidget.button),
-          title: Text('GPA Calculator',
-              textAlign: TextAlign.center,
+          iconTheme: IconThemeData(color: themeManager.getColor(TypeOfWidget.text), size: 30),
+          backgroundColor: themeManager.getColor(TypeOfWidget.background),
+          title: Align(alignment: Alignment.center,child: Text('GPA Calculator',
+              textAlign: TextAlign.left,
               style: TextStyle(
-                  color: Colors.black,
+                  color: themeManager.getColor(TypeOfWidget.text),
                   fontSize: 30,
-                  fontWeight: FontWeight.w700)),
+                  fontWeight: FontWeight.w700))),
           actions: <Widget>[
             IconButton(
               icon: Icon(
                 Icons.info_outline,
-                color: Colors.black,
+                color: themeManager.getColor(TypeOfWidget.text),
               ),
               onPressed: () {
                 showDialog(

@@ -149,7 +149,11 @@ class _TermViewer extends State<TermViewerPage> {
             : '';
 
         body.add(Card(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10)
+          ),
           child: InkWell(
+            borderRadius: BorderRadius.circular(10),
               onTap: () {
                 if (gradeBox != null && gradeBox is GradeBox)
                   _goToAssignmentsViewer(gradeBox, teacherIDBox.courseName);
@@ -167,7 +171,7 @@ class _TermViewer extends State<TermViewerPage> {
                               maxWidth:
                                   MediaQuery.of(context).size.width / 6 * 4),
                           padding: EdgeInsets.only(
-                              top: 10, left: 10, right: 10, bottom: 0),
+                              top: 10, left: 15, right: 10, bottom: 0),
                           alignment: Alignment.centerLeft,
                           child: Text(
                             teacherIDBox.courseName,
@@ -182,7 +186,7 @@ class _TermViewer extends State<TermViewerPage> {
                         ),
                         Container(
                           padding: EdgeInsets.only(
-                              top: 5, left: 10, right: 10, bottom: 0),
+                              top: 5, left: 15, right: 10, bottom: 0),
                           alignment: Alignment.centerLeft,
                           child: Text(teacherIDBox.teacherName,
                               style:
@@ -191,7 +195,7 @@ class _TermViewer extends State<TermViewerPage> {
                         ),
                         Container(
                             padding: EdgeInsets.only(
-                                top: 5, left: 10, right: 10, bottom: 10),
+                                top: 5, left: 15, right: 10, bottom: 10),
                             alignment: Alignment.centerLeft,
                             child: Text(teacherIDBox.timePeriod,
                                 style: TextStyle(
@@ -214,27 +218,29 @@ class _TermViewer extends State<TermViewerPage> {
                   ),
                 ],
               )),
-          color: Colors.white12,
+          color: themeManager.getColor(TypeOfWidget.subBackground),
         ));
       }
     }
 
     return Scaffold(
         appBar: AppBar(
-          backgroundColor: Colors.lightBlue,
-          title: Text('Gradebook',
+        iconTheme: IconThemeData(color: themeManager.getColor(TypeOfWidget.text), size: 30),
+    backgroundColor: themeManager.getColor(TypeOfWidget.background),
+    title: Align(alignment: Alignment.center,child: Text('Gradebook',
               textAlign: TextAlign.center,
               style: TextStyle(
-                color: Colors.black,
+                color: themeManager.getColor(TypeOfWidget.text),
                 fontSize: 30,
                 fontWeight: FontWeight.w700,
-              )),
+              ))),
           actions: <Widget>[
             Theme(
                 data: Theme.of(context).copyWith(
-                  cardColor: Colors.black87,
+                  cardColor: Colors.black,
                 ),
                 child: PopupMenuButton(
+                  icon: Icon(Icons.more_vert, color: themeManager.getColor(TypeOfWidget.text),),
                   onSelected: (String selected) {
                     switch (selected) {
                       case 'settings':
@@ -313,11 +319,11 @@ class _TermViewer extends State<TermViewerPage> {
                         }));
               },
             ),
-            padding: EdgeInsets.only(top: 10, left: 20, right: 20),
+            padding: EdgeInsets.only(top: 10, left: 20, right: 20,bottom: 10),
           ),
           Expanded(
             child: ListView(
-              padding: EdgeInsets.all(10),
+              padding: EdgeInsets.only(left: 10, right: 10, bottom: 10),
               children: body,
             ),
           )
