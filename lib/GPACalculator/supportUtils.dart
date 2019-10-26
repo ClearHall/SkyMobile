@@ -1,5 +1,5 @@
 import 'package:skymobile/HelperUtilities/globalVariables.dart';
-import 'package:skyscrapeapi/skywardAPITypes.dart';
+import 'package:skyscrapeapi/data_types.dart';
 import 'package:skymobile/HelperUtilities//jsonSaver.dart';
 import 'types.dart';
 

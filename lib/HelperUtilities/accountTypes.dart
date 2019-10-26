@@ -1,4 +1,4 @@
-import 'package:skyscrapeapi/skywardAPITypes.dart';
+import 'package:skyscrapeapi/data_types.dart';
 
 class Account {
   String nick;

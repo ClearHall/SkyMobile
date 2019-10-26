@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:skymobile/Settings/themeColorManager.dart';
-import 'package:skyscrapeapi/skywardAPITypes.dart';
+import 'package:skyscrapeapi/data_types.dart';
 import 'package:skymobile/HelperUtilities/globalVariables.dart';
 import 'package:skymobile/HelperUtilities/customDialogOptions.dart';
 import 'package:skymobile/GPACalculator/supportUtils.dart';

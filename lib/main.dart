@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:skymobile/Settings/themeColorManager.dart';
-import 'package:skyscrapeapi/skywardAPICore.dart';
+import 'package:skyscrapeapi/skyscrape.dart';
 import 'package:skymobile/Navigation//termGradeViewer.dart';
 import 'HelperUtilities/customDialogOptions.dart';
 import 'HelperUtilities/globalVariables.dart';
 import 'package:skymobile/Navigation/assignmentInfoViewer.dart';
 import 'package:skymobile/Navigation/assignmentsViewer.dart';
-import 'package:skyscrapeapi/skywardDistrictSearcher.dart';
-import 'package:skyscrapeapi/skywardAPITypes.dart';
+import 'package:skyscrapeapi/district_searcher.dart';
+import 'package:skyscrapeapi/data_types.dart';
 import 'package:skymobile/HelperUtilities/accountTypes.dart';
 import 'package:skymobile/HelperUtilities/jsonSaver.dart';
 import 'package:skymobile/GPACalculator/schoolYear.dart';
@@ -15,12 +15,31 @@ import 'package:skymobile/GPACalculator/classes.dart';
 import 'package:skymobile/GPACalculator/settings.dart';
 import 'package:skymobile/Settings/settings_viewer.dart';
 
-void main() => runApp(MyApp());
+void main() async{
+  //TODO: TEST WITH NEW PHONE
+  JSONSaver jsonSaver = JSONSaver(FilesAvailable.settings);
+  var retrieved = await jsonSaver.readListData();
+  if(retrieved is Map) {
+    settings = retrieved;
+    (settings['Theme']['option'] as Map).forEach((k, v) {
+      if (v == true)
+        runApp(MyApp(ThemeManager.colorNameToThemes.keys.toList()[ThemeManager
+            .colorNameToThemes.values.toList().indexOf(k)]));
+    });
+  }else{
+    settings['Theme']['option'][ThemeManager.colorNameToThemes[themeManager.currentTheme]] = true;
+    runApp(MyApp(themeManager.currentTheme));
+  }
+}
 
 class MyApp extends StatelessWidget {
+  ColorTheme themeSelected;
+  MyApp(this.themeSelected);
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
+    themeManager.currentTheme = themeSelected;
+
     return MaterialApp(
       title: 'SkyMobile',
       theme: ThemeData(primarySwatch: themeManager.getColor(TypeOfWidget.text),),

@@ -1,5 +1,5 @@
-import 'package:skyscrapeapi/skywardAPICore.dart';
-import 'package:skyscrapeapi/skywardAPITypes.dart';
+import 'package:skyscrapeapi/skyscrape.dart';
+import 'package:skyscrapeapi/data_types.dart';
 import '../Settings/themeColorManager.dart';
 import 'package:flutter/material.dart';
 
@@ -28,16 +28,7 @@ Map<String, dynamic> settings = Map.fromIterables([
     'option'
   ], [
     'Change the color scheme used for the app.',
-    Map.fromIterables(
-        List.generate(ThemeManager.defaultThemes.length, (i) {
-          return ThemeManager.defaultThemes[i].primary.toString();
-        }),
-        List.generate(ThemeManager.defaultThemes.length, (i) {
-          if (themeManager.currentTheme == ThemeManager.defaultThemes[i])
-            return true;
-          else
-            return false;
-        }))
+    Map.fromIterables(ThemeManager.colorNameToThemes.values, List.generate(ThemeManager.colorNameToThemes.length, (i){ return false; }))
   ])
 ]);
 

@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'package:path_provider/path_provider.dart';
 import 'dart:io';
 import 'accountTypes.dart';
-import 'package:skyscrapeapi/skywardAPITypes.dart';
+import 'package:skyscrapeapi/data_types.dart';
 
 class JSONSaver {
   FilesAvailable fileName;
@@ -58,16 +58,10 @@ class JSONSaver {
             }
             mapOfTargetedObject[key] = newVal;
           });
-        } else if (fileName == FilesAvailable.classLevelValues) {
-          retrievedJSONCoded.forEach((key, val) {
-            mapOfTargetedObject[
-                ClassLevel.values.firstWhere((e) => e.toString() == key)] = val;
-          });
-        } else if (fileName == FilesAvailable.gpaExtraSettings) {
-          mapOfTargetedObject = retrievedJSONCoded;
         } else if (fileName == FilesAvailable.previousDistrict) {
           return SkywardDistrict.fromJson(retrievedJSONCoded);
-        }
+        }else
+          mapOfTargetedObject = retrievedJSONCoded;
         return mapOfTargetedObject;
       }
     } catch (e) {
@@ -77,22 +71,16 @@ class JSONSaver {
 }
 
 enum FilesAvailable {
-  accounts,
-
   /// Stores stored account files
-  gpaCalculatorSettings,
-
+  accounts,
   /// Stores GPA Calculator class settings
-  gpaSelectedTerms,
-
+  gpaCalculatorSettings,
   /// GPA Terms that have been selected that count toward GPA
-  classLevelValues,
-
-  /// Class level values +5 +10 or +0
-  gpaExtraSettings,
-
+  gpaSelectedTerms,
   /// GPA extra modifiers
-  previousDistrict
-
+  gpaExtraSettings,
   /// The district previously stored
+  previousDistrict,
+  /// Settings like biometrics and theme
+  settings
 }

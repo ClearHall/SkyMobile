@@ -3,8 +3,9 @@ import 'package:flutter/material.dart';
 class ThemeManager{
   static bool isDarkTheme = true;
 
-  static List<ColorTheme> defaultThemes = [ColorTheme(Colors.green, Colors.purple), ColorTheme(Colors.lightBlue, Colors.deepPurple.shade400), ColorTheme(Colors.yellow.shade400, Colors.blue), ColorTheme(Colors.orange, Colors.blue)];
-  ColorTheme currentTheme = defaultThemes[4]; //ColorTheme(Colors.orange, Colors.blue);
+  static List<ColorTheme> defaultThemes = [ColorTheme(Colors.green, Colors.purple), ColorTheme(Colors.lightBlue, Colors.deepPurple), ColorTheme(Colors.yellow, Colors.blue), ColorTheme(Colors.orange, Colors.blue)];
+  static Map<ColorTheme, String> colorNameToThemes = Map.fromIterables(defaultThemes, ['Purpulish Green', 'Purple Shadows', 'Golden Shimmer', 'Dark Orange']);
+  ColorTheme currentTheme = defaultThemes[3]; //ColorTheme(Colors.orange, Colors.blue);
   List<ColorTheme> userDefined = [];
 
   addTheme(Color p, Color s){

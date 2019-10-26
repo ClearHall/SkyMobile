@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:skymobile/Settings/themeColorManager.dart';
-import 'package:skyscrapeapi/skywardDistrictSearcher.dart';
-import 'package:skyscrapeapi/skywardAPITypes.dart';
+import 'package:skyscrapeapi/district_searcher.dart';
+import 'package:skyscrapeapi/data_types.dart';
 import '../main.dart';
 import 'globalVariables.dart';
 
