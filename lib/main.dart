@@ -18,18 +18,19 @@ import 'package:skymobile/GPACalculator/classes.dart';
 import 'package:skymobile/GPACalculator/settings.dart';
 import 'package:skymobile/Settings/settings_viewer.dart';
 
-void main() async{
+void main() async {
   JSONSaver jsonSaver = JSONSaver(FilesAvailable.settings);
   var retrieved = await jsonSaver.readListData();
-  if(retrieved is Map) {
+  if (retrieved is Map) {
     settings = retrieved;
     (settings['Theme']['option'] as Map).forEach((k, v) {
       if (v == true)
-        runApp(MyApp(ThemeManager.colorNameToThemes.keys.toList()[ThemeManager
-            .colorNameToThemes.values.toList().indexOf(k)]));
+        runApp(MyApp(ThemeManager.colorNameToThemes.keys.toList()[
+            ThemeManager.colorNameToThemes.values.toList().indexOf(k)]));
     });
-  }else{
-    settings['Theme']['option'][ThemeManager.colorNameToThemes[themeManager.currentTheme]] = true;
+  } else {
+    settings['Theme']['option']
+        [ThemeManager.colorNameToThemes[themeManager.currentTheme]] = true;
     runApp(MyApp(themeManager.currentTheme));
   }
 }
@@ -44,7 +45,9 @@ class MyApp extends StatelessWidget {
 
     return MaterialApp(
       title: 'SkyMobile',
-      theme: ThemeData(primarySwatch: themeManager.getColor(TypeOfWidget.text),),
+      theme: ThemeData(
+        primarySwatch: themeManager.getColor(TypeOfWidget.text),
+      ),
       initialRoute: "/",
       debugShowCheckedModeBanner: false,
       routes: {
@@ -115,7 +118,7 @@ class MyHomePageState extends State<MyHomePage> {
               return HuntyDialog(
                   title: 'Uh-Oh',
                   description:
-                  'Invalid Credentials or Internet Failure. Please check your username and password and your internet connection.',
+                      'Invalid Credentials or Internet Failure. Please check your username and password and your internet connection.',
                   buttonText: 'Ok');
             });
       } else {
@@ -127,7 +130,7 @@ class MyHomePageState extends State<MyHomePage> {
                 return HuntyDialogForConfirmation(
                   title: 'New Account',
                   description:
-                  'New account detected, would you like to save this account?.',
+                      'New account detected, would you like to save this account?.',
                   runIfUserConfirms: () {
                     setState(() {
                       accounts.add(Account(user, user, pass, district));
@@ -140,20 +143,24 @@ class MyHomePageState extends State<MyHomePage> {
               });
         }
         await getTermsAndGradeBook(
-            isCancelled, context, dialog, Account(null, user, pass, district));
+            isCancelled, dialog, Account(null, user, pass, district));
       }
-    } catch(e){
+    } catch (e) {
+      Navigator.of(context).pop(dialog);
       _underMaintence(context);
     }
   }
 
-  _underMaintence(BuildContext context){
+  _underMaintence(BuildContext context) {
     showDialog(
-      context: context,
-      builder: (bc) {
-        return HuntyDialog(title: 'Oh-No', description: 'An error occured. Your district\'s skyward is probably in maintenance.', buttonText: 'Ok');
-      }
-    );
+        context: context,
+        builder: (bc) {
+          return HuntyDialog(
+              title: 'Oh-No',
+              description:
+                  'An error occured. Your district\'s skyward is probably in maintenance.',
+              buttonText: 'Ok');
+        });
   }
 
   bool _isCredentialsSavedAlready(String user) {
@@ -163,14 +170,13 @@ class MyHomePageState extends State<MyHomePage> {
     return false;
   }
 
-  void _getGradeTermsFromAccount(Account acc, BuildContext context) async {
+  void _getGradeTermsFromAccount(Account acc) async {
     List<bool> isCancelled = [false];
     var dialog = HuntyDialogLoading('Cancel', () {
       isCancelled[0] = true;
     }, title: 'Loading', description: ('Getting your grades..'));
 
-    showDialog(context: context, builder: (BuildContext context) => dialog)
-        .then((val) {
+    showDialog(context: context, builder: (context) => dialog).then((val) {
       isCancelled[0] = true;
     });
 
@@ -185,7 +191,7 @@ class MyHomePageState extends State<MyHomePage> {
               return HuntyDialogForConfirmation(
                 title: 'Uh-Oh',
                 description:
-                'Invalid Credentials or Internet Failure. Would you like to remove this account?.',
+                    'Invalid Credentials or Internet Failure. Would you like to remove this account?.',
                 runIfUserConfirms: () {
                   setState(() {
                     accounts.remove(acc);
@@ -197,15 +203,16 @@ class MyHomePageState extends State<MyHomePage> {
               );
             });
       } else {
-        await getTermsAndGradeBook(isCancelled, context, dialog, acc);
+        await getTermsAndGradeBook(isCancelled, dialog, acc);
       }
-    } catch(e){
+    } catch (e) {
+      Navigator.of(context).pop(dialog);
       _underMaintence(context);
     }
   }
 
-  Future getTermsAndGradeBook(List<bool> isCancelled, BuildContext context,
-      HuntyDialogLoading dialog, Account acc) async {
+  Future getTermsAndGradeBook(
+      List<bool> isCancelled, HuntyDialogLoading dialog, Account acc) async {
     try {
       var termRes = await skywardAPI.getGradeBookTerms();
       var gradebookRes = (await skywardAPI.getGradeBookGrades(termRes));
@@ -286,24 +293,42 @@ class MyHomePageState extends State<MyHomePage> {
     jsonSaver.saveListData(accounts);
   }
 
-  _shouldAuthenticateAndContinue(Account acc) async{
-    if(settings['Biometric Authentication']['option']){
-      try{
-        bool _isAuthenticated = await _auth.authenticateWithBiometrics(localizedReason: 'Authenticate to view grades', useErrorDialogs: false, stickyAuth: true);
-        if(_isAuthenticated){
+  _shouldAuthenticateAndContinue(Account acc, Function(Account) action) async {
+    if (settings['Biometric Authentication']['option']) {
+      try {
+        bool _isAuthenticated = await _auth.authenticateWithBiometrics(
+            localizedReason: 'Authenticate to view grades',
+            useErrorDialogs: false,
+            stickyAuth: true);
+        if (_isAuthenticated) {
           district = acc.district;
-          _getGradeTermsFromAccount(acc, context);
+          action(acc);
         }
-      }catch(e){
-        if(e is PlatformException){
-          await showDialog(context: context, builder: (bc) => HuntyDialog(title: 'Authentication Error', description: e.message + '\nSkyMobile will disable authentication for you.', buttonText: 'Ok'));
-          settings['Biometric Authentication']['option'] = false;
-          _shouldAuthenticateAndContinue(acc);
+      } catch (e) {
+        if (e is PlatformException) {
+          if (e.code == 'LockedOut') {
+            await showDialog(
+                context: context,
+                builder: (bc) => HuntyDialog(
+                    title: 'Authentication Error',
+                    description: e.message,
+                    buttonText: 'Ok'));
+          } else {
+            await showDialog(
+                context: context,
+                builder: (bc) => HuntyDialog(
+                    title: 'Authentication Error',
+                    description: e.message +
+                        '\nSkyMobile will disable authentication for you.',
+                    buttonText: 'Ok'));
+            settings['Biometric Authentication']['option'] = false;
+            _shouldAuthenticateAndContinue(acc, action);
+          }
         }
       }
-    }else{
+    } else {
       district = acc.district;
-      _getGradeTermsFromAccount(acc, context);
+      action(acc);
     }
   }
 
@@ -337,9 +362,10 @@ class MyHomePageState extends State<MyHomePage> {
                   onTap:
                       !(accounts.length > 0 && accounts.first.district == null)
                           ? () {
-                                focus.unfocus();
-                                _shouldAuthenticateAndContinue(acc);
-                              }
+                              focus.unfocus();
+                              _shouldAuthenticateAndContinue(
+                                  acc, _getGradeTermsFromAccount);
+                            }
                           : () => {},
                   child: Container(
                     alignment: Alignment.center,
@@ -375,47 +401,53 @@ class MyHomePageState extends State<MyHomePage> {
                                       color: Colors.white,
                                     ),
                                     onPressed: () {
-                                      showDialog(
-                                          context: context,
-                                          builder: (BuildContext context) =>
-                                              HuntyDialogForConfirmation(
-                                                  title: 'Account Deletion',
-                                                  description:
-                                                      'Are you sure you want to remove this account from your device?',
-                                                  runIfUserConfirms: () {
-                                                    setState(() {
-                                                      accounts.remove(acc);
-                                                      jsonSaver.saveListData(
-                                                          accounts);
-                                                    });
-                                                  },
-                                                  btnTextForConfirmation: 'Yes',
-                                                  btnTextForCancel: 'No'));
+                                      _shouldAuthenticateAndContinue(acc,
+                                          (acc) {
+                                        showDialog(
+                                            context: context,
+                                            builder: (BuildContext context) =>
+                                                HuntyDialogForConfirmation(
+                                                    title: 'Account Deletion',
+                                                    description:
+                                                        'Are you sure you want to remove this account from your device?',
+                                                    runIfUserConfirms: () {
+                                                      setState(() {
+                                                        accounts.remove(acc);
+                                                        jsonSaver.saveListData(
+                                                            accounts);
+                                                      });
+                                                    },
+                                                    btnTextForConfirmation:
+                                                        'Yes',
+                                                    btnTextForCancel: 'No'));
+                                      });
                                     }),
                                 IconButton(
                                   icon: Icon(Icons.edit),
                                   color: Colors.white,
                                   onPressed: () {
-                                    TextEditingController accountEditor =
-                                        TextEditingController();
-                                    showDialog(
-                                        context: context,
-                                        builder: (BuildContext context) =>
-                                            HuntyDialogWithText(
-                                                hint: 'Edit Account',
-                                                textController: accountEditor,
-                                                okPressed: () {
-                                                  setState(() {
-                                                    acc.nick =
-                                                        accountEditor.text;
-                                                    jsonSaver
-                                                        .saveListData(accounts);
-                                                  });
-                                                },
-                                                title: 'Edit Account Name',
-                                                description:
-                                                    'Type in a new account name to be displayed. This does not affect logging in and logging out.',
-                                                buttonText: 'Submit'));
+                                    _shouldAuthenticateAndContinue(acc, (acc) {
+                                      TextEditingController accountEditor =
+                                          TextEditingController();
+                                      showDialog(
+                                          context: context,
+                                          builder: (BuildContext context) =>
+                                              HuntyDialogWithText(
+                                                  hint: 'Edit Account',
+                                                  textController: accountEditor,
+                                                  okPressed: () {
+                                                    setState(() {
+                                                      acc.nick =
+                                                          accountEditor.text;
+                                                      jsonSaver.saveListData(
+                                                          accounts);
+                                                    });
+                                                  },
+                                                  title: 'Edit Account Name',
+                                                  description:
+                                                      'Type in a new account name to be displayed. This does not affect logging in and logging out.',
+                                                  buttonText: 'Submit'));
+                                    });
                                   },
                                 )
                               ],
