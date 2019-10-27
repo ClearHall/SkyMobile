@@ -20,8 +20,10 @@ dependencies:
   flutter:
     sdk: flutter
 
-  skyscrapeapi: ^2.1.0+2
+  skyscrapeapi: ^2.1.0+3
   path_provider: ^1.2.0
+  local_auth: ^0.5.2+3
+  get_it: ^1.0.3+2
 
 
   # The following adds the Cupertino Icons font to your application.

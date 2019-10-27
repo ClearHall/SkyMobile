@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:get_it/get_it.dart';
+import 'package:local_auth/local_auth.dart';
 import 'package:skymobile/Settings/themeColorManager.dart';
 import 'package:skyscrapeapi/skyscrape.dart';
 import 'package:skymobile/Navigation//termGradeViewer.dart';
@@ -16,7 +19,6 @@ import 'package:skymobile/GPACalculator/settings.dart';
 import 'package:skymobile/Settings/settings_viewer.dart';
 
 void main() async{
-  //TODO: TEST WITH NEW PHONE
   JSONSaver jsonSaver = JSONSaver(FilesAvailable.settings);
   var retrieved = await jsonSaver.readListData();
   if(retrieved is Map) {
@@ -72,6 +74,7 @@ class MyHomePageState extends State<MyHomePage> {
   JSONSaver jsonSaver = JSONSaver(FilesAvailable.accounts);
   static SkywardDistrict district = SkywardDistrict('FORT BEND ISD',
       'https://skyward-fbprod.iscorp.com/scripts/wsisa.dll/WService=wsedufortbendtx/seplog01.w');
+  final _auth = LocalAuthentication();
 
   void initState() {
     super.initState();
@@ -103,41 +106,54 @@ class MyHomePageState extends State<MyHomePage> {
     });
 
     skywardAPI = SkywardAPICore(district.districtLink);
-    if (!(await skywardAPI.getSkywardAuthenticationCodes(user, pass))) {
-      Navigator.of(context).pop(dialog);
-      showDialog(
-          context: context,
-          builder: (BuildContext) {
-            return HuntyDialog(
-                title: 'Uh-Oh',
-                description:
-                    'Invalid Credentials or Internet Failure. Please check your username and password and your internet connection.',
-                buttonText: 'Ok');
-          });
-    } else {
-      _getAccounts();
-      if (!_isCredentialsSavedAlready(user)) {
-        await showDialog(
+    try {
+      if (!(await skywardAPI.getSkywardAuthenticationCodes(user, pass))) {
+        Navigator.of(context).pop(dialog);
+        showDialog(
             context: context,
             builder: (BuildContext) {
-              return HuntyDialogForConfirmation(
-                title: 'New Account',
-                description:
-                    'New account detected, would you like to save this account?.',
-                runIfUserConfirms: () {
-                  setState(() {
-                    accounts.add(Account(user, user, pass, district));
-                    jsonSaver.saveListData(accounts);
-                  });
-                },
-                btnTextForCancel: "Cancel",
-                btnTextForConfirmation: 'Ok',
-              );
+              return HuntyDialog(
+                  title: 'Uh-Oh',
+                  description:
+                  'Invalid Credentials or Internet Failure. Please check your username and password and your internet connection.',
+                  buttonText: 'Ok');
             });
+      } else {
+        _getAccounts();
+        if (!_isCredentialsSavedAlready(user)) {
+          await showDialog(
+              context: context,
+              builder: (BuildContext) {
+                return HuntyDialogForConfirmation(
+                  title: 'New Account',
+                  description:
+                  'New account detected, would you like to save this account?.',
+                  runIfUserConfirms: () {
+                    setState(() {
+                      accounts.add(Account(user, user, pass, district));
+                      jsonSaver.saveListData(accounts);
+                    });
+                  },
+                  btnTextForCancel: "Cancel",
+                  btnTextForConfirmation: 'Ok',
+                );
+              });
+        }
+        await getTermsAndGradeBook(
+            isCancelled, context, dialog, Account(null, user, pass, district));
       }
-      await getTermsAndGradeBook(
-          isCancelled, context, dialog, Account(null, user, pass, district));
+    } catch(e){
+      _underMaintence(context);
     }
+  }
+
+  _underMaintence(BuildContext context){
+    showDialog(
+      context: context,
+      builder: (bc) {
+        return HuntyDialog(title: 'Oh-No', description: 'An error occured. Your district\'s skyward is probably in maintenance.', buttonText: 'Ok');
+      }
+    );
   }
 
   bool _isCredentialsSavedAlready(String user) {
@@ -159,27 +175,32 @@ class MyHomePageState extends State<MyHomePage> {
     });
 
     skywardAPI = SkywardAPICore(district.districtLink);
-    if (!(await skywardAPI.getSkywardAuthenticationCodes(acc.user, acc.pass))) {
-      Navigator.of(context).pop(dialog);
-      showDialog(
-          context: context,
-          builder: (BuildContext) {
-            return HuntyDialogForConfirmation(
-              title: 'Uh-Oh',
-              description:
-                  'Invalid Credentials or Internet Failure. Would you like to remove this account?.',
-              runIfUserConfirms: () {
-                setState(() {
-                  accounts.remove(acc);
-                  jsonSaver.saveListData(accounts);
-                });
-              },
-              btnTextForCancel: "Cancel",
-              btnTextForConfirmation: 'Ok',
-            );
-          });
-    } else {
-      await getTermsAndGradeBook(isCancelled, context, dialog, acc);
+    try {
+      if (!(await skywardAPI.getSkywardAuthenticationCodes(
+          acc.user, acc.pass))) {
+        Navigator.of(context).pop(dialog);
+        showDialog(
+            context: context,
+            builder: (BuildContext) {
+              return HuntyDialogForConfirmation(
+                title: 'Uh-Oh',
+                description:
+                'Invalid Credentials or Internet Failure. Would you like to remove this account?.',
+                runIfUserConfirms: () {
+                  setState(() {
+                    accounts.remove(acc);
+                    jsonSaver.saveListData(accounts);
+                  });
+                },
+                btnTextForCancel: "Cancel",
+                btnTextForConfirmation: 'Ok',
+              );
+            });
+      } else {
+        await getTermsAndGradeBook(isCancelled, context, dialog, acc);
+      }
+    } catch(e){
+      _underMaintence(context);
     }
   }
 
@@ -265,6 +286,27 @@ class MyHomePageState extends State<MyHomePage> {
     jsonSaver.saveListData(accounts);
   }
 
+  _shouldAuthenticateAndContinue(Account acc) async{
+    if(settings['Biometric Authentication']['option']){
+      try{
+        bool _isAuthenticated = await _auth.authenticateWithBiometrics(localizedReason: 'Authenticate to view grades', useErrorDialogs: false, stickyAuth: true);
+        if(_isAuthenticated){
+          district = acc.district;
+          _getGradeTermsFromAccount(acc, context);
+        }
+      }catch(e){
+        if(e is PlatformException){
+          await showDialog(context: context, builder: (bc) => HuntyDialog(title: 'Authentication Error', description: e.message + '\nSkyMobile will disable authentication for you.', buttonText: 'Ok'));
+          settings['Biometric Authentication']['option'] = false;
+          _shouldAuthenticateAndContinue(acc);
+        }
+      }
+    }else{
+      district = acc.district;
+      _getGradeTermsFromAccount(acc, context);
+    }
+  }
+
   final focus = FocusNode();
 
   @override
@@ -294,10 +336,9 @@ class MyHomePageState extends State<MyHomePage> {
                   borderRadius: BorderRadius.circular(16),
                   onTap:
                       !(accounts.length > 0 && accounts.first.district == null)
-                          ? () => {
-                                focus.unfocus(),
-                                district = acc.district,
-                                _getGradeTermsFromAccount(acc, context)
+                          ? () {
+                                focus.unfocus();
+                                _shouldAuthenticateAndContinue(acc);
                               }
                           : () => {},
                   child: Container(

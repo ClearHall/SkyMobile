@@ -1,10 +1,35 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:local_auth/local_auth.dart';
 import 'package:skymobile/HelperUtilities/globalVariables.dart';
 import 'package:skymobile/Settings/themeColorManager.dart';
 
 class SettingsWidgetGenerator {
+  static runChangeTo(bool changedTo, bool biometrics, Map attributes, Function run, Function(PlatformException) runIfBioFailed) async{
+    if(biometrics){
+      LocalAuthentication localAuthentication = LocalAuthentication();
+      try {
+        if (await localAuthentication.authenticateWithBiometrics(
+            localizedReason: 'Authentication to change biometrics option.',
+            useErrorDialogs: false)) {
+          attributes['option'] = changedTo;
+          if (run != null) {
+            run();
+          }
+        }
+      }catch(e){
+        runIfBioFailed(e);
+      }
+    }else {
+      attributes['option'] = changedTo;
+      if (run != null) {
+        run();
+      }
+    }
+  }
+
   static Widget generateSingleSettingsWidget(String settings, Map attributes,
-      {Function run}) {
+      {Function run, bool requiresBiometricsToDisable = false, Function(PlatformException) runIfBiometricsFailed}) {
     return Container(
       child: Column(
         children: <Widget>[
@@ -24,10 +49,7 @@ class SettingsWidgetGenerator {
                   trailing: Switch(
                     value: attributes['option'] ?? false,
                     onChanged: (changedTo) {
-                      attributes['option'] = changedTo;
-                      if (run != null) {
-                        run();
-                      }
+                      runChangeTo(changedTo, requiresBiometricsToDisable, attributes, run, runIfBiometricsFailed);
                     },
                     activeColor: themeManager.getColor(TypeOfWidget.text),
                   ),

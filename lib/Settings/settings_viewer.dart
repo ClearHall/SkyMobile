@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:skymobile/HelperUtilities/customDialogOptions.dart';
 import 'package:skymobile/HelperUtilities/jsonSaver.dart';
 import 'package:skymobile/Settings/settingsWidgetGenerator.dart';
 import 'themeColorManager.dart';
@@ -36,7 +38,20 @@ class _SettingsViewerState extends State<SettingsViewer> {
       else
         settingsWidgets.add(
           SettingsWidgetGenerator.generateSingleSettingsWidget(k, settings[k],
-              run: _saveData),
+              run: _saveData,
+              requiresBiometricsToDisable: k == 'Biometric Authentication',
+              runIfBiometricsFailed: (e) {
+            showDialog(
+                context: context,
+                builder: (bc) => HuntyDialog(
+                    title: 'Authentication Error',
+                    description: e.message +
+                        '\nSkyMobile will disable authentication for you.',
+                    buttonText: 'Ok'));
+            setState(() {
+              settings['Biometric Authentication']['option'] = false;
+            });
+          }),
         );
     }
 

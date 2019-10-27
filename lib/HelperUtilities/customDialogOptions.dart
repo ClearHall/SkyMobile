@@ -30,6 +30,7 @@ class HuntyDialog extends StatelessWidget {
         style: TextStyle(
           fontSize: 24.0,
           fontWeight: FontWeight.w700,
+          color: themeManager.getColor(null)
         ),
       ),
       SizedBox(height: 16.0),
@@ -38,6 +39,7 @@ class HuntyDialog extends StatelessWidget {
         textAlign: TextAlign.center,
         style: TextStyle(
           fontSize: 16.0,
+          color: themeManager.getColor(null)
         ),
       ),
       SizedBox(height: 24.0),
@@ -47,7 +49,7 @@ class HuntyDialog extends StatelessWidget {
           onPressed: () {
             Navigator.of(context).pop();
           },
-          child: Text(buttonText),
+          child: Text(buttonText, style: TextStyle(color: themeManager.getColor(null)),),
         ),
       ),
     ];
