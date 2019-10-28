@@ -336,7 +336,6 @@ class MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    shouldBlur = false;
     if (district == null) {
       district = SkywardDistrict('FORT BEND ISD',
           'https://skyward-fbprod.iscorp.com/scripts/wsisa.dll/WService=wsedufortbendtx/seplog01.w');

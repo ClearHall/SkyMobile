@@ -2,6 +2,7 @@ import 'dart:collection';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:skymobile/HelperUtilities/biometric_blur_view.dart';
 import 'package:skymobile/HelperUtilities/customDialogOptions.dart';
 import 'package:skymobile/Settings/themeColorManager.dart';
 import 'package:skyscrapeapi/data_types.dart';
@@ -17,7 +18,7 @@ class GPACalculatorSchoolYear extends StatefulWidget {
       new _GPACalculatorSchoolYearState();
 }
 
-class _GPACalculatorSchoolYearState extends State<GPACalculatorSchoolYear> {
+class _GPACalculatorSchoolYearState extends BiometricBlur<GPACalculatorSchoolYear> {
   @override
   void initState() {
     super.initState();
@@ -74,7 +75,7 @@ class _GPACalculatorSchoolYearState extends State<GPACalculatorSchoolYear> {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget generateBody(BuildContext context) {
 //    bool didSuccessfullyGetOlderGrades = false;
     // _testGPACalcSaving();
 //    if (historyGrades != null) didSuccessfullyGetOlderGrades = true

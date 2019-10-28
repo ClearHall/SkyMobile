@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:skymobile/HelperUtilities/biometric_blur_view.dart';
 import 'package:skymobile/HelperUtilities/customDialogOptions.dart';
 import 'package:skymobile/HelperUtilities/jsonSaver.dart';
 import 'package:skymobile/Settings/settingsWidgetGenerator.dart';
@@ -13,7 +14,7 @@ class SettingsViewer extends StatefulWidget {
   _SettingsViewerState createState() => _SettingsViewerState();
 }
 
-class _SettingsViewerState extends State<SettingsViewer> {
+class _SettingsViewerState extends BiometricBlur<SettingsViewer> {
   void _saveData() {
     setState(() {
       JSONSaver jsonSaver = JSONSaver(FilesAvailable.settings);
@@ -27,7 +28,7 @@ class _SettingsViewerState extends State<SettingsViewer> {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget generateBody(BuildContext context) {
     List<Widget> settingsWidgets = [];
     for (String k in settings.keys) {
       if (settings[k]['option'] is Map)

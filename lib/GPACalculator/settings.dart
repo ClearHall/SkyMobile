@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:skymobile/HelperUtilities/biometric_blur_view.dart';
 import 'package:skymobile/HelperUtilities/globalVariables.dart';
 import 'package:skymobile/Settings/settingsWidgetGenerator.dart';
 import 'package:skymobile/Settings/themeColorManager.dart';
@@ -11,11 +12,11 @@ class GPACalculatorSettings extends StatefulWidget {
   _GPACalculatorSettingsState createState() => _GPACalculatorSettingsState();
 }
 
-class _GPACalculatorSettingsState extends State<GPACalculatorSettings> {
+class _GPACalculatorSettingsState extends BiometricBlur<GPACalculatorSettings> {
   Map<String, TextEditingController> mapEditable = Map();
 
   @override
-  Widget build(BuildContext context) {
+  Widget generateBody(BuildContext context) {
     List<Widget> widgets = [
       Container(
           child: Text(

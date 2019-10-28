@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:skymobile/HelperUtilities/biometric_blur_view.dart';
 import 'package:skymobile/Settings/themeColorManager.dart';
 import 'package:skyscrapeapi/data_types.dart';
 import 'package:skymobile/HelperUtilities/globalVariables.dart';
@@ -14,7 +15,7 @@ class GPACalculatorClasses extends StatefulWidget {
       new GPACalculatorClassesState(this.schoolYear);
 }
 
-class GPACalculatorClassesState extends State<GPACalculatorClasses> {
+class GPACalculatorClassesState extends BiometricBlur<GPACalculatorClasses> {
   int currentTermIndex = 0;
   int offset = 0;
   SchoolYear schoolYear;
@@ -65,7 +66,7 @@ class GPACalculatorClassesState extends State<GPACalculatorClasses> {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget generateBody(BuildContext context) {
     final FixedExtentScrollController scrollController =
         FixedExtentScrollController(initialItem: currentTermIndex);
 
