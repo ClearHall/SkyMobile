@@ -245,7 +245,7 @@ class _GPACalculatorSchoolYearState extends State<GPACalculatorSchoolYear> {
                   termIdentifiersCountingTowardGPA.contains(term)
                       ? Icons.check_box
                       : Icons.check_box_outline_blank,
-                  color: Colors.white),
+                  color: themeManager.getColor(null)),
               onPressed: () {
                 setState(() {
                   if (termIdentifiersCountingTowardGPA.contains(term)) {
@@ -345,7 +345,7 @@ class _GPACalculatorSchoolYearState extends State<GPACalculatorSchoolYear> {
                           historyGrades[i].isEnabled
                               ? Icons.check_box
                               : Icons.check_box_outline_blank,
-                          color: Colors.white),
+                          color: themeManager.getColor(null)),
                       onPressed: () {
                         if (_checkIfShouldBeDisabled())
                           setState(() {
@@ -361,7 +361,7 @@ class _GPACalculatorSchoolYearState extends State<GPACalculatorSchoolYear> {
                       },
                     ),
                     IconButton(
-                      icon: Icon(Icons.play_circle_filled, color: Colors.white),
+                      icon: Icon(Icons.play_circle_filled, color: themeManager.getColor(null)),
                       onPressed: () {
                         Navigator.pushNamed(context, '/gpacalculatorclasses',
                             arguments: historyGrades[i]);

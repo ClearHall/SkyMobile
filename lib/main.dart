@@ -22,7 +22,7 @@ void main() async {
   JSONSaver jsonSaver = JSONSaver(FilesAvailable.settings);
   var retrieved = await jsonSaver.readListData();
   if (retrieved is Map) {
-    settings = retrieved;
+    settings.addAll(retrieved);
     (settings['Theme']['option'] as Map).forEach((k, v) {
       if (v == true)
         runApp(MyApp(ThemeManager.colorNameToThemes.keys.toList()[
@@ -398,7 +398,7 @@ class MyHomePageState extends State<MyHomePage> {
                                 IconButton(
                                     icon: Icon(
                                       Icons.delete_forever,
-                                      color: Colors.white,
+                                      color: themeManager.getColor(null),
                                     ),
                                     onPressed: () {
                                       _shouldAuthenticateAndContinue(acc,
@@ -424,7 +424,7 @@ class MyHomePageState extends State<MyHomePage> {
                                     }),
                                 IconButton(
                                   icon: Icon(Icons.edit),
-                                  color: Colors.white,
+                                  color: themeManager.getColor(null),
                                   onPressed: () {
                                     _shouldAuthenticateAndContinue(acc, (acc) {
                                       TextEditingController accountEditor =
@@ -462,250 +462,277 @@ class MyHomePageState extends State<MyHomePage> {
         Container(
           child: Text('Accounts',
               style: TextStyle(
-                  color: Colors.white,
+                  color: themeManager.getColor(null),
                   fontSize: 50,
                   fontWeight: FontWeight.w700,
                   letterSpacing: 2)),
           alignment: Alignment.centerLeft,
           padding: EdgeInsets.only(left: 20, bottom: 10),
         ),
-        Card(
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(15.0),
-            ),
-            color: themeManager.getColor(TypeOfWidget.subBackground),
-            child: Column(
-              children: <Widget>[
-                widget.length > 5
-                    ? Container(
-                        padding: EdgeInsets.only(bottom: 20, top: 20),
-                        child: ConstrainedBox(
-                            constraints: BoxConstraints(maxHeight: 500),
-                            child: SingleChildScrollView(
-                              child: Column(
-                                children: widget,
-                              ),
-                            )))
-                    : Container(
-                        padding: EdgeInsets.only(bottom: 20, top: 20),
-                        child: ListView(shrinkWrap: true, children: widget)),
-                Container(
-                    padding: EdgeInsets.only(
-                        top: 0, left: 30, right: 30, bottom: 25),
-                    child: Material(
-                      color: Colors.transparent,
-                      child: InkWell(
-                          splashColor: themeManager.getColor(TypeOfWidget.text),
-                          borderRadius: BorderRadius.circular(16),
-                          onTap: () => {
-                                setState(() {
-                                  isInAccountChooserStatus =
-                                      !isInAccountChooserStatus;
-                                })
-                              },
-                          child: Container(
-                            alignment: Alignment.center,
-                            padding: EdgeInsets.all(10),
-                            decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(16.0),
-                                border: Border.all(
-                                    color: themeManager
-                                        .getColor(TypeOfWidget.button),
-                                    width: 2)),
-                            child: new Text(
-                              'Credential Login',
-                              style: new TextStyle(
-                                  fontSize: 20.0,
-                                  color: themeManager
-                                      .getColor(TypeOfWidget.button)),
-                            ),
-                          )),
-                    )),
-              ],
-            ))
+        Container(
+            decoration: new BoxDecoration(boxShadow: [
+              new BoxShadow(
+                color: Colors.black,
+                blurRadius: 20.0,
+              ),
+            ]),
+            child: Card(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(15.0),
+                ),
+                color: themeManager.getColor(TypeOfWidget.subBackground),
+                child: Column(
+                  children: <Widget>[
+                    widget.length > 5
+                        ? Container(
+                            padding: EdgeInsets.only(bottom: 20, top: 20),
+                            child: ConstrainedBox(
+                                constraints: BoxConstraints(maxHeight: 500),
+                                child: SingleChildScrollView(
+                                  child: Column(
+                                    children: widget,
+                                  ),
+                                )))
+                        : Container(
+                            padding: EdgeInsets.only(bottom: 20, top: 20),
+                            child:
+                                ListView(shrinkWrap: true, children: widget)),
+                    Container(
+                        padding: EdgeInsets.only(
+                            top: 0, left: 30, right: 30, bottom: 25),
+                        child: Material(
+                          color: Colors.transparent,
+                          child: InkWell(
+                              splashColor:
+                                  themeManager.getColor(TypeOfWidget.text),
+                              borderRadius: BorderRadius.circular(16),
+                              onTap: () => {
+                                    setState(() {
+                                      isInAccountChooserStatus =
+                                          !isInAccountChooserStatus;
+                                    })
+                                  },
+                              child: Container(
+                                alignment: Alignment.center,
+                                padding: EdgeInsets.all(10),
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(16.0),
+                                    border: Border.all(
+                                        color: themeManager
+                                            .getColor(TypeOfWidget.button),
+                                        width: 2)),
+                                child: new Text(
+                                  'Credential Login',
+                                  style: new TextStyle(
+                                      fontSize: 20.0,
+                                      color: themeManager
+                                          .getColor(TypeOfWidget.button)),
+                                ),
+                              )),
+                        )),
+                  ],
+                )))
       ]);
     } else {
       listView = ListView(shrinkWrap: true, children: <Widget>[
         Container(
           child: Text('Login',
               style: TextStyle(
-                  color: Colors.white,
+                  color: themeManager.getColor(null),
                   fontSize: 50,
                   fontWeight: FontWeight.w700,
                   letterSpacing: 2)),
           alignment: Alignment.centerLeft,
           padding: EdgeInsets.only(left: 20, bottom: 10),
         ),
-        Card(
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(15.0),
-            ),
-            color: Colors.white10,
-            child: ListView(shrinkWrap: true, children: <Widget>[
-              Container(
-                  padding:
-                      EdgeInsets.only(top: 20, left: 30, right: 30, bottom: 0),
-                  child: Container(
-                    alignment: Alignment.center,
-                    padding: EdgeInsets.all(10),
-                    child: new Text(
-                      'Enter your Skyward Credentials for ${district.districtName}.',
-                      style: new TextStyle(fontSize: 20.0, color: Colors.white),
-                    ),
-                  )),
-              Container(
-                  padding:
-                      EdgeInsets.only(top: 20, left: 16, right: 16, bottom: 15),
-                  child: TextFormField(
-                    textInputAction: TextInputAction.next,
-                    autofocus: false,
-                    controller: _controllerUsername,
-                    style: TextStyle(color: Colors.white),
-                    decoration: InputDecoration(
-                        contentPadding: const EdgeInsets.all(18),
-                        labelText: "Username",
-                        labelStyle: TextStyle(
-                            color: themeManager.getColor(TypeOfWidget.text)),
-                        enabledBorder: OutlineInputBorder(
-                            borderSide: BorderSide(
-                                color: themeManager.getColor(TypeOfWidget.text),
-                                width: 2),
-                            borderRadius: BorderRadius.circular(16)),
-                        focusedBorder: OutlineInputBorder(
-                            borderSide: BorderSide(
-                                color: themeManager.getColor(TypeOfWidget.text),
-                                width: 2),
-                            borderRadius: BorderRadius.circular(16))),
-                    onFieldSubmitted: (v) {
-                      FocusScope.of(context).requestFocus(focus);
-                    },
-                  )),
-              Container(
-                  padding:
-                      EdgeInsets.only(top: 0, left: 16, right: 16, bottom: 10),
-                  child: TextFormField(
-                    focusNode: focus,
-                    controller: _controllerPassword,
-                    obscureText: true,
-                    textInputAction: TextInputAction.next,
-                    style: TextStyle(color: Colors.white),
-                    decoration: InputDecoration(
-                        contentPadding: const EdgeInsets.all(18),
-                        labelText: "Password",
-                        labelStyle: TextStyle(
-                            color: themeManager.getColor(TypeOfWidget.text)),
-                        enabledBorder: OutlineInputBorder(
-                            borderSide: BorderSide(
-                                color: themeManager.getColor(TypeOfWidget.text),
-                                width: 2),
-                            borderRadius: BorderRadius.circular(16)),
-                        focusedBorder: OutlineInputBorder(
-                            borderSide: BorderSide(
-                                color: themeManager.getColor(TypeOfWidget.text),
-                                width: 2),
-                            borderRadius: BorderRadius.circular(16))),
-                    onFieldSubmitted: (v) {
-                      //if(!focus.hasPrimaryFocus){
-                      focus.unfocus();
-                      // }
-                    },
-                  )),
-              new Container(
-                  padding:
-                      EdgeInsets.only(top: 20, left: 30, right: 30, bottom: 20),
-                  child: Material(
-                    color: Colors.transparent,
-                    child: InkWell(
-                        splashColor: themeManager.getColor(TypeOfWidget.button),
-                        borderRadius: BorderRadius.circular(16),
-                        onTap: () => {
-                              focus.unfocus(),
-                              _getGradeTerms(_controllerUsername.text,
-                                  _controllerPassword.text, context)
-                            },
-                        child: Container(
-                          alignment: Alignment.center,
-                          padding: EdgeInsets.all(10),
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(16.0),
-                              border: Border.all(
-                                  color: themeManager
-                                      .getColor(TypeOfWidget.button),
-                                  width: 2)),
-                          child: new Text(
-                            'Submit',
-                            style: new TextStyle(
-                                fontSize: 20.0,
+        Container(
+            decoration: new BoxDecoration(boxShadow: [
+              new BoxShadow(
+                color: Colors.black,
+                blurRadius: 20.0,
+              ),
+            ]),
+            child: Card(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(15.0),
+                ),
+                color: themeManager.getColor(TypeOfWidget.subBackground),
+                child: ListView(shrinkWrap: true, children: <Widget>[
+                  Container(
+                      padding: EdgeInsets.only(
+                          top: 20, left: 30, right: 30, bottom: 0),
+                      child: Container(
+                        alignment: Alignment.center,
+                        padding: EdgeInsets.all(10),
+                        child: new Text(
+                          'Enter your Skyward Credentials for ${district.districtName}.',
+                          style: new TextStyle(
+                              fontSize: 20.0,
+                              color: themeManager.getColor(null)),
+                        ),
+                      )),
+                  Container(
+                      padding: EdgeInsets.only(
+                          top: 20, left: 16, right: 16, bottom: 15),
+                      child: TextFormField(
+                        textInputAction: TextInputAction.next,
+                        autofocus: false,
+                        controller: _controllerUsername,
+                        style: TextStyle(color: themeManager.getColor(null)),
+                        decoration: InputDecoration(
+                            contentPadding: const EdgeInsets.all(18),
+                            labelText: "Username",
+                            labelStyle: TextStyle(
                                 color:
-                                    themeManager.getColor(TypeOfWidget.button)),
-                          ),
-                        )),
-                  )),
-              new Container(
-                  padding:
-                      EdgeInsets.only(top: 0, left: 30, right: 30, bottom: 20),
-                  child: Material(
-                    color: Colors.transparent,
-                    child: InkWell(
-                        splashColor: themeManager.getColor(TypeOfWidget.button),
-                        borderRadius: BorderRadius.circular(16),
-                        onTap: () => {_showDialog()},
-                        child: Container(
-                          alignment: Alignment.center,
-                          padding: EdgeInsets.all(10),
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(16.0),
-                              border: Border.all(
-                                  color: themeManager
-                                      .getColor(TypeOfWidget.button),
-                                  width: 2)),
-                          child: new Text(
-                            'Search District',
-                            style: new TextStyle(
-                                fontSize: 20.0,
+                                    themeManager.getColor(TypeOfWidget.text)),
+                            enabledBorder: OutlineInputBorder(
+                                borderSide: BorderSide(
+                                    color: themeManager
+                                        .getColor(TypeOfWidget.text),
+                                    width: 2),
+                                borderRadius: BorderRadius.circular(16)),
+                            focusedBorder: OutlineInputBorder(
+                                borderSide: BorderSide(
+                                    color: themeManager
+                                        .getColor(TypeOfWidget.text),
+                                    width: 2),
+                                borderRadius: BorderRadius.circular(16))),
+                        onFieldSubmitted: (v) {
+                          FocusScope.of(context).requestFocus(focus);
+                        },
+                      )),
+                  Container(
+                      padding: EdgeInsets.only(
+                          top: 0, left: 16, right: 16, bottom: 10),
+                      child: TextFormField(
+                        focusNode: focus,
+                        controller: _controllerPassword,
+                        obscureText: true,
+                        textInputAction: TextInputAction.next,
+                        style: TextStyle(color: themeManager.getColor(null)),
+                        decoration: InputDecoration(
+                            contentPadding: const EdgeInsets.all(18),
+                            labelText: "Password",
+                            labelStyle: TextStyle(
                                 color:
-                                    themeManager.getColor(TypeOfWidget.button)),
-                          ),
-                        )),
-                  )),
-              new Container(
-                  padding:
-                      EdgeInsets.only(top: 0, left: 30, right: 30, bottom: 25),
-                  child: Material(
-                    color: Colors.transparent,
-                    child: InkWell(
-                        splashColor: themeManager.getColor(TypeOfWidget.text),
-                        borderRadius: BorderRadius.circular(16),
-                        onTap: () => {
-                              setState(() {
-                                isInAccountChooserStatus =
-                                    !isInAccountChooserStatus;
-                              })
-                            },
-                        child: Container(
-                          alignment: Alignment.center,
-                          padding: EdgeInsets.all(10),
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(16.0),
-                              border: Border.all(
-                                  color: themeManager
-                                      .getColor(TypeOfWidget.button),
-                                  width: 2)),
-                          child: new Text(
-                            'Choose Accounts',
-                            style: new TextStyle(
-                                fontSize: 20.0,
-                                color:
-                                    themeManager.getColor(TypeOfWidget.button)),
-                          ),
-                        )),
-                  )),
-            ]))
+                                    themeManager.getColor(TypeOfWidget.text)),
+                            enabledBorder: OutlineInputBorder(
+                                borderSide: BorderSide(
+                                    color: themeManager
+                                        .getColor(TypeOfWidget.text),
+                                    width: 2),
+                                borderRadius: BorderRadius.circular(16)),
+                            focusedBorder: OutlineInputBorder(
+                                borderSide: BorderSide(
+                                    color: themeManager
+                                        .getColor(TypeOfWidget.text),
+                                    width: 2),
+                                borderRadius: BorderRadius.circular(16))),
+                        onFieldSubmitted: (v) {
+                          //if(!focus.hasPrimaryFocus){
+                          focus.unfocus();
+                          // }
+                        },
+                      )),
+                  new Container(
+                      padding: EdgeInsets.only(
+                          top: 20, left: 30, right: 30, bottom: 20),
+                      child: Material(
+                        color: Colors.transparent,
+                        child: InkWell(
+                            splashColor:
+                                themeManager.getColor(TypeOfWidget.button),
+                            borderRadius: BorderRadius.circular(16),
+                            onTap: () => {
+                                  focus.unfocus(),
+                                  _getGradeTerms(_controllerUsername.text,
+                                      _controllerPassword.text, context)
+                                },
+                            child: Container(
+                              alignment: Alignment.center,
+                              padding: EdgeInsets.all(10),
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(16.0),
+                                  border: Border.all(
+                                      color: themeManager
+                                          .getColor(TypeOfWidget.button),
+                                      width: 2)),
+                              child: new Text(
+                                'Submit',
+                                style: new TextStyle(
+                                    fontSize: 20.0,
+                                    color: themeManager
+                                        .getColor(TypeOfWidget.button)),
+                              ),
+                            )),
+                      )),
+                  new Container(
+                      padding: EdgeInsets.only(
+                          top: 0, left: 30, right: 30, bottom: 20),
+                      child: Material(
+                        color: Colors.transparent,
+                        child: InkWell(
+                            splashColor:
+                                themeManager.getColor(TypeOfWidget.button),
+                            borderRadius: BorderRadius.circular(16),
+                            onTap: () => {_showDialog()},
+                            child: Container(
+                              alignment: Alignment.center,
+                              padding: EdgeInsets.all(10),
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(16.0),
+                                  border: Border.all(
+                                      color: themeManager
+                                          .getColor(TypeOfWidget.button),
+                                      width: 2)),
+                              child: new Text(
+                                'Search District',
+                                style: new TextStyle(
+                                    fontSize: 20.0,
+                                    color: themeManager
+                                        .getColor(TypeOfWidget.button)),
+                              ),
+                            )),
+                      )),
+                  new Container(
+                      padding: EdgeInsets.only(
+                          top: 0, left: 30, right: 30, bottom: 25),
+                      child: Material(
+                        color: Colors.transparent,
+                        child: InkWell(
+                            splashColor:
+                                themeManager.getColor(TypeOfWidget.text),
+                            borderRadius: BorderRadius.circular(16),
+                            onTap: () => {
+                                  setState(() {
+                                    isInAccountChooserStatus =
+                                        !isInAccountChooserStatus;
+                                  })
+                                },
+                            child: Container(
+                              alignment: Alignment.center,
+                              padding: EdgeInsets.all(10),
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(16.0),
+                                  border: Border.all(
+                                      color: themeManager
+                                          .getColor(TypeOfWidget.button),
+                                      width: 2)),
+                              child: new Text(
+                                'Choose Accounts',
+                                style: new TextStyle(
+                                    fontSize: 20.0,
+                                    color: themeManager
+                                        .getColor(TypeOfWidget.button)),
+                              ),
+                            )),
+                      )),
+                ])))
       ]);
     }
 
     return Scaffold(
-        backgroundColor: Colors.black,
+        backgroundColor: themeManager.getColor(TypeOfWidget.background),
         body: Center(
             child: Container(
                 padding: EdgeInsets.all(10),

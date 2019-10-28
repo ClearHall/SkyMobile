@@ -104,7 +104,7 @@ class _AssignmentsViewerState extends State<AssignmentsViewer> {
                                       ? themeManager.getColor(TypeOfWidget.text)
                                       : themeManager
                                           .getColor(TypeOfWidget.button)
-                                  : Colors.white,
+                                  : themeManager.getColor(null),
                               fontSize: isBoxCatHeader ? 20 : 15),
                           textAlign: TextAlign.start,
                         ),
@@ -168,7 +168,7 @@ class _AssignmentsViewerState extends State<AssignmentsViewer> {
                   fontWeight: FontWeight.w700)),
         ),
       ),
-      backgroundColor: Colors.black,
+      backgroundColor: themeManager.getColor(TypeOfWidget.background),
       body: Center(
         child: ListView(
           padding: EdgeInsets.all(10),

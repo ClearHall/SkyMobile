@@ -1,3 +1,4 @@
+import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:skymobile/Settings/themeColorManager.dart';
@@ -13,8 +14,55 @@ class TermViewerPage extends StatefulWidget {
   _TermViewer createState() => new _TermViewer();
 }
 
-class _TermViewer extends State<TermViewerPage> {
+class _TermViewer extends State<TermViewerPage> with WidgetsBindingObserver {
   int currentTermIndex = 0;
+  bool shouldBlur = false;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+    _setIntTerm();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    switch(state) {
+    case AppLifecycleState.resumed:
+      shouldBlur = false;
+      break;
+    case AppLifecycleState.inactive:
+      setState(() {
+        shouldBlur = true;
+      });
+      break;
+    case AppLifecycleState.paused:
+      setState(() {
+        shouldBlur = true;
+      });
+      break;
+    case AppLifecycleState.suspending:
+      setState(() {
+        shouldBlur = true;
+      });
+      break;
+  }
+
+    if (state == AppLifecycleState.resumed) {
+      shouldBlur = false;
+    } else if ((state == AppLifecycleState.inactive || state == AppLifecycleState.paused) &&
+        settings['Conceal Grades']['option']) {
+      setState(() {
+        shouldBlur = true;
+      });
+    }
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
 
   _goToGPACalculator(String courseName) async {
     bool isCancelled = false;
@@ -92,11 +140,6 @@ class _TermViewer extends State<TermViewerPage> {
     }
   }
 
-  void initState() {
-    super.initState();
-    _setIntTerm();
-  }
-
   _setIntTerm() {
     Term currentTerm;
     for (int i = 0; i < gradeBoxes.length; i++) {
@@ -110,6 +153,7 @@ class _TermViewer extends State<TermViewerPage> {
 
   @override
   Widget build(BuildContext context) {
+    if(shouldBlur) return Scaffold(backgroundColor: Colors.black,);
     final FixedExtentScrollController scrollController =
         FixedExtentScrollController(initialItem: currentTermIndex);
 
@@ -188,8 +232,9 @@ class _TermViewer extends State<TermViewerPage> {
                               top: 5, left: 15, right: 10, bottom: 0),
                           alignment: Alignment.centerLeft,
                           child: Text(teacherIDBox.teacherName,
-                              style:
-                                  TextStyle(color: Colors.white, fontSize: 15),
+                              style: TextStyle(
+                                  color: themeManager.getColor(null),
+                                  fontSize: 15),
                               textAlign: TextAlign.start),
                         ),
                         Container(
@@ -198,7 +243,8 @@ class _TermViewer extends State<TermViewerPage> {
                             alignment: Alignment.centerLeft,
                             child: Text(teacherIDBox.timePeriod,
                                 style: TextStyle(
-                                    color: Colors.white, fontSize: 15),
+                                    color: themeManager.getColor(null),
+                                    fontSize: 15),
                                 textAlign: TextAlign.start))
                       ],
                     ),
@@ -291,52 +337,59 @@ class _TermViewer extends State<TermViewerPage> {
                 ))
           ],
         ),
-        backgroundColor: Colors.black,
-        body: Center(
-            child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: <Widget>[
-              Container(
-                child: InkWell(
-                  child: Card(
-                    color: themeManager.getColor(TypeOfWidget.text),
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(30)),
-                    child: Container(
-                      child: Text(
-                        'Term: ${terms[currentTermIndex].termCode} / ${terms[currentTermIndex].termName}',
-                        style: TextStyle(
-                            fontSize: 18, fontWeight: FontWeight.w700),
-                        textAlign: TextAlign.center,
+        backgroundColor: themeManager.getColor(TypeOfWidget.background),
+        body: Stack(children: <Widget>[
+          Center(
+              child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: <Widget>[
+                Container(
+                  child: InkWell(
+                    child: Card(
+                      color: themeManager.getColor(TypeOfWidget.text),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(30)),
+                      child: Container(
+                        child: Text(
+                          'Term: ${terms[currentTermIndex].termCode} / ${terms[currentTermIndex].termName}',
+                          style: TextStyle(
+                              fontSize: 18, fontWeight: FontWeight.w700),
+                          textAlign: TextAlign.center,
+                        ),
+                        padding: EdgeInsets.only(
+                            top: 20, bottom: 20, left: 0, right: 0),
                       ),
-                      padding: EdgeInsets.only(
-                          top: 20, bottom: 20, left: 0, right: 0),
                     ),
+                    onTap: () {
+                      showModalBottomSheet(
+                          context: context,
+                          builder: (BuildContext context) => CupertinoPicker(
+                              scrollController: scrollController,
+                              backgroundColor: Colors.black,
+                              children: cupPickerWid,
+                              itemExtent: 50,
+                              onSelectedItemChanged: (int changeTo) {
+                                setState(() {
+                                  currentTermIndex = changeTo;
+                                });
+                              }));
+                    },
                   ),
-                  onTap: () {
-                    showModalBottomSheet(
-                        context: context,
-                        builder: (BuildContext context) => CupertinoPicker(
-                            scrollController: scrollController,
-                            backgroundColor: Colors.black,
-                            children: cupPickerWid,
-                            itemExtent: 50,
-                            onSelectedItemChanged: (int changeTo) {
-                              setState(() {
-                                currentTermIndex = changeTo;
-                              });
-                            }));
-                  },
+                  padding:
+                      EdgeInsets.only(top: 10, left: 20, right: 20, bottom: 10),
                 ),
-                padding:
-                    EdgeInsets.only(top: 10, left: 20, right: 20, bottom: 10),
-              ),
-              Expanded(
-                child: ListView(
-                  padding: EdgeInsets.only(left: 10, right: 10, bottom: 10),
-                  children: body,
-                ),
-              )
-            ])));
+                Expanded(
+                  child: ListView(
+                    padding: EdgeInsets.only(left: 10, right: 10, bottom: 10),
+                    children: body,
+                  ),
+                )
+              ])),
+          BackdropFilter(
+              filter: shouldBlur ? ImageFilter.blur(sigmaX: 10, sigmaY: 10) : ImageFilter.blur(),
+              child: Container(
+                color: Colors.black.withOpacity(0),
+              ))
+        ]));
   }
 }

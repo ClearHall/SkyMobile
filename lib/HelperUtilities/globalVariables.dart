@@ -14,7 +14,9 @@ ThemeManager themeManager = ThemeManager();
 
 Map<String, dynamic> settings = Map.fromIterables([
   'Biometric Authentication',
-  'Theme'
+  'Theme',
+  'Dark Mode',
+  'Conceal Grades'
 ], [
   Map.fromIterables([
     'description',
@@ -29,7 +31,21 @@ Map<String, dynamic> settings = Map.fromIterables([
   ], [
     'Change the color scheme used for the app.',
     Map.fromIterables(ThemeManager.colorNameToThemes.values, List.generate(ThemeManager.colorNameToThemes.length, (i){ return false; }))
-  ])
+  ]),
+  Map.fromIterables([
+    'description',
+    'option'
+  ], [
+    'Change between light mode and dark mode.',
+    true
+  ]),
+  Map.fromIterables([
+    'description',
+    'option'
+  ], [
+    'Conceal grades once you leave the app. If biometric authentication is enabled, then you will be required to authenticate to view your grades again.',
+    true
+  ]),
 ]);
 
 List<String> termIdentifiersCountingTowardGPA = ['S1', 'S2'];

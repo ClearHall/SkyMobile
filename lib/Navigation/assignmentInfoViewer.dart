@@ -57,7 +57,7 @@ class _AssignmentInfoViewerState extends State<AssignmentInfoViewer> {
                   fontWeight: FontWeight.w700)),
         ),
       ),
-      backgroundColor: Colors.black,
+      backgroundColor: themeManager.getColor(TypeOfWidget.background),
       body: Center(
         child: ListView(
           padding: EdgeInsets.all(10),

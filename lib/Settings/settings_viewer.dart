@@ -41,16 +41,27 @@ class _SettingsViewerState extends State<SettingsViewer> {
               run: _saveData,
               requiresBiometricsToDisable: k == 'Biometric Authentication',
               runIfBiometricsFailed: (e) {
-            showDialog(
-                context: context,
-                builder: (bc) => HuntyDialog(
-                    title: 'Authentication Error',
-                    description: e.message +
-                        '\nSkyMobile will disable authentication for you.',
-                    buttonText: 'Ok'));
-            setState(() {
-              settings['Biometric Authentication']['option'] = false;
-            });
+            if (e is PlatformException) {
+              if (e.code == 'LockedOut') {
+                showDialog(
+                    context: context,
+                    builder: (bc) => HuntyDialog(
+                        title: 'Authentication Error',
+                        description: e.message,
+                        buttonText: 'Ok'));
+              } else {
+                showDialog(
+                    context: context,
+                    builder: (bc) => HuntyDialog(
+                        title: 'Authentication Error',
+                        description: e.message +
+                            '\nSkyMobile will disable authentication for you.',
+                        buttonText: 'Ok'));
+                setState(() {
+                  settings['Biometric Authentication']['option'] = false;
+                });
+              }
+            }
           }),
         );
     }
@@ -70,7 +81,7 @@ class _SettingsViewerState extends State<SettingsViewer> {
                     fontWeight: FontWeight.w700)),
           ),
         ),
-        backgroundColor: Colors.black,
+        backgroundColor: themeManager.getColor(TypeOfWidget.background),
         body: Center(
           child: ListView(
             children: settingsWidgets,
