@@ -5,8 +5,9 @@ import 'package:skymobile/HelperUtilities/globalVariables.dart';
 import 'package:skymobile/Settings/themeColorManager.dart';
 
 class SettingsWidgetGenerator {
-  static runChangeTo(bool changedTo, bool biometrics, Map attributes, Function run, Function(PlatformException) runIfBioFailed) async{
-    if(biometrics){
+  static runChangeTo(bool changedTo, bool biometrics, Map attributes,
+      Function run, Function(PlatformException) runIfBioFailed) async {
+    if (biometrics) {
       LocalAuthentication localAuthentication = LocalAuthentication();
       try {
         if (await localAuthentication.authenticateWithBiometrics(
@@ -17,10 +18,10 @@ class SettingsWidgetGenerator {
             run();
           }
         }
-      }catch(e){
+      } catch (e) {
         runIfBioFailed(e);
       }
-    }else {
+    } else {
       attributes['option'] = changedTo;
       if (run != null) {
         run();
@@ -29,7 +30,9 @@ class SettingsWidgetGenerator {
   }
 
   static Widget generateSingleSettingsWidget(String settings, Map attributes,
-      {Function run, bool requiresBiometricsToDisable = false, Function(PlatformException) runIfBiometricsFailed}) {
+      {Function run,
+      bool requiresBiometricsToDisable = false,
+      Function(PlatformException) runIfBiometricsFailed}) {
     return Container(
       child: Column(
         children: <Widget>[
@@ -49,7 +52,8 @@ class SettingsWidgetGenerator {
                   trailing: Switch(
                     value: attributes['option'] ?? false,
                     onChanged: (changedTo) {
-                      runChangeTo(changedTo, requiresBiometricsToDisable, attributes, run, runIfBiometricsFailed);
+                      runChangeTo(changedTo, requiresBiometricsToDisable,
+                          attributes, run, runIfBiometricsFailed);
                     },
                     activeColor: themeManager.getColor(TypeOfWidget.text),
                   ),
@@ -211,25 +215,29 @@ class SettingsWidgetGenerator {
 
     for (String x in options.keys) {
       widgets.add(Container(
-          child: ListTile(title:
-        Text(
-          x + ": ",
-          style: TextStyle(
-              color: themeManager.getColor(TypeOfWidget.text), fontSize: 20),
-        ),
-        trailing: Switch(
-          value: options[x],
-          onChanged: (newVal) {
-            options[x] = newVal;
-            for(int i = 0; i < options.keys.length; i++){
-              if(options.keys.toList()[i] != x && maxAmountSelectable != null && options[options.keys.toList()[i]]) {
-                maxAmountSelectable--;
-                if(maxAmountSelectable <= 0) options[options.keys.toList()[i]] = false;
-              }
-            }
-            run();
-          },
-        ))));
+          child: ListTile(
+              title: Text(
+                x + ": ",
+                style: TextStyle(
+                    color: themeManager.getColor(TypeOfWidget.text),
+                    fontSize: 20),
+              ),
+              trailing: Switch(
+                value: options[x],
+                onChanged: (newVal) {
+                  options[x] = newVal;
+                  for (int i = 0; i < options.keys.length; i++) {
+                    if (options.keys.toList()[i] != x &&
+                        maxAmountSelectable != null &&
+                        options[options.keys.toList()[i]]) {
+                      maxAmountSelectable--;
+                      if (maxAmountSelectable <= 0)
+                        options[options.keys.toList()[i]] = false;
+                    }
+                  }
+                  run();
+                },
+              ))));
     }
 
     return Container(

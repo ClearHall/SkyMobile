@@ -60,7 +60,7 @@ class JSONSaver {
           });
         } else if (fileName == FilesAvailable.previousDistrict) {
           return SkywardDistrict.fromJson(retrievedJSONCoded);
-        }else
+        } else
           mapOfTargetedObject = retrievedJSONCoded;
         return mapOfTargetedObject;
       }
@@ -73,14 +73,19 @@ class JSONSaver {
 enum FilesAvailable {
   /// Stores stored account files
   accounts,
+
   /// Stores GPA Calculator class settings
   gpaCalculatorSettings,
+
   /// GPA Terms that have been selected that count toward GPA
   gpaSelectedTerms,
+
   /// GPA extra modifiers
   gpaExtraSettings,
+
   /// The district previously stored
   previousDistrict,
+
   /// Settings like biometrics and theme
   settings
 }

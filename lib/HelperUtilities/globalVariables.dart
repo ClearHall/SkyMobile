@@ -30,15 +30,14 @@ Map<String, dynamic> settings = Map.fromIterables([
     'option'
   ], [
     'Change the color scheme used for the app.',
-    Map.fromIterables(ThemeManager.colorNameToThemes.values, List.generate(ThemeManager.colorNameToThemes.length, (i){ return false; }))
+    Map.fromIterables(
+        ThemeManager.colorNameToThemes.values,
+        List.generate(ThemeManager.colorNameToThemes.length, (i) {
+          return false;
+        }))
   ]),
-  Map.fromIterables([
-    'description',
-    'option'
-  ], [
-    'Change between light mode and dark mode.',
-    true
-  ]),
+  Map.fromIterables(['description', 'option'],
+      ['Change between light mode and dark mode.', true]),
   Map.fromIterables([
     'description',
     'option'
