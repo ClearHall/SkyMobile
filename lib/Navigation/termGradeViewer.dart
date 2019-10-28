@@ -3,12 +3,12 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:local_auth/local_auth.dart';
-import 'package:skymobile/HelperUtilities/biometric_blur_view.dart';
+import 'package:skymobile/ExtraViewPackages/biometric_blur_view.dart';
 import 'package:skymobile/Settings/themeColorManager.dart';
 import 'package:skyscrapeapi/data_types.dart';
 import 'package:skymobile/HelperUtilities/globalVariables.dart';
-import 'package:skymobile/HelperUtilities/customDialogOptions.dart';
-import 'package:skymobile/GPACalculator/supportUtils.dart';
+import 'package:skymobile/ExtraViewPackages/customDialogOptions.dart';
+import 'package:skymobile/HelperUtilities/gpa_calculator_supportUtils.dart';
 
 class TermViewerPage extends StatefulWidget {
   MaterialColor secondColor;

@@ -5,7 +5,7 @@ import 'package:local_auth/local_auth.dart';
 import 'package:skymobile/Settings/themeColorManager.dart';
 import 'package:skyscrapeapi/skyscrape.dart';
 import 'package:skymobile/Navigation//termGradeViewer.dart';
-import 'HelperUtilities/customDialogOptions.dart';
+import 'ExtraViewPackages/customDialogOptions.dart';
 import 'HelperUtilities/globalVariables.dart';
 import 'package:skymobile/Navigation/assignmentInfoViewer.dart';
 import 'package:skymobile/Navigation/assignmentsViewer.dart';

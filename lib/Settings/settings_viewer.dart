@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:skymobile/HelperUtilities/biometric_blur_view.dart';
-import 'package:skymobile/HelperUtilities/customDialogOptions.dart';
+import 'package:skymobile/ExtraViewPackages/biometric_blur_view.dart';
+import 'package:skymobile/ExtraViewPackages/customDialogOptions.dart';
 import 'package:skymobile/HelperUtilities/jsonSaver.dart';
 import 'package:skymobile/Settings/settingsWidgetGenerator.dart';
 import 'themeColorManager.dart';

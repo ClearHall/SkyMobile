@@ -2,13 +2,13 @@ import 'dart:collection';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:skymobile/HelperUtilities/biometric_blur_view.dart';
-import 'package:skymobile/HelperUtilities/customDialogOptions.dart';
+import 'package:skymobile/ExtraViewPackages/biometric_blur_view.dart';
+import 'package:skymobile/ExtraViewPackages/customDialogOptions.dart';
 import 'package:skymobile/Settings/themeColorManager.dart';
 import 'package:skyscrapeapi/data_types.dart';
 import 'package:skymobile/HelperUtilities/globalVariables.dart';
-import 'package:skymobile/HelperUtilities/alwaysVisibleScrollbar.dart';
-import 'supportUtils.dart';
+import 'package:skymobile/ExtraViewPackages/alwaysVisibleScrollbar.dart';
+import '../HelperUtilities/gpa_calculator_supportUtils.dart';
 
 class GPACalculatorSchoolYear extends StatefulWidget {
   MaterialColor secondColor;
@@ -18,7 +18,8 @@ class GPACalculatorSchoolYear extends StatefulWidget {
       new _GPACalculatorSchoolYearState();
 }
 
-class _GPACalculatorSchoolYearState extends BiometricBlur<GPACalculatorSchoolYear> {
+class _GPACalculatorSchoolYearState
+    extends BiometricBlur<GPACalculatorSchoolYear> {
   @override
   void initState() {
     super.initState();
@@ -362,7 +363,8 @@ class _GPACalculatorSchoolYearState extends BiometricBlur<GPACalculatorSchoolYea
                       },
                     ),
                     IconButton(
-                      icon: Icon(Icons.play_circle_filled, color: themeManager.getColor(null)),
+                      icon: Icon(Icons.play_circle_filled,
+                          color: themeManager.getColor(null)),
                       onPressed: () {
                         Navigator.pushNamed(context, '/gpacalculatorclasses',
                             arguments: historyGrades[i]);

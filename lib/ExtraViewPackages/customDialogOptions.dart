@@ -3,7 +3,7 @@ import 'package:skymobile/Settings/themeColorManager.dart';
 import 'package:skyscrapeapi/district_searcher.dart';
 import 'package:skyscrapeapi/data_types.dart';
 import '../main.dart';
-import 'globalVariables.dart';
+import '../HelperUtilities/globalVariables.dart';
 
 class HuntyDialog extends StatelessWidget {
   final String title, description, buttonText;
@@ -28,19 +28,15 @@ class HuntyDialog extends StatelessWidget {
       Text(
         title,
         style: TextStyle(
-          fontSize: 24.0,
-          fontWeight: FontWeight.w700,
-          color: themeManager.getColor(null)
-        ),
+            fontSize: 24.0,
+            fontWeight: FontWeight.w700,
+            color: themeManager.getColor(null)),
       ),
       SizedBox(height: 16.0),
       Text(
         description,
         textAlign: TextAlign.center,
-        style: TextStyle(
-          fontSize: 16.0,
-          color: themeManager.getColor(null)
-        ),
+        style: TextStyle(fontSize: 16.0, color: themeManager.getColor(null)),
       ),
       SizedBox(height: 24.0),
       Align(
@@ -49,7 +45,10 @@ class HuntyDialog extends StatelessWidget {
           onPressed: () {
             Navigator.of(context).pop();
           },
-          child: Text(buttonText, style: TextStyle(color: themeManager.getColor(null)),),
+          child: Text(
+            buttonText,
+            style: TextStyle(color: themeManager.getColor(null)),
+          ),
         ),
       ),
     ];
@@ -330,14 +329,14 @@ class HuntyDialogForConfirmation extends HuntyDialog {
   String btnTextForCancel;
   Function runIfUserCancels;
 
-  HuntyDialogForConfirmation({
-    @required title,
-    @required description,
-    @required this.runIfUserConfirms,
-    @required this.btnTextForConfirmation,
-    @required this.btnTextForCancel,
-  this.runIfUserCancels
-  }) : super(
+  HuntyDialogForConfirmation(
+      {@required title,
+      @required description,
+      @required this.runIfUserConfirms,
+      @required this.btnTextForConfirmation,
+      @required this.btnTextForCancel,
+      this.runIfUserCancels})
+      : super(
             title: title,
             description: description,
             buttonText: 'buttonText error not needed');
@@ -367,7 +366,7 @@ class HuntyDialogForConfirmation extends HuntyDialog {
             child: FlatButton(
               onPressed: () {
                 Navigator.of(context).pop();
-                if(runIfUserCancels != null) runIfUserCancels();
+                if (runIfUserCancels != null) runIfUserCancels();
               },
               child: Text(
                 btnTextForCancel,
