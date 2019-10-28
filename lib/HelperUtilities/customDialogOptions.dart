@@ -328,6 +328,7 @@ class HuntyDialogForConfirmation extends HuntyDialog {
   Function() runIfUserConfirms;
   String btnTextForConfirmation;
   String btnTextForCancel;
+  Function runIfUserCancels;
 
   HuntyDialogForConfirmation({
     @required title,
@@ -335,6 +336,7 @@ class HuntyDialogForConfirmation extends HuntyDialog {
     @required this.runIfUserConfirms,
     @required this.btnTextForConfirmation,
     @required this.btnTextForCancel,
+  this.runIfUserCancels
   }) : super(
             title: title,
             description: description,
@@ -365,6 +367,7 @@ class HuntyDialogForConfirmation extends HuntyDialog {
             child: FlatButton(
               onPressed: () {
                 Navigator.of(context).pop();
+                if(runIfUserCancels != null) runIfUserCancels();
               },
               child: Text(
                 btnTextForCancel,

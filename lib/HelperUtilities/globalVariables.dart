@@ -10,13 +10,14 @@ List<GridBox> gradeBoxes;
 List<AssignmentsGridBox> assignmentsGridBoxes;
 List<AssignmentInfoBox> assignmentInfoBoxes;
 List<SchoolYear> historyGrades;
+bool shouldBlur = false;
 ThemeManager themeManager = ThemeManager();
 
 Map<String, dynamic> settings = Map.fromIterables([
   'Biometric Authentication',
   'Theme',
   'Dark Mode',
-  'Conceal Grades'
+  'Re-Authenticate With Biometrics'
 ], [
   Map.fromIterables([
     'description',
@@ -43,7 +44,7 @@ Map<String, dynamic> settings = Map.fromIterables([
     'description',
     'option'
   ], [
-    'Conceal grades once you leave the app. If biometric authentication is enabled, then you will be required to authenticate to view your grades again.',
+    'SkyMobile will block your grades from bieng seen in the app switcher. Though, if you want an extra layer of security, you can force biometric authentication when you come back into the app.',
     true
   ]),
 ]);

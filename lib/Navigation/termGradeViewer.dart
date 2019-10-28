@@ -1,6 +1,8 @@
+import 'dart:math';
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:local_auth/local_auth.dart';
 import 'package:skymobile/Settings/themeColorManager.dart';
 import 'package:skyscrapeapi/data_types.dart';
 import 'package:skymobile/HelperUtilities/globalVariables.dart';
@@ -16,7 +18,6 @@ class TermViewerPage extends StatefulWidget {
 
 class _TermViewer extends State<TermViewerPage> with WidgetsBindingObserver {
   int currentTermIndex = 0;
-  bool shouldBlur = false;
 
   @override
   void initState() {
@@ -27,41 +28,73 @@ class _TermViewer extends State<TermViewerPage> with WidgetsBindingObserver {
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    switch(state) {
-    case AppLifecycleState.resumed:
-      shouldBlur = false;
-      break;
-    case AppLifecycleState.inactive:
-      setState(() {
-        shouldBlur = true;
-      });
-      break;
-    case AppLifecycleState.paused:
-      setState(() {
-        shouldBlur = true;
-      });
-      break;
-    case AppLifecycleState.suspending:
-      setState(() {
-        shouldBlur = true;
-      });
-      break;
-  }
-
-    if (state == AppLifecycleState.resumed) {
-      shouldBlur = false;
-    } else if ((state == AppLifecycleState.inactive || state == AppLifecycleState.paused) &&
-        settings['Conceal Grades']['option']) {
-      setState(() {
-        shouldBlur = true;
-      });
-    }
+    if(settings['Re-Authenticate With Biometrics']['option'])
+      if (state == AppLifecycleState.resumed && ModalRoute.of(context).isCurrent) {
+        _authenticate();
+      } else if(ModalRoute.of(context).isCurrent) {
+        setState(() {
+          shouldBlur = true;
+        });
+      }
   }
 
   @override
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
     super.dispose();
+  }
+
+  _authenticate() async {
+    LocalAuthentication localAuthentication = LocalAuthentication();
+    try {
+      if (await localAuthentication.authenticateWithBiometrics(
+          localizedReason:
+              'Welcome back! To view your grades again, please authenticate.')) {
+        setState(() {
+          shouldBlur = false;
+        });
+      } else {
+        await showDialog(
+            context: context,
+            builder: (bc) => HuntyDialogForConfirmation(
+                  title: 'Authentication Error',
+                  description:
+                      "You have either cancelled the operation or failed authentication, would you like to re-attempt authentication?",
+                  btnTextForConfirmation: 'Ok',
+                  btnTextForCancel: 'Cancel',
+              runIfUserConfirms: (){
+                    _authenticate();
+              },
+              runIfUserCancels: (){
+                Navigator.popUntil(context, (route) {
+                  return route.settings.name == '/';
+                });
+              },
+                ));
+      }
+    } catch (e) {
+      if (e.code == 'LockedOut') {
+        showDialog(
+            context: context,
+            builder: (bc) => HuntyDialog(
+                title: 'Authentication Error',
+                description: e.message + "\nExit and re-enter the app.",
+                buttonText: 'Ok'));
+      } else if(e.code != 'auth_in_progress') {
+        showDialog(
+            context: context,
+            builder: (bc) => HuntyDialog(
+                title: 'Authentication Error',
+                description: e.message +
+                    '\nSkyMobile will disable authentication for you.',
+                buttonText: 'Ok'));
+        setState(() {
+          settings['Biometric Authentication']['option'] = false;
+          settings['Re-Authenticate With Biometrics']['option'] = false;
+          shouldBlur = false;
+        });
+      }
+    }
   }
 
   _goToGPACalculator(String courseName) async {
@@ -153,7 +186,9 @@ class _TermViewer extends State<TermViewerPage> with WidgetsBindingObserver {
 
   @override
   Widget build(BuildContext context) {
-    if(shouldBlur) return Scaffold(backgroundColor: Colors.black,);
+    if (shouldBlur)
+      return Scaffold(
+          backgroundColor: themeManager.getColor(TypeOfWidget.background));
     final FixedExtentScrollController scrollController =
         FixedExtentScrollController(initialItem: currentTermIndex);
 
@@ -269,127 +304,121 @@ class _TermViewer extends State<TermViewerPage> with WidgetsBindingObserver {
     }
 
     return Scaffold(
-        appBar: AppBar(
-          iconTheme: IconThemeData(
-              color: themeManager.getColor(TypeOfWidget.text), size: 30),
-          backgroundColor: themeManager.getColor(TypeOfWidget.background),
-          title: Align(
-              alignment: Alignment.center,
-              child: Text('Gradebook',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    color: themeManager.getColor(TypeOfWidget.text),
-                    fontSize: 30,
-                    fontWeight: FontWeight.w700,
-                  ))),
-          actions: <Widget>[
-            Theme(
-                data: Theme.of(context).copyWith(
-                  cardColor: Colors.black,
+      appBar: AppBar(
+        iconTheme: IconThemeData(
+            color: themeManager.getColor(TypeOfWidget.text), size: 30),
+        backgroundColor: themeManager.getColor(TypeOfWidget.background),
+        title: Align(
+            alignment: Alignment.center,
+            child: Text('Gradebook',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  color: themeManager.getColor(TypeOfWidget.text),
+                  fontSize: 30,
+                  fontWeight: FontWeight.w700,
+                ))),
+        actions: <Widget>[
+          Theme(
+              data: Theme.of(context).copyWith(
+                cardColor: Colors.black,
+              ),
+              child: PopupMenuButton(
+                icon: Icon(
+                  Icons.more_vert,
+                  color: themeManager.getColor(TypeOfWidget.text),
                 ),
-                child: PopupMenuButton(
-                  icon: Icon(
-                    Icons.more_vert,
-                    color: themeManager.getColor(TypeOfWidget.text),
-                  ),
-                  onSelected: (String selected) {
-                    switch (selected) {
-                      case 'settings':
-                        Navigator.pushNamed(context, '/settings');
-                        break;
-                      case 'gpaCalc':
-                        {
-                          _goToGPACalculator('TEST');
-                        }
-                        break;
-                      case 'devBash':
-                        showDialog(
-                            context: context,
-                            builder: (bC) {
-                              return HuntyDialogDebugCredentials(
-                                  hint: 'Credentials',
-                                  title: 'Debug Console',
-                                  description: 'Developers Only',
-                                  buttonText: 'Submit');
-                            });
-                    }
-                  },
-                  itemBuilder: (_) => <PopupMenuItem<String>>[
-                    PopupMenuItem<String>(
-                        child: const Text(
-                          'Settings',
-                          style: TextStyle(color: Colors.white),
-                        ),
-                        value: 'settings'),
-                    PopupMenuItem<String>(
-                        child: const Text(
-                          'GPA Calculator',
-                          style: TextStyle(color: Colors.white),
-                        ),
-                        value: 'gpaCalc'),
+                onSelected: (String selected) {
+                  switch (selected) {
+                    case 'settings':
+                      Navigator.pushNamed(context, '/settings');
+                      break;
+                    case 'gpaCalc':
+                      {
+                        _goToGPACalculator('TEST');
+                      }
+                      break;
+                    case 'devBash':
+                      showDialog(
+                          context: context,
+                          builder: (bC) {
+                            return HuntyDialogDebugCredentials(
+                                hint: 'Credentials',
+                                title: 'Debug Console',
+                                description: 'Developers Only',
+                                buttonText: 'Submit');
+                          });
+                  }
+                },
+                itemBuilder: (_) => <PopupMenuItem<String>>[
+                  PopupMenuItem<String>(
+                      child: const Text(
+                        'Settings',
+                        style: TextStyle(color: Colors.white),
+                      ),
+                      value: 'settings'),
+                  PopupMenuItem<String>(
+                      child: const Text(
+                        'GPA Calculator',
+                        style: TextStyle(color: Colors.white),
+                      ),
+                      value: 'gpaCalc'),
 //                    PopupMenuItem<String>(
 //                        child: const Text(
 //                          'Developer Command',
 //                          style: TextStyle(color: Colors.white),
 //                        ),
 //                        value: 'devBash'),
-                  ],
-                ))
-          ],
-        ),
-        backgroundColor: themeManager.getColor(TypeOfWidget.background),
-        body: Stack(children: <Widget>[
-          Center(
-              child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: <Widget>[
-                Container(
-                  child: InkWell(
-                    child: Card(
-                      color: themeManager.getColor(TypeOfWidget.text),
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(30)),
-                      child: Container(
-                        child: Text(
-                          'Term: ${terms[currentTermIndex].termCode} / ${terms[currentTermIndex].termName}',
-                          style: TextStyle(
-                              fontSize: 18, fontWeight: FontWeight.w700),
-                          textAlign: TextAlign.center,
-                        ),
-                        padding: EdgeInsets.only(
-                            top: 20, bottom: 20, left: 0, right: 0),
-                      ),
-                    ),
-                    onTap: () {
-                      showModalBottomSheet(
-                          context: context,
-                          builder: (BuildContext context) => CupertinoPicker(
-                              scrollController: scrollController,
-                              backgroundColor: Colors.black,
-                              children: cupPickerWid,
-                              itemExtent: 50,
-                              onSelectedItemChanged: (int changeTo) {
-                                setState(() {
-                                  currentTermIndex = changeTo;
-                                });
-                              }));
-                    },
-                  ),
-                  padding:
-                      EdgeInsets.only(top: 10, left: 20, right: 20, bottom: 10),
-                ),
-                Expanded(
-                  child: ListView(
-                    padding: EdgeInsets.only(left: 10, right: 10, bottom: 10),
-                    children: body,
-                  ),
-                )
-              ])),
-          BackdropFilter(
-              filter: shouldBlur ? ImageFilter.blur(sigmaX: 10, sigmaY: 10) : ImageFilter.blur(),
-              child: Container(
-                color: Colors.black.withOpacity(0),
+                ],
               ))
-        ]));
+        ],
+      ),
+      backgroundColor: themeManager.getColor(TypeOfWidget.background),
+      body: Center(
+          child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: <Widget>[
+            Container(
+              child: InkWell(
+                child: Card(
+                  color: themeManager.getColor(TypeOfWidget.text),
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(30)),
+                  child: Container(
+                    child: Text(
+                      'Term: ${terms[currentTermIndex].termCode} / ${terms[currentTermIndex].termName}',
+                      style:
+                          TextStyle(fontSize: 18, fontWeight: FontWeight.w700),
+                      textAlign: TextAlign.center,
+                    ),
+                    padding:
+                        EdgeInsets.only(top: 20, bottom: 20, left: 0, right: 0),
+                  ),
+                ),
+                onTap: () {
+                  showModalBottomSheet(
+                      context: context,
+                      builder: (BuildContext context) => CupertinoPicker(
+                          scrollController: scrollController,
+                          backgroundColor: Colors.black,
+                          children: cupPickerWid,
+                          itemExtent: 50,
+                          onSelectedItemChanged: (int changeTo) {
+                            setState(() {
+                              currentTermIndex = changeTo;
+                            });
+                          }));
+                },
+              ),
+              padding:
+                  EdgeInsets.only(top: 10, left: 20, right: 20, bottom: 10),
+            ),
+            Expanded(
+              child: ListView(
+                padding: EdgeInsets.only(left: 10, right: 10, bottom: 10),
+                children: body,
+              ),
+            )
+          ])),
+    );
   }
 }
