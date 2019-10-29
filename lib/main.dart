@@ -17,6 +17,8 @@ import 'package:skymobile/GPACalculator/classes.dart';
 import 'package:skymobile/GPACalculator/settings.dart';
 import 'package:skymobile/Settings/settings_viewer.dart';
 
+//TODO: ADD SUPPORT FOR PARENT ACCOUNTS
+
 void main() async {
   JSONSaver jsonSaver = JSONSaver(FilesAvailable.settings);
   var retrieved = await jsonSaver.readListData();
@@ -146,7 +148,18 @@ class MyHomePageState extends State<MyHomePage> {
       }
     } catch (e) {
       Navigator.of(context).pop(dialog);
-      _underMaintence(context);
+      if(e.toString().contains('Invalid login or password')){
+        showDialog(
+            context: context,
+            builder: (BuildContext) {
+              return HuntyDialog(
+                  title: 'Uh-Oh',
+                  description:
+                  'Invalid Credentials or Internet Failure. Please check your username and password and your internet connection.',
+                  buttonText: 'Ok');
+            });
+      }else
+        _underMaintence(context);
     }
   }
 
@@ -181,16 +194,20 @@ class MyHomePageState extends State<MyHomePage> {
 
     skywardAPI = SkywardAPICore(district.districtLink);
     try {
-      if (!(await skywardAPI.getSkywardAuthenticationCodes(
+      if ((await skywardAPI.getSkywardAuthenticationCodes(
           acc.user, acc.pass))) {
-        Navigator.of(context).pop(dialog);
+        await getTermsAndGradeBook(isCancelled, dialog, acc);
+      }
+    } catch (e) {
+      Navigator.of(context).pop(dialog);
+      if(e.toString().contains('Invalid login or password')){
         showDialog(
             context: context,
             builder: (BuildContext) {
               return HuntyDialogForConfirmation(
                 title: 'Uh-Oh',
                 description:
-                    'Invalid Credentials or Internet Failure. Would you like to remove this account?.',
+                'Invalid Credentials or Internet Failure. Would you like to remove this account?.',
                 runIfUserConfirms: () {
                   setState(() {
                     accounts.remove(acc);
@@ -201,12 +218,8 @@ class MyHomePageState extends State<MyHomePage> {
                 btnTextForConfirmation: 'Ok',
               );
             });
-      } else {
-        await getTermsAndGradeBook(isCancelled, dialog, acc);
-      }
-    } catch (e) {
-      Navigator.of(context).pop(dialog);
-      _underMaintence(context);
+      }else
+        _underMaintence(context);
     }
   }
 
