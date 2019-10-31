@@ -17,8 +17,6 @@ import 'package:skymobile/GPACalculator/classes.dart';
 import 'package:skymobile/GPACalculator/settings.dart';
 import 'package:skymobile/Settings/settings_viewer.dart';
 
-//TODO: ADD SUPPORT FOR LOGIN PREVIOUS ACCOUNT
-
 void main() async {
   JSONSaver jsonSaver = JSONSaver(FilesAvailable.settings);
   var retrieved = await jsonSaver.readListData();
