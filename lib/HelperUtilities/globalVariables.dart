@@ -16,7 +16,9 @@ Map<String, dynamic> settings = Map.fromIterables([
   'Biometric Authentication',
   'Theme',
   'Dark Mode',
-  'Re-Authenticate With Biometrics'
+  'Re-Authenticate With Biometrics',
+  'Automatically Re-Load Last Saved Session',
+  'Default to Account Chooser'
 ], [
   Map.fromIterables([
     'description',
@@ -44,6 +46,20 @@ Map<String, dynamic> settings = Map.fromIterables([
   ], [
     'SkyMobile will block your grades from bieng seen in the app switcher. Though, if you want an extra layer of security, you can force biometric authentication when you come back into the app.',
     true
+  ]),
+  Map.fromIterables([
+    'description',
+    'option'
+  ], [
+    'Reload last saved session if there is one. This will skip the login screen altogether if there is a session saved.',
+    false
+  ]),
+  Map.fromIterables([
+    'description',
+    'option'
+  ], [
+    'Show account retriever as default instead of login screen.',
+    false
   ]),
 ]);
 

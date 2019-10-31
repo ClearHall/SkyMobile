@@ -17,7 +17,7 @@ import 'package:skymobile/GPACalculator/classes.dart';
 import 'package:skymobile/GPACalculator/settings.dart';
 import 'package:skymobile/Settings/settings_viewer.dart';
 
-//TODO: ADD SUPPORT FOR PARENT ACCOUNTS
+//TODO: ADD SUPPORT FOR LOGIN PREVIOUS ACCOUNT
 
 void main() async {
   JSONSaver jsonSaver = JSONSaver(FilesAvailable.settings);
@@ -119,7 +119,7 @@ class MyHomePageState extends State<MyHomePage> {
               return HuntyDialog(
                   title: 'Uh-Oh',
                   description:
-                      'Invalid Credentials or Internet Failure. Please check your username and password and your internet connection.',
+                  'Invalid Credentials or Internet Failure. Please check your username and password and your internet connection.',
                   buttonText: 'Ok');
             });
       } else {
@@ -131,7 +131,7 @@ class MyHomePageState extends State<MyHomePage> {
                 return HuntyDialogForConfirmation(
                   title: 'New Account',
                   description:
-                      'New account detected, would you like to save this account?.',
+                  'New account detected, would you like to save this account?.',
                   runIfUserConfirms: () {
                     setState(() {
                       accounts.add(Account(user, user, pass, district));
@@ -226,6 +226,8 @@ class MyHomePageState extends State<MyHomePage> {
   Future getTermsAndGradeBook(
       List<bool> isCancelled, HuntyDialogLoading dialog, Account acc) async {
     try {
+      await skywardAPI.initNewAccount();
+      skywardAPI.switchUserIndex(1);
       var termRes = await skywardAPI.getGradeBookTerms();
       var gradebookRes = (await skywardAPI.getGradeBookGrades(termRes));
       terms = termRes;
@@ -272,7 +274,7 @@ class MyHomePageState extends State<MyHomePage> {
 
   TextEditingController _controllerUsername = TextEditingController();
   TextEditingController _controllerPassword = TextEditingController();
-  bool isInAccountChooserStatus = false;
+  bool isInAccountChooserStatus = settings['Default to Account Chooser']['option'];
   List<Account> accounts = [];
 
   //NOTE: USING THIS IS VERY BUGGY!!!!!
@@ -547,6 +549,7 @@ class MyHomePageState extends State<MyHomePage> {
       ]);
     } else {
       listView = ListView(shrinkWrap: true, children: <Widget>[
+        Row(children: <Widget>[
         Container(
           child: Text('Login',
               style: TextStyle(
@@ -557,6 +560,7 @@ class MyHomePageState extends State<MyHomePage> {
           alignment: Alignment.centerLeft,
           padding: EdgeInsets.only(left: 20, bottom: 10),
         ),
+        IconButton(icon: Icon(Icons.save,), )]),
         Container(
             decoration: new BoxDecoration(boxShadow: [
               new BoxShadow(
@@ -716,10 +720,10 @@ class MyHomePageState extends State<MyHomePage> {
                                 themeManager.getColor(TypeOfWidget.text),
                             borderRadius: BorderRadius.circular(16),
                             onTap: () => {
-                                  setState(() {
-                                    isInAccountChooserStatus =
-                                        !isInAccountChooserStatus;
-                                  })
+                              setState(() {
+                                isInAccountChooserStatus =
+                                !isInAccountChooserStatus;
+                              })
                                 },
                             child: Container(
                               alignment: Alignment.center,

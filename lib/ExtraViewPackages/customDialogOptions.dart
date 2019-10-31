@@ -87,6 +87,7 @@ class HuntyDialog extends StatelessWidget {
 class HuntyDialogLoading extends HuntyDialog {
   final String cancelText;
   final Function runWhenCancelled;
+  bool restrictCancel = false;
   HuntyDialogLoading(this.cancelText, this.runWhenCancelled,
       {@required title, @required description})
       : super(title: title, description: description, buttonText: null);
@@ -109,8 +110,8 @@ class HuntyDialogLoading extends HuntyDialog {
       ),
       SizedBox(height: 24.0),
       CircularProgressIndicator(),
-      SizedBox(height: 24.0),
-      Align(
+      SizedBox(height: 40.0),
+      restrictCancel ? Container() : Align(
         alignment: Alignment.bottomRight,
         child: FlatButton(
           onPressed: () {
@@ -582,5 +583,69 @@ class HuntyDialogDebugCredentials extends HuntyDialog {
         print('Don\'t handle');
       }
     }
+  }
+}
+
+class HuntyDialogOfList extends HuntyDialog {
+  final String hint;
+  Function okPressed;
+  int indexOfValueChosen = 0;
+  List listOfValues;
+
+  HuntyDialogOfList(
+      {@required this.hint,
+      @required this.okPressed,
+      @required this.listOfValues,
+      @required title,
+      @required description,
+      @required buttonText})
+      : super(title: title, description: description, buttonText: buttonText);
+
+  @override
+  createDialogBoxContents(BuildContext context) {
+    List<Widget> widgetList = [];
+    for (int i = 0; i < listOfValues.length; i++) {
+      widgetList.add(Container(
+          child: Card(
+            child: InkWell(
+              onTap: (){
+                indexOfValueChosen = i;
+                Navigator.of(context).pop();
+                if(okPressed != null) okPressed();
+              },
+              child: Container(padding: EdgeInsets.all(10),child: Text(
+                listOfValues[i].toString().toString(),
+                style:
+                    TextStyle(color: themeManager.getColor(TypeOfWidget.text), fontSize: 15),
+              ),),
+              splashColor: themeManager.getColor(TypeOfWidget.text),
+            ),
+            color: themeManager.getColor(TypeOfWidget.subBackground),
+          )));
+    }
+
+    return <Widget>[
+      Text(
+        title,
+        style: TextStyle(
+            fontSize: 24.0,
+            fontWeight: FontWeight.w700,
+            color: themeManager.getColor(null)),
+      ),
+      SizedBox(height: 16.0),
+      Text(
+        description,
+        textAlign: TextAlign.center,
+        style: TextStyle(fontSize: 16.0, color: themeManager.getColor(null)),
+      ),
+      Container(
+          padding: EdgeInsets.only(top: 16),
+          child: ConstrainedBox(
+            constraints: BoxConstraints(maxHeight: 100,),
+              child: ListView(
+            children: widgetList
+          ))),
+      SizedBox(height: 32.0),
+    ];
   }
 }

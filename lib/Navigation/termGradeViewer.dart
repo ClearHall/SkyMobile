@@ -26,7 +26,7 @@ class _TermViewer extends BiometricBlur<TermViewerPage> {
     _setIntTerm();
   }
 
-  _goToGPACalculator(String courseName) async {
+  _goToGPACalculator() async {
     bool isCancelled = false;
     var dialog = HuntyDialogLoading('Cancel', () {
       isCancelled = true;
@@ -111,6 +111,68 @@ class _TermViewer extends BiometricBlur<TermViewerPage> {
     }
     currentTermIndex = terms.indexOf(currentTerm);
     if (currentTermIndex < 0) currentTermIndex = 0;
+  }
+
+  _showChildrenChangeDialog() async {
+    List newList = [];
+    if (skywardAPI.children != null) {
+      for (SkywardAccount s in skywardAPI.children) {
+        newList.add(s.name);
+      }
+    }
+    if (newList.length >= 1) newList.removeAt(0);
+
+    bool isCancelled = true;
+    var dialog = HuntyDialogOfList(
+        hint: null,
+        listOfValues: newList,
+        title: 'Children',
+        description: 'Choose which child\'s grades you would like to view.',
+        buttonText: 'Enter',
+    okPressed: (){
+          isCancelled = false;
+    },);
+
+    await showDialog(context: context, builder: (bc) => dialog);
+
+    if(!isCancelled){
+      skywardAPI.switchUserIndex(dialog.indexOfValueChosen + 1);
+
+      var dialog1 = HuntyDialogLoading('Cancel', () {},
+          title: 'Loading', description: ('Getting your grades..'));
+
+      dialog1.restrictCancel = true;
+      showDialog(
+          barrierDismissible: false,
+          context: context,
+          builder: (context) => dialog1);
+
+      try {
+        var termRes = await skywardAPI.getGradeBookTerms();
+        var gradebookRes = (await skywardAPI.getGradeBookGrades(termRes));
+
+        setState(() {
+          terms = termRes;
+          gradeBoxes = gradebookRes;
+
+          Navigator.of(context, rootNavigator: true).popUntil((result) {
+            return result.settings.name == '/termviewer';
+          });
+        });
+      } catch (e) {
+        print(e);
+        Navigator.of(context).pop(dialog);
+        await showDialog(
+            context: context,
+            builder: (BuildContext) {
+              return HuntyDialog(
+                  title: 'Oh No!',
+                  description:
+                  'An error occured and we could not get your grades. Please report this to a developer! An error occured while parsing your grades.',
+                  buttonText: 'Ok');
+            });
+      }
+    }
   }
 
   @override
@@ -244,58 +306,87 @@ class _TermViewer extends BiometricBlur<TermViewerPage> {
                   fontWeight: FontWeight.w700,
                 ))),
         actions: <Widget>[
-          Theme(
-              data: Theme.of(context).copyWith(
-                cardColor: Colors.black,
-              ),
-              child: PopupMenuButton(
-                icon: Icon(
-                  Icons.more_vert,
-                  color: themeManager.getColor(TypeOfWidget.text),
-                ),
-                onSelected: (String selected) {
-                  switch (selected) {
-                    case 'settings':
-                      Navigator.pushNamed(context, '/settings');
-                      break;
-                    case 'gpaCalc':
-                      {
-                        _goToGPACalculator('TEST');
-                      }
-                      break;
-                    case 'devBash':
-                      showDialog(
-                          context: context,
-                          builder: (bC) {
-                            return HuntyDialogDebugCredentials(
-                                hint: 'Credentials',
-                                title: 'Debug Console',
-                                description: 'Developers Only',
-                                buttonText: 'Submit');
-                          });
-                  }
-                },
-                itemBuilder: (_) => <PopupMenuItem<String>>[
-                  PopupMenuItem<String>(
-                      child: const Text(
-                        'Settings',
-                        style: TextStyle(color: Colors.white),
-                      ),
-                      value: 'settings'),
-                  PopupMenuItem<String>(
-                      child: const Text(
-                        'GPA Calculator',
-                        style: TextStyle(color: Colors.white),
-                      ),
-                      value: 'gpaCalc'),
-//                    PopupMenuItem<String>(
-//                        child: const Text(
-//                          'Developer Command',
-//                          style: TextStyle(color: Colors.white),
-//                        ),
-//                        value: 'devBash'),
-                ],
-              ))
+          IconButton(
+            icon: Icon(
+              Icons.settings,
+              color: themeManager.getColor(TypeOfWidget.text),
+            ),
+            onPressed: () {
+              Navigator.pushNamed(context, '/settings');
+            },
+          ),
+          IconButton(
+            icon: Icon(
+              Icons.assessment,
+              color: themeManager.getColor(TypeOfWidget.text),
+            ),
+            onPressed: () {
+              _goToGPACalculator();
+            },
+          ),
+          skywardAPI.children != null
+              ? IconButton(
+                  icon: Icon(
+                    Icons.person,
+                    color: themeManager.getColor(TypeOfWidget.text),
+                  ),
+                  onPressed: () {
+                    _showChildrenChangeDialog();
+                  },
+                )
+              : Container(),
+//          Theme(
+//              data: Theme.of(context).copyWith(
+//                cardColor: Colors.black,
+//              ),
+//              child: PopupMenuButton(
+//                icon: Icon(
+//                  Icons.more_vert,
+//                  color: themeManager.getColor(TypeOfWidget.text),
+//                ),
+//                onSelected: (String selected) {
+//                  switch (selected) {
+//                    case 'settings':
+//                      Navigator.pushNamed(context, '/settings');
+//                      break;
+//                    case 'gpaCalc':
+//                      {
+//                        _goToGPACalculator('TEST');
+//                      }
+//                      break;
+//                    case 'devBash':
+//                      showDialog(
+//                          context: context,
+//                          builder: (bC) {
+//                            return HuntyDialogDebugCredentials(
+//                                hint: 'Credentials',
+//                                title: 'Debug Console',
+//                                description: 'Developers Only',
+//                                buttonText: 'Submit');
+//                          });
+//                  }
+//                },
+//                itemBuilder: (_) => <PopupMenuItem<String>>[
+//                  PopupMenuItem<String>(
+//                      child: const Text(
+//                        'Settings',
+//                        style: TextStyle(color: Colors.white),
+//                      ),
+//                      value: 'settings'),
+//                  PopupMenuItem<String>(
+//                      child: const Text(
+//                        'GPA Calculator',
+//                        style: TextStyle(color: Colors.white),
+//                      ),
+//                      value: 'gpaCalc'),
+////                    PopupMenuItem<String>(
+////                        child: const Text(
+////                          'Developer Command',
+////                          style: TextStyle(color: Colors.white),
+////                        ),
+////                        value: 'devBash'),
+//                ],
+//              ))
         ],
       ),
       backgroundColor: themeManager.getColor(TypeOfWidget.background),
