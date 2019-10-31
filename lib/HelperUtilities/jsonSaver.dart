@@ -87,5 +87,8 @@ enum FilesAvailable {
   previousDistrict,
 
   /// Settings like biometrics and theme
-  settings
+  settings,
+
+  /// Previously saved account if option is enabled in settings
+  previouslySavedAccount,
 }

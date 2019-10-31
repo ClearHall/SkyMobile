@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 
 SkywardAPICore skywardAPI;
 String currentSessionIdentifier;
+String currentChild;
 List<Term> terms;
 List<GridBox> gradeBoxes;
 List<AssignmentsGridBox> assignmentsGridBoxes;
@@ -44,7 +45,7 @@ Map<String, dynamic> settings = Map.fromIterables([
     'description',
     'option'
   ], [
-    'SkyMobile will block your grades from bieng seen in the app switcher. Though, if you want an extra layer of security, you can force biometric authentication when you come back into the app.',
+    'SkyMobile will block your grades from being seen in the app switcher. Though, if you want an extra layer of security, you can force biometric authentication when you come back into the app.',
     true
   ]),
   Map.fromIterables([

@@ -23,6 +23,9 @@ void main() async {
   JSONSaver jsonSaver = JSONSaver(FilesAvailable.settings);
   var retrieved = await jsonSaver.readListData();
   if (retrieved is Map) {
+    for(int i = 0; i < retrieved.length; i++){
+      retrieved[retrieved.keys.toList()[i]]['description'] = settings[retrieved.keys.toList()[i]]['description'];
+    }
     settings.addAll(retrieved);
     (settings['Theme']['option'] as Map).forEach((k, v) {
       if (v == true)
@@ -79,11 +82,23 @@ class MyHomePageState extends State<MyHomePage> {
   static SkywardDistrict district = SkywardDistrict('FORT BEND ISD',
       'https://skyward-fbprod.iscorp.com/scripts/wsisa.dll/WService=wsedufortbendtx/seplog01.w');
   final _auth = LocalAuthentication();
+  JSONSaver prevSavedAccount = JSONSaver(FilesAvailable.previouslySavedAccount);
 
   void initState() {
     super.initState();
     _getPreviouslySavedDistrict();
     _getAccounts();
+    _determineWhetherToLoginToPreviouslySavedAccount();
+  }
+
+  void _determineWhetherToLoginToPreviouslySavedAccount() async{
+    if(settings['Automatically Re-Load Last Saved Session']['option']){
+      var retrieved = await prevSavedAccount.readListData();
+      if(retrieved.runtimeType != 0){
+        district = SkywardDistrict('No Name', retrieved['link']);
+        _getGradeTerms(retrieved['user'], retrieved['pass'], context);
+      }
+    }
   }
 
   void _getPreviouslySavedDistrict() async {
@@ -250,6 +265,7 @@ class MyHomePageState extends State<MyHomePage> {
       Navigator.of(context, rootNavigator: true).popUntil((result) {
         return result.settings.name == '/';
       });
+      prevSavedAccount.saveListData({'user': acc.user, 'pass': acc.pass, 'link': district.districtLink});
       Navigator.pushNamed(context, '/termviewer');
     }
   }

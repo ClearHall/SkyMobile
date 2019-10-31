@@ -177,6 +177,7 @@ class _TermViewer extends BiometricBlur<TermViewerPage> {
 
   @override
   Widget generateBody(BuildContext context) {
+    currentChild = skywardAPI.retrieveAccountIfParent()?.dataID;
     final FixedExtentScrollController scrollController =
         FixedExtentScrollController(initialItem: currentTermIndex);
 
