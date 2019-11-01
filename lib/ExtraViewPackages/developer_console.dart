@@ -38,7 +38,7 @@ class _DeveloperConsoleState extends BiometricBlur<DeveloperConsole>{
       if (index != 'all') {
         i = int.tryParse(index);
       }
-      for (int j = 0; j < listObj.length; j++) {
+      for (int j = listObj.length - 1; j >= 0; j--) {
         if (i != null) {
           if (j == i) listObj.removeAt(i);
         } else {
@@ -61,7 +61,7 @@ class _DeveloperConsoleState extends BiometricBlur<DeveloperConsole>{
   }
 
   _runCommand(String command) {
-    List<String> split = command.trim().split(' ');
+    List<String> split = command.toLowerCase().trim().split(' ');
 
     currentText += '\n>$command';
     currentText += '\n';
@@ -75,7 +75,7 @@ class _DeveloperConsoleState extends BiometricBlur<DeveloperConsole>{
       }
 
       if (command == 'help') {
-        currentText += '';
+        currentText += 'Commands Available\nhelp: Displays this message.\nset and remove: Sets and Remove values from the gradebook. Syntax of this command is \'<set/remove> <gradebook/terms> <all/index> <(not needed if remove) value to change to>\'\ndisplay: Displays what is shown in the second parameter.';
       } else if (command == 'display') {
           if(split.length < 3)
             currentText += modifier.toString();
