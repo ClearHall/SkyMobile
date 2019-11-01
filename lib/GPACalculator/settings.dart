@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:skymobile/ExtraViewPackages/biometric_blur_view.dart';
-import 'package:skymobile/HelperUtilities/globalVariables.dart';
-import 'package:skymobile/Settings/settingsWidgetGenerator.dart';
-import 'package:skymobile/Settings/themeColorManager.dart';
-import '../HelperUtilities/gpa_calculator_supportUtils.dart';
+import 'package:skymobile/HelperUtilities/global.dart';
+import 'package:skymobile/Settings/settings_widget_generator.dart';
+import 'package:skymobile/Settings/theme_color_manager.dart';
+import '../HelperUtilities/gpa_calculator_support_utils.dart';
 
 class GPACalculatorSettings extends StatefulWidget {
   GPACalculatorSettings({Key key}) : super(key: key);

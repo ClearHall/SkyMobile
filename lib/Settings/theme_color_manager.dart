@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:skymobile/HelperUtilities/globalVariables.dart';
+import 'package:skymobile/HelperUtilities/global.dart';
 
 class ThemeManager {
   static List<ColorTheme> defaultThemes = [

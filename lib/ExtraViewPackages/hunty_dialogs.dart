@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:skymobile/Settings/themeColorManager.dart';
+import 'package:skymobile/Settings/theme_color_manager.dart';
 import 'package:skyscrapeapi/district_searcher.dart';
 import 'package:skyscrapeapi/data_types.dart';
 import '../main.dart';
-import '../HelperUtilities/globalVariables.dart';
+import '../HelperUtilities/global.dart';
 
 class HuntyDialog extends StatelessWidget {
   final String title, description, buttonText;
@@ -421,7 +421,7 @@ class HuntyDialogForMoreText extends HuntyDialog {
           onPressed: () {
             Navigator.of(context).pop();
           },
-          child: Text(buttonText),
+          child: Text(buttonText, style: TextStyle(color: themeManager.getColor(TypeOfWidget.button))),
         ),
       ),
     ];

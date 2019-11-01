@@ -1,6 +1,6 @@
-import 'package:skymobile/HelperUtilities/globalVariables.dart';
+import 'package:skymobile/HelperUtilities/global.dart';
 import 'package:skyscrapeapi/data_types.dart';
-import 'package:skymobile/HelperUtilities//jsonSaver.dart';
+import 'package:skymobile/HelperUtilities//json_saver.dart';
 import '../GPACalculator/types.dart';
 
 Map<String, dynamic> extraGPASettings = Map.fromIterables([

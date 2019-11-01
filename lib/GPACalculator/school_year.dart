@@ -3,12 +3,12 @@ import 'dart:collection';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:skymobile/ExtraViewPackages/biometric_blur_view.dart';
-import 'package:skymobile/ExtraViewPackages/customDialogOptions.dart';
-import 'package:skymobile/Settings/themeColorManager.dart';
+import 'package:skymobile/ExtraViewPackages/hunty_dialogs.dart';
+import 'package:skymobile/Settings/theme_color_manager.dart';
 import 'package:skyscrapeapi/data_types.dart';
-import 'package:skymobile/HelperUtilities/globalVariables.dart';
-import 'package:skymobile/ExtraViewPackages/alwaysVisibleScrollbar.dart';
-import '../HelperUtilities/gpa_calculator_supportUtils.dart';
+import 'package:skymobile/HelperUtilities/global.dart';
+import 'package:skymobile/ExtraViewPackages/constant_visibile_scrollbar.dart';
+import '../HelperUtilities/gpa_calculator_support_utils.dart';
 
 class GPACalculatorSchoolYear extends StatefulWidget {
   MaterialColor secondColor;

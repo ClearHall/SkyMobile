@@ -1,28 +1,30 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:local_auth/local_auth.dart';
-import 'package:skymobile/Settings/themeColorManager.dart';
+import 'package:skymobile/Settings/theme_color_manager.dart';
 import 'package:skyscrapeapi/skyscrape.dart';
-import 'package:skymobile/Navigation//termGradeViewer.dart';
-import 'ExtraViewPackages/customDialogOptions.dart';
-import 'HelperUtilities/globalVariables.dart';
-import 'package:skymobile/Navigation/assignmentInfoViewer.dart';
-import 'package:skymobile/Navigation/assignmentsViewer.dart';
+import 'package:skymobile/Navigation//gradebook.dart';
+import 'ExtraViewPackages/hunty_dialogs.dart';
+import 'HelperUtilities/global.dart';
+import 'package:skymobile/Navigation/assignment_info.dart';
+import 'package:skymobile/Navigation/assignments.dart';
 import 'package:skyscrapeapi/district_searcher.dart';
 import 'package:skyscrapeapi/data_types.dart';
-import 'package:skymobile/HelperUtilities/accountTypes.dart';
-import 'package:skymobile/HelperUtilities/jsonSaver.dart';
-import 'package:skymobile/GPACalculator/schoolYear.dart';
+import 'package:skymobile/HelperUtilities/account_types.dart';
+import 'package:skymobile/HelperUtilities/json_saver.dart';
+import 'package:skymobile/GPACalculator/school_year.dart';
 import 'package:skymobile/GPACalculator/classes.dart';
 import 'package:skymobile/GPACalculator/settings.dart';
 import 'package:skymobile/Settings/settings_viewer.dart';
+import 'package:skymobile/ExtraViewPackages/developer_console.dart';
 
 void main() async {
   JSONSaver jsonSaver = JSONSaver(FilesAvailable.settings);
   var retrieved = await jsonSaver.readListData();
   if (retrieved is Map) {
-    for(int i = 0; i < retrieved.length; i++){
-      retrieved[retrieved.keys.toList()[i]]['description'] = settings[retrieved.keys.toList()[i]]['description'];
+    for (int i = 0; i < retrieved.length; i++) {
+      retrieved[retrieved.keys.toList()[i]]['description'] =
+          settings[retrieved.keys.toList()[i]]['description'];
     }
     settings.addAll(retrieved);
     (settings['Theme']['option'] as Map).forEach((k, v) {
@@ -61,7 +63,8 @@ class MyApp extends StatelessWidget {
         "/gpacalculatorclasses": (context) =>
             GPACalculatorClasses(ModalRoute.of(context).settings.arguments),
         "/gpacalculatorsettings": (context) => GPACalculatorSettings(),
-        "/settings": (context) => SettingsViewer()
+        "/settings": (context) => SettingsViewer(),
+        '/devconsole': (context) => DeveloperConsole()
       },
     );
   }
@@ -81,18 +84,35 @@ class MyHomePageState extends State<MyHomePage> {
       'https://skyward-fbprod.iscorp.com/scripts/wsisa.dll/WService=wsedufortbendtx/seplog01.w');
   final _auth = LocalAuthentication();
   JSONSaver prevSavedAccount = JSONSaver(FilesAvailable.previouslySavedAccount);
+  static int timesPressedSwitch = 0;
 
   void initState() {
     super.initState();
     _getPreviouslySavedDistrict();
     _getAccounts();
     _determineWhetherToLoginToPreviouslySavedAccount();
+    _shouldShowWelcomeDialog();
   }
 
-  void _determineWhetherToLoginToPreviouslySavedAccount() async{
-    if(settings['Automatically Re-Load Last Saved Session']['option']){
+  _shouldShowWelcomeDialog() async {
+    JSONSaver jsonSaver = JSONSaver(FilesAvailable.firstTime);
+    var ret = await jsonSaver.readListData();
+    if (ret == null || ret == 0) {
+      showDialog(
+          context: context,
+          builder: (c) => HuntyDialogForMoreText(
+              title: 'Welcome!',
+              description:
+                  'Welcome to SkyMobile! To start off, login like you would login on regular Skyward, but make sure you have selected the correct district and inputted the corrct credentials. The search icon on the top is to search and select districts. If you have anymore questions you can press the information icon.',
+              buttonText: 'Ok!'));
+      jsonSaver.saveListData([false]);
+    }
+  }
+
+  void _determineWhetherToLoginToPreviouslySavedAccount() async {
+    if (settings['Automatically Re-Load Last Saved Session']['option']) {
       var retrieved = await prevSavedAccount.readListData();
-      if(retrieved.runtimeType != 0){
+      if (retrieved.runtimeType != 0) {
         district = SkywardDistrict('No Name', retrieved['link']);
         _getGradeTerms(retrieved['user'], retrieved['pass'], context);
       }
@@ -132,7 +152,7 @@ class MyHomePageState extends State<MyHomePage> {
               return HuntyDialog(
                   title: 'Uh-Oh',
                   description:
-                  'Invalid Credentials or Internet Failure. Please check your username and password and your internet connection.',
+                      'Invalid Credentials or Internet Failure. Please check your username and password and your internet connection.',
                   buttonText: 'Ok');
             });
       } else {
@@ -144,7 +164,7 @@ class MyHomePageState extends State<MyHomePage> {
                 return HuntyDialogForConfirmation(
                   title: 'New Account',
                   description:
-                  'New account detected, would you like to save this account?.',
+                      'New account detected, would you like to save this account?.',
                   runIfUserConfirms: () {
                     setState(() {
                       accounts.add(Account(user, user, pass, district));
@@ -161,17 +181,17 @@ class MyHomePageState extends State<MyHomePage> {
       }
     } catch (e) {
       Navigator.of(context).pop(dialog);
-      if(e.toString().contains('Invalid login or password')){
+      if (e.toString().contains('Invalid login or password')) {
         showDialog(
             context: context,
             builder: (BuildContext) {
               return HuntyDialog(
                   title: 'Uh-Oh',
                   description:
-                  'Invalid Credentials or Internet Failure. Please check your username and password and your internet connection.',
+                      'Invalid Credentials or Internet Failure. Please check your username and password and your internet connection.',
                   buttonText: 'Ok');
             });
-      }else
+      } else
         _underMaintence(context);
     }
   }
@@ -213,14 +233,14 @@ class MyHomePageState extends State<MyHomePage> {
       }
     } catch (e) {
       Navigator.of(context).pop(dialog);
-      if(e.toString().contains('Invalid login or password')){
+      if (e.toString().contains('Invalid login or password')) {
         showDialog(
             context: context,
             builder: (BuildContext) {
               return HuntyDialogForConfirmation(
                 title: 'Uh-Oh',
                 description:
-                'Invalid Credentials or Internet Failure. Would you like to remove this account?.',
+                    'Invalid Credentials or Internet Failure. Would you like to remove this account?.',
                 runIfUserConfirms: () {
                   setState(() {
                     accounts.remove(acc);
@@ -231,7 +251,7 @@ class MyHomePageState extends State<MyHomePage> {
                 btnTextForConfirmation: 'Ok',
               );
             });
-      }else
+      } else
         _underMaintence(context);
     }
   }
@@ -263,7 +283,8 @@ class MyHomePageState extends State<MyHomePage> {
       Navigator.of(context, rootNavigator: true).popUntil((result) {
         return result.settings.name == '/';
       });
-      prevSavedAccount.saveListData({'user': acc.user, 'pass': acc.pass, 'link': district.districtLink});
+      prevSavedAccount.saveListData(
+          {'user': acc.user, 'pass': acc.pass, 'link': district.districtLink});
       Navigator.pushNamed(context, '/termviewer');
     }
   }
@@ -288,7 +309,8 @@ class MyHomePageState extends State<MyHomePage> {
 
   TextEditingController _controllerUsername = TextEditingController();
   TextEditingController _controllerPassword = TextEditingController();
-  bool isInAccountChooserStatus = settings['Default to Account Chooser']['option'];
+  bool isInAccountChooserStatus =
+      settings['Default to Account Chooser']['option'];
   List<Account> accounts = [];
 
   //NOTE: USING THIS IS VERY BUGGY!!!!!
@@ -563,18 +585,52 @@ class MyHomePageState extends State<MyHomePage> {
       ]);
     } else {
       listView = ListView(shrinkWrap: true, children: <Widget>[
-        Row(children: <Widget>[
-        Container(
-          child: Text('Login',
-              style: TextStyle(
+        ListTile(
+            title: Container(
+              child: Text('Login',
+                  style: TextStyle(
+                      color: themeManager.getColor(null),
+                      fontSize: 50,
+                      fontWeight: FontWeight.w700,
+                      letterSpacing: 2)),
+              alignment: Alignment.centerLeft,
+              padding: EdgeInsets.only(left: 20, bottom: 10),
+            ),
+            trailing: Row(mainAxisSize: MainAxisSize.min, children: <Widget>[
+              IconButton(
+                icon: Icon(
+                  Icons.info,
                   color: themeManager.getColor(null),
-                  fontSize: 50,
-                  fontWeight: FontWeight.w700,
-                  letterSpacing: 2)),
-          alignment: Alignment.centerLeft,
-          padding: EdgeInsets.only(left: 20, bottom: 10),
-        ),
-        IconButton(icon: Icon(Icons.save,), )]),
+                ),
+                onPressed: () {
+                  showDialog(
+                      context: context,
+                      builder: (c) => HuntyDialogForMoreText(
+                          title: 'Information',
+                          description:
+                              'SkyMobile login page has a simple and intuitive design. The search button on the top indicates the district searcher. Use it to search and select different districts. The settings icon brings you to settings and the info dialog shows this dialog. Login like you would normally and press Choose Accounts to access your saved accounts.',
+                          buttonText: 'Ok!'));
+                },
+              ),
+              IconButton(
+                icon: Icon(
+                  Icons.search,
+                  color: themeManager.getColor(null),
+                ),
+                onPressed: () {
+                  _showDialog();
+                },
+              ),
+              IconButton(
+                icon: Icon(
+                  Icons.settings,
+                  color: themeManager.getColor(null),
+                ),
+                onPressed: () {
+                  Navigator.of(context).pushNamed('/settings');
+                },
+              ),
+            ])),
         Container(
             decoration: new BoxDecoration(boxShadow: [
               new BoxShadow(
@@ -696,34 +752,34 @@ class MyHomePageState extends State<MyHomePage> {
                               ),
                             )),
                       )),
-                  new Container(
-                      padding: EdgeInsets.only(
-                          top: 0, left: 30, right: 30, bottom: 20),
-                      child: Material(
-                        color: Colors.transparent,
-                        child: InkWell(
-                            splashColor:
-                                themeManager.getColor(TypeOfWidget.button),
-                            borderRadius: BorderRadius.circular(16),
-                            onTap: () => {_showDialog()},
-                            child: Container(
-                              alignment: Alignment.center,
-                              padding: EdgeInsets.all(10),
-                              decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(16.0),
-                                  border: Border.all(
-                                      color: themeManager
-                                          .getColor(TypeOfWidget.button),
-                                      width: 2)),
-                              child: new Text(
-                                'Search District',
-                                style: new TextStyle(
-                                    fontSize: 20.0,
-                                    color: themeManager
-                                        .getColor(TypeOfWidget.button)),
-                              ),
-                            )),
-                      )),
+//                  new Container(
+//                      padding: EdgeInsets.only(
+//                          top: 0, left: 30, right: 30, bottom: 20),
+//                      child: Material(
+//                        color: Colors.transparent,
+//                        child: InkWell(
+//                            splashColor:
+//                                themeManager.getColor(TypeOfWidget.button),
+//                            borderRadius: BorderRadius.circular(16),
+//                            onTap: () => {_showDialog()},
+//                            child: Container(
+//                              alignment: Alignment.center,
+//                              padding: EdgeInsets.all(10),
+//                              decoration: BoxDecoration(
+//                                  borderRadius: BorderRadius.circular(16.0),
+//                                  border: Border.all(
+//                                      color: themeManager
+//                                          .getColor(TypeOfWidget.button),
+//                                      width: 2)),
+//                              child: new Text(
+//                                'Search District',
+//                                style: new TextStyle(
+//                                    fontSize: 20.0,
+//                                    color: themeManager
+//                                        .getColor(TypeOfWidget.button)),
+//                              ),
+//                            )),
+//                      )),
                   new Container(
                       padding: EdgeInsets.only(
                           top: 0, left: 30, right: 30, bottom: 25),
@@ -734,10 +790,11 @@ class MyHomePageState extends State<MyHomePage> {
                                 themeManager.getColor(TypeOfWidget.text),
                             borderRadius: BorderRadius.circular(16),
                             onTap: () => {
-                              setState(() {
-                                isInAccountChooserStatus =
-                                !isInAccountChooserStatus;
-                              })
+                                  setState(() {
+                                    isInAccountChooserStatus =
+                                        !isInAccountChooserStatus;
+                                    timesPressedSwitch += 1;
+                                  })
                                 },
                             child: Container(
                               alignment: Alignment.center,

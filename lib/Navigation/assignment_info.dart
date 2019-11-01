@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:local_auth/local_auth.dart';
 import 'package:skymobile/ExtraViewPackages/biometric_blur_view.dart';
-import 'package:skymobile/ExtraViewPackages/customDialogOptions.dart';
-import 'package:skymobile/Settings/themeColorManager.dart';
+import 'package:skymobile/Settings/theme_color_manager.dart';
 import 'package:skyscrapeapi/data_types.dart';
-import 'package:skymobile/HelperUtilities/globalVariables.dart';
+import 'package:skymobile/HelperUtilities/global.dart';
 
 class AssignmentInfoViewer extends StatefulWidget {
   MaterialColor secondColor;

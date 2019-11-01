@@ -1,10 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:skymobile/ExtraViewPackages/biometric_blur_view.dart';
-import 'package:skymobile/Settings/themeColorManager.dart';
+import 'package:skymobile/Settings/theme_color_manager.dart';
 import 'package:skyscrapeapi/data_types.dart';
-import 'package:skymobile/HelperUtilities/globalVariables.dart';
-import '../HelperUtilities/gpa_calculator_supportUtils.dart';
+import 'package:skymobile/HelperUtilities/global.dart';
+import '../HelperUtilities/gpa_calculator_support_utils.dart';
 
 class GPACalculatorClasses extends StatefulWidget {
   MaterialColor secondColor;

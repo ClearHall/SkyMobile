@@ -7,7 +7,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:skymobile/Settings/themeColorManager.dart';
+import 'package:skymobile/Settings/theme_color_manager.dart';
 
 import 'package:skymobile/main.dart';
 

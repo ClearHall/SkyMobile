@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:local_auth/local_auth.dart';
-import 'package:skymobile/HelperUtilities/globalVariables.dart';
-import 'package:skymobile/Settings/themeColorManager.dart';
+import 'package:skymobile/HelperUtilities/global.dart';
+import 'package:skymobile/Settings/theme_color_manager.dart';
 
 class SettingsWidgetGenerator {
   static runChangeTo(bool changedTo, bool biometrics, Map attributes,

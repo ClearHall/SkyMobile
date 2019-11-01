@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:skymobile/Settings/themeColorManager.dart';
-import '../HelperUtilities/globalVariables.dart';
-import 'customDialogOptions.dart';
+import 'package:skymobile/Settings/theme_color_manager.dart';
+import '../HelperUtilities/global.dart';
+import 'hunty_dialogs.dart';
 import 'package:local_auth/local_auth.dart';
 
 class BiometricBlur<T extends StatefulWidget> extends State<T>
