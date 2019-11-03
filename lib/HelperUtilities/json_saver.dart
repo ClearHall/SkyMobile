@@ -93,4 +93,6 @@ enum FilesAvailable {
   previouslySavedAccount,
 
   firstTime,
+
+  consoleOnlyVariables,
 }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:local_auth/local_auth.dart';
+import 'package:skymobile/HelperUtilities/manage_sky_vars.dart';
 import 'package:skymobile/Navigation/messages.dart';
 import 'package:skymobile/Settings/theme_color_manager.dart';
 import 'package:skyscrapeapi/skyscrape.dart';
@@ -21,6 +22,7 @@ import 'package:skymobile/ExtraViewPackages/developer_console.dart';
 
 void main() async {
   JSONSaver jsonSaver = JSONSaver(FilesAvailable.settings);
+  await SkyVars.getVars();
   var retrieved = await jsonSaver.readListData();
   if (retrieved is Map) {
     for (int i = 0; i < retrieved.length; i++) {

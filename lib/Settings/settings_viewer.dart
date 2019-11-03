@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:skymobile/ExtraViewPackages/biometric_blur_view.dart';
 import 'package:skymobile/ExtraViewPackages/hunty_dialogs.dart';
 import 'package:skymobile/HelperUtilities/json_saver.dart';
+import 'package:skymobile/HelperUtilities/manage_sky_vars.dart';
 import 'package:skymobile/Settings/settings_widget_generator.dart';
 import 'package:skymobile/main.dart';
 import 'theme_color_manager.dart';
@@ -82,15 +83,18 @@ class _SettingsViewerState extends BiometricBlur<SettingsViewer> {
                     fontWeight: FontWeight.w700)),
           ),
           actions: <Widget>[
-            MyHomePageState.timesPressedSwitch >= 15 ? IconButton(
-              icon: Icon(
-                Icons.tv,
-                color: themeManager.getColor(TypeOfWidget.text),
-              ),
-              onPressed: () {
-                Navigator.of(context).pushNamed('/devconsole');
-              },
-            ) : Container()
+            MyHomePageState.timesPressedSwitch >= 15 ||
+                    SkyVars.getVar('permdev') == true
+                ? IconButton(
+                    icon: Icon(
+                      Icons.tv,
+                      color: themeManager.getColor(TypeOfWidget.text),
+                    ),
+                    onPressed: () {
+                      Navigator.of(context).pushNamed('/devconsole');
+                    },
+                  )
+                : Container()
           ],
         ),
         backgroundColor: themeManager.getColor(TypeOfWidget.background),

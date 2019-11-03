@@ -6,8 +6,6 @@ import 'package:skymobile/Settings/theme_color_manager.dart';
 import 'package:skyscrapeapi/data_types.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-// TODO: FIX ALVIN ISD DUPLICATE MESSAGES BUG
-
 class MessageViewer extends StatefulWidget {
   MessageViewer({Key key, this.title}) : super(key: key);
   final String title;
@@ -91,7 +89,7 @@ class _MessageViewerState extends BiometricBlur<MessageViewer> {
                       padding: EdgeInsets.only(top: 10, left: 10, right: 10),
                     )
                   : Container(),
-              message.title != null
+              message.title?.title != null
                   ? Container(
                       child: Align(
                           alignment: Alignment.centerLeft,

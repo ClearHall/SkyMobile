@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:skymobile/ExtraViewPackages/biometric_blur_view.dart';
 import 'package:skymobile/HelperUtilities/global.dart';
+import 'package:skymobile/HelperUtilities/manage_sky_vars.dart';
 import 'package:skymobile/Settings/theme_color_manager.dart';
 import 'package:skyscrapeapi/data_types.dart';
 
@@ -32,6 +33,7 @@ class _DeveloperConsoleState extends BiometricBlur<DeveloperConsole>{
           _setObjInList(listObj, j, changeTo);
         }
       }
+      return 'Command completed successfully.';
     },
     'remove': (List listObj, String index, Object placeholder) {
       int i;
@@ -45,7 +47,16 @@ class _DeveloperConsoleState extends BiometricBlur<DeveloperConsole>{
           listObj.removeAt(j);
         }
       }
+      return 'Command completed successfully.';
     },
+    'modvar': (var obj, String valMod, var changeTo){
+      if(obj != 'envar') throw SkywardError('Non envar request.');
+      if(SkyVars.modifyVar(valMod, changeTo)){
+        return 'Successfully modified value';
+      }else{
+        return 'Failed to modify value';
+      }
+    }
   };
 
   static _setObjInList(List listObj, int ind, String changeTo) {
@@ -68,10 +79,14 @@ class _DeveloperConsoleState extends BiometricBlur<DeveloperConsole>{
     // BEGIN THE TRANSLATION PROCESS!!!!!
     if (split.length > 0) {
       String command = split[0];
-      List modifier;
+      var modifier;
       if(split.length > 1){
         if(split[1] == 'gradebook') modifier = gradeBoxes;
         else if(split[1] == 'terms') modifier = terms;
+        else if(split[1] == 'envar'){
+          SkyVars.getVars();
+          modifier = 'envar';
+        }
       }
 
       if (command == 'help') {
@@ -83,8 +98,7 @@ class _DeveloperConsoleState extends BiometricBlur<DeveloperConsole>{
             currentText += modifier[int.parse(split[2])].toString();
       }else if (variableModificationCommands.keys.contains(command)) {
         String change = split.length > 3 ? split[3] : null;
-        variableModificationCommands[command](modifier, split[2], change);
-        currentText += 'Command completed successfully. Edited/Removed ${split[2]} to $change.';
+        currentText += variableModificationCommands[command](modifier, split[2], change);
       } else {
         currentText +=
             'Not a command.\nUse \'help\' to display available commands.';

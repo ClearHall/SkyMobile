@@ -2,6 +2,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:skymobile/ExtraViewPackages/biometric_blur_view.dart';
+import 'package:skymobile/HelperUtilities/manage_sky_vars.dart';
 import 'package:skymobile/Settings/theme_color_manager.dart';
 import 'package:skyscrapeapi/data_types.dart';
 import 'package:skymobile/HelperUtilities/global.dart';
@@ -362,6 +363,7 @@ class _TermViewer extends BiometricBlur<TermViewerPage> {
               },
             )
           : Container(),
+      SkyVars.getVar('version') >= 3 ?
       ListTile(
         leading: Icon(Icons.message,
             color: themeManager.getColor(TypeOfWidget.text)),
@@ -377,7 +379,7 @@ class _TermViewer extends BiometricBlur<TermViewerPage> {
             Navigator.pushNamed(context, '/messages');
           }
         },
-      ),
+      ) : Container(),
       ListTile(
         leading: Icon(
           Icons.arrow_back,
