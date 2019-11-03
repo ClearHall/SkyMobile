@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:local_auth/local_auth.dart';
+import 'package:skymobile/Navigation/messages.dart';
 import 'package:skymobile/Settings/theme_color_manager.dart';
 import 'package:skyscrapeapi/skyscrape.dart';
 import 'package:skymobile/Navigation//gradebook.dart';
@@ -64,7 +65,8 @@ class MyApp extends StatelessWidget {
             GPACalculatorClasses(ModalRoute.of(context).settings.arguments),
         "/gpacalculatorsettings": (context) => GPACalculatorSettings(),
         "/settings": (context) => SettingsViewer(),
-        '/devconsole': (context) => DeveloperConsole()
+        '/devconsole': (context) => DeveloperConsole(),
+        '/messages' : (context) => MessageViewer()
       },
     );
   }
@@ -590,7 +592,7 @@ class MyHomePageState extends State<MyHomePage> {
               child: Text('Login',
                   style: TextStyle(
                       color: themeManager.getColor(null),
-                      fontSize: 50,
+                      fontSize: 40,
                       fontWeight: FontWeight.w700,
                       letterSpacing: 2)),
               alignment: Alignment.centerLeft,

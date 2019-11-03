@@ -1,8 +1,6 @@
-import 'dart:math';
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:local_auth/local_auth.dart';
 import 'package:skymobile/ExtraViewPackages/biometric_blur_view.dart';
 import 'package:skymobile/Settings/theme_color_manager.dart';
 import 'package:skyscrapeapi/data_types.dart';
@@ -24,6 +22,12 @@ class _TermViewer extends BiometricBlur<TermViewerPage> {
   void initState() {
     super.initState();
     _setIntTerm();
+    _retrieveMessagesInTheBackground();
+  }
+
+  _retrieveMessagesInTheBackground() async {
+    messages = await skywardAPI.getMessages();
+    for (Message m in messages) print(m);
   }
 
   _goToGPACalculator() async {
@@ -124,56 +128,63 @@ class _TermViewer extends BiometricBlur<TermViewerPage> {
 
     bool isCancelled = true;
     var dialog = HuntyDialogOfList(
-        hint: null,
-        listOfValues: newList,
-        title: 'Children',
-        description: 'Choose which child\'s grades you would like to view.',
-        buttonText: 'Enter',
-    okPressed: (){
-          isCancelled = false;
-    },);
+      hint: null,
+      listOfValues: newList,
+      title: 'Children',
+      description: 'Choose which child\'s grades you would like to view.',
+      buttonText: 'Enter',
+      okPressed: () {
+        isCancelled = false;
+      },
+    );
 
     await showDialog(context: context, builder: (bc) => dialog);
 
-    if(!isCancelled){
-      skywardAPI.switchUserIndex(dialog.indexOfValueChosen + 1);
-
-      var dialog1 = HuntyDialogLoading('Cancel', () {},
-          title: 'Loading', description: ('Getting your grades..'));
-
-      dialog1.restrictCancel = true;
-      showDialog(
-          barrierDismissible: false,
-          context: context,
-          builder: (context) => dialog1);
-
-      try {
-        var termRes = await skywardAPI.getGradeBookTerms();
-        var gradebookRes = (await skywardAPI.getGradeBookGrades(termRes));
-
-        setState(() {
-          terms = termRes;
-          gradeBoxes = gradebookRes;
-
-          Navigator.of(context, rootNavigator: true).popUntil((result) {
-            return result.settings.name == '/termviewer';
-          });
-        });
-      } catch (e) {
-        print(e);
-        Navigator.of(context).pop(dialog);
-        await showDialog(
-            context: context,
-            builder: (BuildContext) {
-              return HuntyDialog(
-                  title: 'Oh No!',
-                  description:
-                  'An error occured and we could not get your grades. Please report this to a developer! An error occured while parsing your grades.',
-                  buttonText: 'Ok');
-            });
-      }
+    if (!isCancelled) {
+      _submitAndChangeChild(dialog.indexOfValueChosen + 1);
     }
   }
+
+  _submitAndChangeChild(int ind) async {
+    skywardAPI.switchUserIndex(ind);
+
+    var dialog1 = HuntyDialogLoading('Cancel', () {},
+        title: 'Loading', description: ('Getting your grades..'));
+
+    dialog1.restrictCancel = true;
+    showDialog(
+        barrierDismissible: false,
+        context: context,
+        builder: (context) => dialog1);
+
+    try {
+      var termRes = await skywardAPI.getGradeBookTerms();
+      var gradebookRes = (await skywardAPI.getGradeBookGrades(termRes));
+
+      setState(() {
+        terms = termRes;
+        gradeBoxes = gradebookRes;
+
+        Navigator.of(context, rootNavigator: true).popUntil((result) {
+          return result.settings.name == '/termviewer';
+        });
+      });
+    } catch (e) {
+      print(e);
+      Navigator.of(context).pop(dialog1);
+      await showDialog(
+          context: context,
+          builder: (BuildContext) {
+            return HuntyDialog(
+                title: 'Oh No!',
+                description:
+                    'An error occured and we could not get your grades. Please report this to a developer! An error occured while parsing your grades.',
+                buttonText: 'Ok');
+          });
+    }
+  }
+
+  bool expanded = false;
 
   @override
   Widget generateBody(BuildContext context) {
@@ -292,7 +303,146 @@ class _TermViewer extends BiometricBlur<TermViewerPage> {
       }
     }
 
+    List<Widget> drawerWidgets = [
+      DrawerHeader(
+        child: FittedBox(
+          fit: BoxFit.fitWidth,
+          child: Text(
+            skywardAPI.currentUser,
+            style: TextStyle(
+              color: themeManager.getColor(TypeOfWidget.text),
+            ),
+          ),
+        ),
+      ),
+      ListTile(
+        leading: Icon(
+          Icons.settings,
+          color: themeManager.getColor(TypeOfWidget.text),
+        ),
+        title: Text(
+          'Settings',
+          style: TextStyle(
+              color: themeManager.getColor(TypeOfWidget.text), fontSize: 25),
+        ),
+        onTap: () {
+          Navigator.pushNamed(context, '/settings');
+        },
+      ),
+      ListTile(
+        leading: Icon(
+          Icons.assessment,
+          color: themeManager.getColor(TypeOfWidget.text),
+        ),
+        title: Text(
+          'GPA Calculator',
+          style: TextStyle(
+              color: themeManager.getColor(TypeOfWidget.text), fontSize: 25),
+        ),
+        onTap: () {
+          _goToGPACalculator();
+        },
+      ),
+      skywardAPI.children != null
+          ? ListTile(
+              leading: Icon(
+                expanded ? Icons.arrow_drop_down : Icons.arrow_drop_up,
+                color: themeManager.getColor(TypeOfWidget.text),
+              ),
+              title: Text(
+                'Change Child',
+                style: TextStyle(
+                    color: themeManager.getColor(TypeOfWidget.text),
+                    fontSize: 25),
+              ),
+              onTap: () {
+                setState(() {
+                  expanded = !expanded;
+                });
+              },
+            )
+          : Container(),
+      ListTile(
+        leading: Icon(Icons.message,
+            color: themeManager.getColor(TypeOfWidget.text)),
+        title: Text(
+          'Messages',
+          style: TextStyle(
+              color: themeManager.getColor(TypeOfWidget.text), fontSize: 25),
+        ),
+        onTap: (){
+          if(messages == null){
+            showDialog(context: context, builder: (b) => HuntyDialog(title: 'Uh-Oh', description: ('Messages hasn\'t finished loading yet. Please wait'), buttonText: 'Ok'));
+          }else{
+            Navigator.pushNamed(context, '/messages');
+          }
+        },
+      ),
+      ListTile(
+        leading: Icon(
+          Icons.arrow_back,
+          color: themeManager.getColor(TypeOfWidget.text),
+        ),
+        title: Text(
+          'Logout',
+          style: TextStyle(
+              color: themeManager.getColor(TypeOfWidget.text), fontSize: 25),
+        ),
+        onTap: () {
+          messages = null;
+          gradeBoxes = null;
+          terms = null;
+          Navigator.popUntil(context, (pred) {
+            return pred.settings.name == '/';
+          });
+        },
+      ),
+    ];
+
+    List children = List.from(skywardAPI.children);
+    children.removeAt(0);
+    for (int i = 0; i < drawerWidgets.length; i++) {
+      if (drawerWidgets[i] is ListTile &&
+          expanded &&
+          ((drawerWidgets[i] as ListTile).title as Text).data ==
+              'Change Child') {
+        for (int j = 0; j < children.length; j++) {
+          drawerWidgets.insert(
+              i + 1,
+              ListTile(
+                leading: Row(mainAxisSize: MainAxisSize.min, children: <Widget>[
+                  SizedBox(
+                    width: 20,
+                  ),
+                  Icon(
+                    Icons.person,
+                    color: themeManager.getColor(TypeOfWidget.text),
+                  ),
+                ]),
+                title: Text(
+                  children[j].name,
+                  style: TextStyle(
+                      color: themeManager.getColor(TypeOfWidget.text),
+                      fontSize: 25),
+                ),
+                onTap: () {
+                  Navigator.pop(context);
+                  _submitAndChangeChild(j + 1);
+                },
+              ));
+        }
+        break;
+      }
+    }
+
     return Scaffold(
+      drawer: Theme(
+        data: Theme.of(context).copyWith(
+            canvasColor: themeManager.getColor(TypeOfWidget.background)),
+        child: Drawer(
+          child: ListView(children: drawerWidgets),
+        ),
+      ),
       appBar: AppBar(
         iconTheme: IconThemeData(
             color: themeManager.getColor(TypeOfWidget.text), size: 30),
@@ -300,42 +450,54 @@ class _TermViewer extends BiometricBlur<TermViewerPage> {
         title: Align(
             alignment: Alignment.center,
             child: Text('Gradebook',
-                textAlign: TextAlign.center,
                 style: TextStyle(
                   color: themeManager.getColor(TypeOfWidget.text),
                   fontSize: 30,
                   fontWeight: FontWeight.w700,
                 ))),
         actions: <Widget>[
-          IconButton(
-            icon: Icon(
-              Icons.settings,
-              color: themeManager.getColor(TypeOfWidget.text),
-            ),
-            onPressed: () {
-              Navigator.pushNamed(context, '/settings');
-            },
-          ),
-          IconButton(
-            icon: Icon(
-              Icons.assessment,
-              color: themeManager.getColor(TypeOfWidget.text),
-            ),
-            onPressed: () {
-              _goToGPACalculator();
-            },
-          ),
-          skywardAPI.children != null
-              ? IconButton(
-                  icon: Icon(
-                    Icons.person,
-                    color: themeManager.getColor(TypeOfWidget.text),
-                  ),
-                  onPressed: () {
-                    _showChildrenChangeDialog();
-                  },
-                )
-              : Container(),
+          SizedBox(
+            width: 50,
+          )
+        ],
+//          IconButton(
+//            icon: Icon(
+//              Icons.arrow_back,
+//              color: themeManager.getColor(TypeOfWidget.text),
+//            ),
+//            onPressed: () {
+//              Navigator.pop(context);
+//            },
+//          ),
+//          IconButton(
+//            icon: Icon(
+//              Icons.settings,
+//              color: themeManager.getColor(TypeOfWidget.text),
+//            ),
+//            onPressed: () {
+//              Navigator.pushNamed(context, '/settings');
+//            },
+//          ),
+//          IconButton(
+//            icon: Icon(
+//              Icons.assessment,
+//              color: themeManager.getColor(TypeOfWidget.text),
+//            ),
+//            onPressed: () {
+//              _goToGPACalculator();
+//            },
+//          ),
+//          skywardAPI.children != null
+//              ? IconButton(
+//                  icon: Icon(
+//                    Icons.person,
+//                    color: themeManager.getColor(TypeOfWidget.text),
+//                  ),
+//                  onPressed: () {
+//                    _showChildrenChangeDialog();
+//                  },
+//                )
+//              : Container(),
 //          Theme(
 //              data: Theme.of(context).copyWith(
 //                cardColor: Colors.black,
@@ -388,7 +550,7 @@ class _TermViewer extends BiometricBlur<TermViewerPage> {
 ////                        value: 'devBash'),
 //                ],
 //              ))
-        ],
+//        ],
       ),
       backgroundColor: themeManager.getColor(TypeOfWidget.background),
       body: Center(

@@ -79,6 +79,7 @@ class BiometricBlur<T extends StatefulWidget> extends State<T>
     } catch (e) {
       if (e.code == 'LockedOut') {
         showDialog(
+          barrierDismissible: false,
             context: context,
             builder: (bc) => HuntyDialog(
                 title: 'Authentication Error',
@@ -86,6 +87,7 @@ class BiometricBlur<T extends StatefulWidget> extends State<T>
                 buttonText: 'Ok'));
       } else if (e.code != 'auth_in_progress') {
         showDialog(
+          barrierDismissible: false,
             context: context,
             builder: (bc) => HuntyDialog(
                 title: 'Authentication Error',
@@ -102,9 +104,12 @@ class BiometricBlur<T extends StatefulWidget> extends State<T>
   }
 
   Widget blackScaffold() {
-    return Scaffold(
+    return WillPopScope(child:Scaffold(
       backgroundColor: themeManager.getColor(TypeOfWidget.background),
-    );
+    ), onWillPop: () => Future(() {
+      _authenticate();
+      return false;
+    }));
   }
 
   Widget generateBody(BuildContext context) {
