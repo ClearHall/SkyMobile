@@ -399,8 +399,11 @@ class _TermViewer extends BiometricBlur<TermViewerPage> {
       ),
     ];
 
-    List children = List.from(skywardAPI.children);
-    children.removeAt(0);
+    List children = [];
+    if(skywardAPI.children != null){
+      List.from(skywardAPI.children);
+      children.removeAt(0);
+    }
     for (int i = 0; i < drawerWidgets.length; i++) {
       if (drawerWidgets[i] is ListTile &&
           expanded &&

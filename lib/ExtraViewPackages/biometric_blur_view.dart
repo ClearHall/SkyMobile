@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:skymobile/Settings/theme_color_manager.dart';
 import '../HelperUtilities/global.dart';
@@ -17,35 +19,58 @@ class BiometricBlur<T extends StatefulWidget> extends State<T>
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    Navigator.of(context).popUntil((route) {
-      return route.settings.name != null;
-    });
-    if (settings['Re-Authenticate With Biometrics']['option']) if (state ==
-            AppLifecycleState.paused &&
-        ModalRoute.of(context).isCurrent) {
-      shouldBlur = true;
-      wasInPausedState = true;
-
-      ///iOS workaround
-    } else if (wasInPausedState &&
-        state == AppLifecycleState.resumed &&
-        ModalRoute.of(context).isCurrent) {
-      setState(() {
-        wasInPausedState = false;
-      });
-    } else if (!wasInPausedState &&
-        state == AppLifecycleState.resumed &&
-        ModalRoute.of(context).isCurrent) {
-      setState(() {
-        shouldBlur = false;
+    if (wasInPausedState) {
+      Navigator.of(context).popUntil((route) {
+        return route.settings.name != null;
       });
     }
+    if (settings['Re-Authenticate With Biometrics']['option']) if (state ==
+            AppLifecycleState.paused) {
+      setState(() {
+        shouldBlur = true;
+        wasInPausedState = true;
+      });
+    } else if(ModalRoute.of(context).isCurrent && shouldBlur && state == AppLifecycleState.resumed){
+      Timer(Duration(milliseconds: 500), () {
+        _ohNoDialog();
+      });
+    }
+//    } else if (!wasInPausedState &&
+//        state == AppLifecycleState.resumed &&
+//        ModalRoute.of(context).isCurrent) {
+//      setState(() {
+//        shouldBlur = false;
+//      });
+//    }
   }
 
   @override
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
     super.dispose();
+  }
+
+  _ohNoDialog() async{
+    Navigator.of(context).popUntil((route) {
+      return route.settings.name != null;
+    });
+    await showDialog(
+        context: context,
+        builder: (bc) => HuntyDialogForConfirmation(
+          title: 'Re-Authenticate',
+          description:
+          "Please re-authenticate?",
+          btnTextForConfirmation: 'Ok',
+          btnTextForCancel: 'Cancel',
+          runIfUserConfirms: () {
+            _authenticate();
+          },
+          runIfUserCancels: () {
+            Navigator.popUntil(context, (route) {
+              return route.settings.name == '/';
+            });
+          },
+        ));
   }
 
   _authenticate() async {
@@ -58,28 +83,12 @@ class BiometricBlur<T extends StatefulWidget> extends State<T>
           shouldBlur = false;
         });
       } else {
-        await showDialog(
-            context: context,
-            builder: (bc) => HuntyDialogForConfirmation(
-                  title: 'Authentication Error',
-                  description:
-                      "You have either cancelled the operation or failed authentication, would you like to re-attempt authentication?",
-                  btnTextForConfirmation: 'Ok',
-                  btnTextForCancel: 'Cancel',
-                  runIfUserConfirms: () {
-                    _authenticate();
-                  },
-                  runIfUserCancels: () {
-                    Navigator.popUntil(context, (route) {
-                      return route.settings.name == '/';
-                    });
-                  },
-                ));
+        await _ohNoDialog();
       }
     } catch (e) {
       if (e.code == 'LockedOut') {
         showDialog(
-          barrierDismissible: false,
+            barrierDismissible: false,
             context: context,
             builder: (bc) => HuntyDialog(
                 title: 'Authentication Error',
@@ -87,7 +96,7 @@ class BiometricBlur<T extends StatefulWidget> extends State<T>
                 buttonText: 'Ok'));
       } else if (e.code != 'auth_in_progress') {
         showDialog(
-          barrierDismissible: false,
+            barrierDismissible: false,
             context: context,
             builder: (bc) => HuntyDialog(
                 title: 'Authentication Error',
@@ -104,12 +113,15 @@ class BiometricBlur<T extends StatefulWidget> extends State<T>
   }
 
   Widget blackScaffold() {
-    return WillPopScope(child:Scaffold(
-      backgroundColor: themeManager.getColor(TypeOfWidget.background),
-    ), onWillPop: () => Future(() {
-      _authenticate();
-      return false;
-    }));
+    wasInPausedState = false;
+    return WillPopScope(
+        child: Scaffold(
+          backgroundColor: themeManager.getColor(TypeOfWidget.background),
+        ),
+        onWillPop: () => Future(() {
+              _authenticate();
+              return false;
+            }));
   }
 
   Widget generateBody(BuildContext context) {
@@ -119,7 +131,6 @@ class BiometricBlur<T extends StatefulWidget> extends State<T>
   @override
   Widget build(BuildContext context) {
     if (shouldBlur && ModalRoute.of(context).isCurrent) {
-      _authenticate();
       return blackScaffold();
     }
     return generateBody(context);

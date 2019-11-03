@@ -197,7 +197,7 @@ packages:
       name: skyscrapeapi
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.3.0+2"
+    version: "2.3.2+2"
   source_span:
     dependency: transitive
     description:

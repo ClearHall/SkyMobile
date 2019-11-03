@@ -6,6 +6,8 @@ import 'package:skymobile/Settings/theme_color_manager.dart';
 import 'package:skyscrapeapi/data_types.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+// TODO: FIX ALVIN ISD DUPLICATE MESSAGES BUG
+
 class MessageViewer extends StatefulWidget {
   MessageViewer({Key key, this.title}) : super(key: key);
   final String title;
@@ -34,7 +36,9 @@ class _MessageViewerState extends BiometricBlur<MessageViewer> {
     for (Message message in messages) {
       List<TextSpan> textSpans = [];
 
-      for (var arg in message.body.getArr()) {
+      for (int i = 0; i < message.body.getArr().length; i++) {
+        var arg = message.body.getArr()[i];
+        bool prevIsLink = i > message.body.getArr().length - 2 ? false : message.body.getArr()[i + 1] is Link;
         if (arg is Link) {
           if (!recognizer.containsKey(indOfRecognizer))
             recognizer[indOfRecognizer] = TapGestureRecognizer()
@@ -43,7 +47,7 @@ class _MessageViewerState extends BiometricBlur<MessageViewer> {
               };
           textSpans.add(
             TextSpan(
-                text: arg.text + '\n',
+                text: arg.text,
                 style: TextStyle(
                     color: themeManager.getColor(TypeOfWidget.button),
                     fontSize: 13),
@@ -52,7 +56,7 @@ class _MessageViewerState extends BiometricBlur<MessageViewer> {
           indOfRecognizer++;
         } else {
           textSpans.add(TextSpan(
-              text: arg + '\n',
+              text: arg.toString().trim().isEmpty ? '\n' : prevIsLink ? arg : arg + '\n',
               style: TextStyle(
                   color: themeManager.getColor(TypeOfWidget.text),
                   fontSize: 13)));
