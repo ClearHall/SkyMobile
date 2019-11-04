@@ -376,6 +376,7 @@ class MyHomePageState extends State<MyHomePage> {
                         '\nSkyMobile will disable authentication for you.',
                     buttonText: 'Ok'));
             settings['Biometric Authentication']['option'] = false;
+            saveSettingsData();
             _shouldAuthenticateAndContinue(acc, action);
           }
         }

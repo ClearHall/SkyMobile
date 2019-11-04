@@ -68,10 +68,10 @@ class _AssignmentsViewerState extends BiometricBlur<AssignmentsViewer> {
       );
     List<Widget> body = [];
     for (AssignmentsGridBox box in assignmentsGridBoxes) {
+      print(box);
       bool isBoxCatHeader = box is CategoryHeader;
-      String grade = isBoxCatHeader
-          ? (box as CategoryHeader).getDecimal()
-          : (box as Assignment).getDecimal();
+      if(isBoxCatHeader) print((box as CategoryHeader).attributes);
+      String grade = box.attributes.containsKey('Score(%)') ? box.attributes['Score(%)'] : box.getDecimal();
       bool secondContNeeded =
           (isBoxCatHeader && (box as CategoryHeader).weight != null);
 

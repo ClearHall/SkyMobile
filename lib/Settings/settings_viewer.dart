@@ -9,6 +9,16 @@ import 'package:skymobile/main.dart';
 import 'theme_color_manager.dart';
 import 'package:skymobile/HelperUtilities/global.dart';
 
+void saveSettingsData() {
+JSONSaver jsonSaver = JSONSaver(FilesAvailable.settings);
+jsonSaver.saveListData(settings);
+int i = settings['Theme']['option'].values.toList().indexOf(true);
+themeManager.currentTheme = ThemeManager.colorNameToThemes.keys.toList()[
+ThemeManager.colorNameToThemes.values
+    .toList()
+    .indexOf(settings['Theme']['option'].keys.toList()[i])];
+}
+
 class SettingsViewer extends StatefulWidget {
   SettingsViewer({Key key}) : super(key: key);
 
@@ -17,17 +27,6 @@ class SettingsViewer extends StatefulWidget {
 }
 
 class _SettingsViewerState extends BiometricBlur<SettingsViewer> {
-  void _saveData() {
-    setState(() {
-      JSONSaver jsonSaver = JSONSaver(FilesAvailable.settings);
-      jsonSaver.saveListData(settings);
-      int i = settings['Theme']['option'].values.toList().indexOf(true);
-      themeManager.currentTheme = ThemeManager.colorNameToThemes.keys.toList()[
-          ThemeManager.colorNameToThemes.values
-              .toList()
-              .indexOf(settings['Theme']['option'].keys.toList()[i])];
-    });
-  }
 
   @override
   Widget generateBody(BuildContext context) {
@@ -37,11 +36,19 @@ class _SettingsViewerState extends BiometricBlur<SettingsViewer> {
         settingsWidgets.add(
             SettingsWidgetGenerator.generateListSelectableSettings(
                 k, settings[k],
-                maxAmountSelectable: 1, run: _saveData));
+                maxAmountSelectable: 1, run: (){
+                  setState(() {
+                    saveSettingsData();
+                  });
+            }));
       else
         settingsWidgets.add(
           SettingsWidgetGenerator.generateSingleSettingsWidget(k, settings[k],
-              run: _saveData,
+              run: (){
+            setState(() {
+              saveSettingsData();
+            });
+              },
               requiresBiometricsToDisable: k == 'Biometric Authentication',
               runIfBiometricsFailed: (e) {
             if (e is PlatformException) {

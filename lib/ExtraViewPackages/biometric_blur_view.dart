@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:skymobile/Settings/settings_viewer.dart';
 import 'package:skymobile/Settings/theme_color_manager.dart';
 import '../HelperUtilities/global.dart';
 import 'hunty_dialogs.dart';
@@ -35,7 +36,9 @@ class BiometricBlur<T extends StatefulWidget> extends State<T>
         shouldBlur &&
         state == AppLifecycleState.resumed) {
       Timer(Duration(milliseconds: 500), () {
-        _ohNoDialog();
+        setState(() {
+          shouldBlur = true;
+        });
       });
     }
 //    } else if (!wasInPausedState &&
@@ -57,7 +60,8 @@ class BiometricBlur<T extends StatefulWidget> extends State<T>
     Navigator.of(context).popUntil((route) {
       return route.settings.name != null;
     });
-    await showDialog(
+    showDialog(
+        barrierDismissible: false,
         context: context,
         builder: (bc) => HuntyDialogForConfirmation(
               title: 'Re-Authenticate',
@@ -68,6 +72,7 @@ class BiometricBlur<T extends StatefulWidget> extends State<T>
                 _authenticate();
               },
               runIfUserCancels: () {
+                shouldBlur = false;
                 Navigator.popUntil(context, (route) {
                   return route.settings.name == '/';
                 });
@@ -80,7 +85,8 @@ class BiometricBlur<T extends StatefulWidget> extends State<T>
     try {
       if (await localAuthentication.authenticateWithBiometrics(
           localizedReason:
-              'Welcome back! To view your grades again, please authenticate.')) {
+              'Welcome back! To view your grades again, please authenticate.',
+          useErrorDialogs: false)) {
         setState(() {
           shouldBlur = false;
         });
@@ -110,6 +116,17 @@ class BiometricBlur<T extends StatefulWidget> extends State<T>
           settings['Re-Authenticate With Biometrics']['option'] = false;
           shouldBlur = false;
         });
+      } else {
+        await showDialog(
+            context: context,
+            builder: (bc) => HuntyDialog(
+                title: 'Authentication Error',
+                description: e.message +
+                    '\nSkyMobile will disable authentication for you.',
+                buttonText: 'Ok'));
+        settings['Biometric Authentication']['option'] = false;
+        settings['Re-Authenticate With Biometrics']['option'] = false;
+        saveSettingsData();
       }
     }
   }
@@ -119,6 +136,12 @@ class BiometricBlur<T extends StatefulWidget> extends State<T>
     return WillPopScope(
         child: Scaffold(
           backgroundColor: themeManager.getColor(TypeOfWidget.background),
+          body: Center(
+            child: Align(alignment: Alignment.center,
+            child: Column(children: <Widget>[
+              
+            ],),),
+          ),
         ),
         onWillPop: () => Future(() {
               _authenticate();
