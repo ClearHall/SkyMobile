@@ -56,13 +56,8 @@ Map<String, dynamic> settings = Map.fromIterables([
     'Reload last saved session if there is one. This will skip the login screen altogether if there is a session saved.',
     false
   ]),
-  Map.fromIterables([
-    'description',
-    'option'
-  ], [
-    'Show account retriever as default instead of login screen.',
-    false
-  ]),
+  Map.fromIterables(['description', 'option'],
+      ['Show account retriever as default instead of login screen.', false]),
 ]);
 
 List<String> termIdentifiersCountingTowardGPA = ['S1', 'S2'];

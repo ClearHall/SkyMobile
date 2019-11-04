@@ -25,13 +25,15 @@ class BiometricBlur<T extends StatefulWidget> extends State<T>
         return route.settings.name != null;
       });
     }
-    if (settings['Re-Authenticate With Biometrics']['option']) if (state ==
-            AppLifecycleState.paused) {
+    if (settings['Re-Authenticate With Biometrics']
+        ['option']) if (state == AppLifecycleState.paused) {
       setState(() {
         shouldBlur = true;
         wasInPausedState = true;
       });
-    } else if(ModalRoute.of(context).isCurrent && shouldBlur && state == AppLifecycleState.resumed){
+    } else if (ModalRoute.of(context).isCurrent &&
+        shouldBlur &&
+        state == AppLifecycleState.resumed) {
       Timer(Duration(milliseconds: 500), () {
         _ohNoDialog();
       });
@@ -51,27 +53,26 @@ class BiometricBlur<T extends StatefulWidget> extends State<T>
     super.dispose();
   }
 
-  _ohNoDialog() async{
+  _ohNoDialog() async {
     Navigator.of(context).popUntil((route) {
       return route.settings.name != null;
     });
     await showDialog(
         context: context,
         builder: (bc) => HuntyDialogForConfirmation(
-          title: 'Re-Authenticate',
-          description:
-          "Please re-authenticate?",
-          btnTextForConfirmation: 'Ok',
-          btnTextForCancel: 'Cancel',
-          runIfUserConfirms: () {
-            _authenticate();
-          },
-          runIfUserCancels: () {
-            Navigator.popUntil(context, (route) {
-              return route.settings.name == '/';
-            });
-          },
-        ));
+              title: 'Re-Authenticate',
+              description: "Please re-authenticate?",
+              btnTextForConfirmation: 'Ok',
+              btnTextForCancel: 'Cancel',
+              runIfUserConfirms: () {
+                _authenticate();
+              },
+              runIfUserCancels: () {
+                Navigator.popUntil(context, (route) {
+                  return route.settings.name == '/';
+                });
+              },
+            ));
   }
 
   _authenticate() async {

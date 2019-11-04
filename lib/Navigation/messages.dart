@@ -36,7 +36,9 @@ class _MessageViewerState extends BiometricBlur<MessageViewer> {
 
       for (int i = 0; i < message.body.getArr().length; i++) {
         var arg = message.body.getArr()[i];
-        bool prevIsLink = i > message.body.getArr().length - 2 ? false : message.body.getArr()[i + 1] is Link;
+        bool prevIsLink = i > message.body.getArr().length - 2
+            ? false
+            : message.body.getArr()[i + 1] is Link;
         if (arg is Link) {
           if (!recognizer.containsKey(indOfRecognizer))
             recognizer[indOfRecognizer] = TapGestureRecognizer()
@@ -54,7 +56,9 @@ class _MessageViewerState extends BiometricBlur<MessageViewer> {
           indOfRecognizer++;
         } else {
           textSpans.add(TextSpan(
-              text: arg.toString().trim().isEmpty ? '\n' : prevIsLink ? arg : arg + '\n',
+              text: arg.toString().trim().isEmpty
+                  ? '\n'
+                  : prevIsLink ? arg : arg + '\n',
               style: TextStyle(
                   color: themeManager.getColor(TypeOfWidget.text),
                   fontSize: 13)));

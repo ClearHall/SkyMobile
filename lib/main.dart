@@ -68,7 +68,7 @@ class MyApp extends StatelessWidget {
         "/gpacalculatorsettings": (context) => GPACalculatorSettings(),
         "/settings": (context) => SettingsViewer(),
         '/devconsole': (context) => DeveloperConsole(),
-        '/messages' : (context) => MessageViewer()
+        '/messages': (context) => MessageViewer()
       },
     );
   }

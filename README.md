@@ -10,6 +10,23 @@ Join the SkyMobile discord server [here](https://discord.gg/Hqvann5).
 
 # Changelog
 
+### V2.0 Release
+
+- Huge Update, adds many security features and settings and more.
+- Replaces top three bar access to GPA Calculator with a drawer
+- Adds developer console easter egg (NOTE: this console can break SkyMobile if you're not careful. Use only if developer)
+- Adds biometric authentication
+- Adds biometric blurring: Blurs your grades if app is paused or enters the background. Your biometric authentication is required to access the app again
+- Removes screenshot ability for Android because of security
+- Allow ability to change theme, more are coming soon!
+- Allow ability to disable biometric authentication for blurring if not preferred
+- Allow ability to default to app chooser once you enter the app
+- Allow ability to automatically login to previous session
+
+### V1.2 Release
+
+- Redesigns UI and fixes mini bugs
+
 ### V1.1.2 Release (V1.1.1 withdrawn)
 
 - Fixes GPA Calculator for districts without academic history

@@ -120,7 +120,8 @@ gpaCalculatorSettingsSaveForCurrentSession() async {
   JSONSaver jsonSaver = JSONSaver(FilesAvailable.gpaCalculatorSettings);
   var retrievedFromStorage = await jsonSaver.readListData();
   if (retrievedFromStorage is Map) {
-    retrievedFromStorage[currentSessionIdentifier + (currentChild ?? '')] = historyGrades;
+    retrievedFromStorage[currentSessionIdentifier + (currentChild ?? '')] =
+        historyGrades;
     jsonSaver.saveListData(retrievedFromStorage);
   } else {
     Map newMap = Map();
@@ -133,7 +134,8 @@ gpaCalculatorSettingsReadForCurrentSession() async {
   JSONSaver jsonSaver = JSONSaver(FilesAvailable.gpaCalculatorSettings);
   var retrievedFromStorage = await jsonSaver.readListData();
   if (retrievedFromStorage is Map &&
-      retrievedFromStorage.containsKey(currentSessionIdentifier + (currentChild ?? ''))) {
+      retrievedFromStorage
+          .containsKey(currentSessionIdentifier + (currentChild ?? ''))) {
     return List<SchoolYear>.from(
         retrievedFromStorage[currentSessionIdentifier + (currentChild ?? '')]);
   } else {

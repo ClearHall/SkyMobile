@@ -111,19 +111,21 @@ class HuntyDialogLoading extends HuntyDialog {
       SizedBox(height: 24.0),
       CircularProgressIndicator(),
       SizedBox(height: 40.0),
-      restrictCancel ? Container() : Align(
-        alignment: Alignment.bottomRight,
-        child: FlatButton(
-          onPressed: () {
-            Navigator.of(context).pop();
-            runWhenCancelled();
-          },
-          child: Text(
-            cancelText,
-            style: TextStyle(color: Colors.red),
-          ),
-        ),
-      ),
+      restrictCancel
+          ? Container()
+          : Align(
+              alignment: Alignment.bottomRight,
+              child: FlatButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                  runWhenCancelled();
+                },
+                child: Text(
+                  cancelText,
+                  style: TextStyle(color: Colors.red),
+                ),
+              ),
+            ),
     ];
   }
 }
@@ -421,7 +423,9 @@ class HuntyDialogForMoreText extends HuntyDialog {
           onPressed: () {
             Navigator.of(context).pop();
           },
-          child: Text(buttonText, style: TextStyle(color: themeManager.getColor(TypeOfWidget.button))),
+          child: Text(buttonText,
+              style:
+                  TextStyle(color: themeManager.getColor(TypeOfWidget.button))),
         ),
       ),
     ];
@@ -607,21 +611,25 @@ class HuntyDialogOfList extends HuntyDialog {
     for (int i = 0; i < listOfValues.length; i++) {
       widgetList.add(Container(
           child: Card(
-            child: InkWell(
-              onTap: (){
-                indexOfValueChosen = i;
-                Navigator.of(context).pop();
-                if(okPressed != null) okPressed();
-              },
-              child: Container(padding: EdgeInsets.all(10),child: Text(
-                listOfValues[i].toString().toString(),
-                style:
-                    TextStyle(color: themeManager.getColor(TypeOfWidget.text), fontSize: 15),
-              ),),
-              splashColor: themeManager.getColor(TypeOfWidget.text),
+        child: InkWell(
+          onTap: () {
+            indexOfValueChosen = i;
+            Navigator.of(context).pop();
+            if (okPressed != null) okPressed();
+          },
+          child: Container(
+            padding: EdgeInsets.all(10),
+            child: Text(
+              listOfValues[i].toString().toString(),
+              style: TextStyle(
+                  color: themeManager.getColor(TypeOfWidget.text),
+                  fontSize: 15),
             ),
-            color: themeManager.getColor(TypeOfWidget.subBackground),
-          )));
+          ),
+          splashColor: themeManager.getColor(TypeOfWidget.text),
+        ),
+        color: themeManager.getColor(TypeOfWidget.subBackground),
+      )));
     }
 
     return <Widget>[
@@ -641,10 +649,10 @@ class HuntyDialogOfList extends HuntyDialog {
       Container(
           padding: EdgeInsets.only(top: 16),
           child: ConstrainedBox(
-            constraints: BoxConstraints(maxHeight: 100,),
-              child: ListView(
-            children: widgetList
-          ))),
+              constraints: BoxConstraints(
+                maxHeight: 100,
+              ),
+              child: ListView(children: widgetList))),
       SizedBox(height: 32.0),
     ];
   }
