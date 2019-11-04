@@ -90,9 +90,18 @@ class BiometricBlur<T extends StatefulWidget> extends State<T>
         setState(() {
           shouldBlur = false;
         });
-      } else {
-        await _ohNoDialog();
+      }else{
+        showDialog(
+            barrierDismissible: false,
+            context: context,
+            builder: (bc) => HuntyDialog(
+                title: 'Authentication Error',
+                description: 'Authentication failed.',
+                buttonText: 'Ok'));
       }
+//      } else {
+//        await _ohNoDialog();
+//      }
     } catch (e) {
       if (e.code == 'LockedOut') {
         showDialog(
@@ -100,9 +109,10 @@ class BiometricBlur<T extends StatefulWidget> extends State<T>
             context: context,
             builder: (bc) => HuntyDialog(
                 title: 'Authentication Error',
-                description: e.message + "\nExit and re-enter the app.",
+                description: e.message,
                 buttonText: 'Ok'));
-      } else if (e.code != 'auth_in_progress') {
+      } else {
+        //} else if (e.code != 'auth_in_progress') {
         showDialog(
             barrierDismissible: false,
             context: context,
@@ -115,19 +125,21 @@ class BiometricBlur<T extends StatefulWidget> extends State<T>
           settings['Biometric Authentication']['option'] = false;
           settings['Re-Authenticate With Biometrics']['option'] = false;
           shouldBlur = false;
+          saveSettingsData();
         });
-      } else {
-        await showDialog(
-            context: context,
-            builder: (bc) => HuntyDialog(
-                title: 'Authentication Error',
-                description: e.message +
-                    '\nSkyMobile will disable authentication for you.',
-                buttonText: 'Ok'));
-        settings['Biometric Authentication']['option'] = false;
-        settings['Re-Authenticate With Biometrics']['option'] = false;
-        saveSettingsData();
       }
+//      } else {
+//        await showDialog(
+//            context: context,
+//            builder: (bc) => HuntyDialog(
+//                title: 'Authentication Error',
+//                description: e.message +
+//                    '\nSkyMobile will disable authentication for you.',
+//                buttonText: 'Ok'));
+//        settings['Biometric Authentication']['option'] = false;
+//        settings['Re-Authenticate With Biometrics']['option'] = false;
+//        saveSettingsData();
+//      }
     }
   }
 
@@ -137,10 +149,77 @@ class BiometricBlur<T extends StatefulWidget> extends State<T>
         child: Scaffold(
           backgroundColor: themeManager.getColor(TypeOfWidget.background),
           body: Center(
-            child: Align(alignment: Alignment.center,
-            child: Column(children: <Widget>[
-              
-            ],),),
+            child: Align(
+              alignment: Alignment.center,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Text('Re-Authenticate',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                          color: themeManager.getColor(TypeOfWidget.text),
+                          fontSize: 30,
+                          fontWeight: FontWeight.w700,
+                          letterSpacing: 2)),
+                  Container(
+                    padding: EdgeInsets.only(left: 30, right: 30, top: 10),
+                    child: Text(
+                        'You have left the app, please re-authenticate to view your grades again.',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                            color: themeManager.getColor(null),
+                            fontSize: 20,
+                            fontWeight: FontWeight.w700,
+                            letterSpacing: 2)),
+                  ),
+                  SizedBox(height: 15),
+                  Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: <Widget>[
+                      Card(
+                        color: themeManager.getColor(TypeOfWidget.button),
+                        child: InkWell(
+                          onTap: (){
+                            Navigator.popUntil(context, (route) {
+                              return route.settings.name == '/';
+                            });
+                          },
+                            child: Container(
+                          padding: EdgeInsets.all(10),
+                          child: Text('Cancel',
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                  color: themeManager.getColor(null),
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.w700,
+                                  letterSpacing: 2)),
+                        )),
+                      ),
+                      SizedBox(
+                        width: 15,
+                      ),
+                      Card(
+                        color: themeManager.getColor(TypeOfWidget.button),
+                        child: InkWell(
+                            onTap: () {
+                              _authenticate();
+                            },
+                            child: Container(
+                              padding: EdgeInsets.all(10),
+                              child: Text('Authenticate',
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                      color: themeManager.getColor(null),
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.w700,
+                                      letterSpacing: 2)),
+                            )),
+                      )
+                    ],
+                  )
+                ],
+              ),
+            ),
           ),
         ),
         onWillPop: () => Future(() {

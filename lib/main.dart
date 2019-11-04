@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:local_auth/local_auth.dart';
+import 'package:skymobile/ExtraViewPackages/biometric_blur_view.dart';
 import 'package:skymobile/HelperUtilities/manage_sky_vars.dart';
 import 'package:skymobile/Navigation/messages.dart';
 import 'package:skymobile/Settings/theme_color_manager.dart';
@@ -391,6 +392,7 @@ class MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
+    if (ModalRoute.of(context).isCurrent) shouldBlur = false;
     if (district == null) {
       district = SkywardDistrict('FORT BEND ISD',
           'https://skyward-fbprod.iscorp.com/scripts/wsisa.dll/WService=wsedufortbendtx/seplog01.w');
