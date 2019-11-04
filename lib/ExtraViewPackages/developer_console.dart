@@ -76,7 +76,6 @@ class _DeveloperConsoleState extends BiometricBlur<DeveloperConsole>{
 
     currentText += '\n>$command';
     currentText += '\n';
-    // BEGIN THE TRANSLATION PROCESS!!!!!
     if (split.length > 0) {
       String command = split[0];
       var modifier;
@@ -90,7 +89,10 @@ class _DeveloperConsoleState extends BiometricBlur<DeveloperConsole>{
       }
 
       if (command == 'help') {
-        currentText += 'Commands Available\nhelp: Displays this message.\nset and remove: Sets and Remove values from the gradebook. Syntax of this command is \'<set/remove> <gradebook/terms> <all/index> <(not needed if remove) value to change to>\'\ndisplay: Displays what is shown in the second parameter.';
+        currentText += 'Commands Available\n'
+            'help: Displays this message.\n'
+            'set and remove: Sets and Remove values from the gradebook. Syntax of this command is \'<set/remove> <gradebook/terms> <all/index> <(not needed if remove) value to change to>\'\n'
+            'display: Displays what is shown in the second parameter. For instance, \'display gradebook\' will display the gradebook. If there is a third parameter, for example: \'display gradebook 1\', it will display gradebook\'s second value.';
       } else if (command == 'display') {
           if(split.length < 3)
             currentText += modifier.toString();

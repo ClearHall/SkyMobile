@@ -6,9 +6,10 @@ import '../HelperUtilities/global.dart';
 import 'hunty_dialogs.dart';
 import 'package:local_auth/local_auth.dart';
 
+bool shouldBlur = false;
+
 class BiometricBlur<T extends StatefulWidget> extends State<T>
     with WidgetsBindingObserver {
-  bool shouldBlur = false;
   bool wasInPausedState = false;
 
   @override
