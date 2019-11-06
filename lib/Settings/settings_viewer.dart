@@ -89,20 +89,20 @@ class _SettingsViewerState extends BiometricBlur<SettingsViewer> {
                     fontSize: 30,
                     fontWeight: FontWeight.w700)),
           ),
-          actions: <Widget>[
-            MyHomePageState.timesPressedSwitch >= 15 ||
-                    SkyVars.getVar('permdev') == true
-                ? IconButton(
-                    icon: Icon(
-                      Icons.tv,
-                      color: themeManager.getColor(TypeOfWidget.text),
-                    ),
-                    onPressed: () {
-                      Navigator.of(context).pushNamed('/devconsole');
-                    },
-                  )
-                : Container()
-          ],
+//          actions: <Widget>[
+//            MyHomePageState.timesPressedSwitch >= 15 ||
+//                    SkyVars.getVar('permdev') == true
+//                ? IconButton(
+//                    icon: Icon(
+//                      Icons.tv,
+//                      color: themeManager.getColor(TypeOfWidget.text),
+//                    ),
+//                    onPressed: () {
+//                      Navigator.of(context).pushNamed('/devconsole');
+//                    },
+//                  )
+//                : Container()
+//          ],
         ),
         backgroundColor: themeManager.getColor(TypeOfWidget.background),
         body: Center(
