@@ -114,7 +114,7 @@ class MyHomePageState extends State<MyHomePage> {
     }
   }
 
-  void _determineWhetherToLoginToPreviouslySavedAccount() async {
+  _determineWhetherToLoginToPreviouslySavedAccount() async {
     if (settings['Automatically Re-Load Last Saved Session']['option']) {
       var retrieved = await prevSavedAccount.readListData();
       if (retrieved.runtimeType != 0) {
@@ -124,19 +124,22 @@ class MyHomePageState extends State<MyHomePage> {
     }
   }
 
-  void _getPreviouslySavedDistrict() async {
+  _getPreviouslySavedDistrict() async {
     JSONSaver jsonSaver = JSONSaver(FilesAvailable.previousDistrict);
     var districta = await jsonSaver.readListData();
 
-    if (districta is SkywardDistrict) district = districta;
+    if (districta is SkywardDistrict)
+      setState(() {
+        district = districta;
+      });
   }
 
-  void _saveDistrict() async {
+  _saveDistrict() async {
     JSONSaver jsonSaver = JSONSaver(FilesAvailable.previousDistrict);
     await jsonSaver.saveListData(district);
   }
 
-  void _getGradeTerms(String user, String pass, BuildContext context) async {
+  _getGradeTerms(String user, String pass, BuildContext context) async {
     List<bool> isCancelled = [false];
     var dialog = HuntyDialogLoading('Cancel', () {
       isCancelled[0] = true;
@@ -327,7 +330,7 @@ class MyHomePageState extends State<MyHomePage> {
     }
   }
 
-  void _getAccounts() async {
+  _getAccounts() async {
     if (await jsonSaver.doesFileExist()) {
       var unconverted = (await jsonSaver.readListData());
       if (unconverted is List) accounts = List<Account>.from(unconverted);
@@ -337,6 +340,7 @@ class MyHomePageState extends State<MyHomePage> {
     if (accounts.length == 0) {
       accounts.add(Account('You have no saved accounts', null, null, null));
     }
+    setState(() {});
   }
 
   void _removeDebugAccounts() {
