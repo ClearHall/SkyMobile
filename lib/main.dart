@@ -21,15 +21,10 @@ import 'package:skymobile/GPACalculator/settings.dart';
 import 'package:skymobile/Settings/settings_viewer.dart';
 import 'package:skymobile/ExtraViewPackages/developer_console.dart';
 
-// TODO: Use out of * if score % is empty
-// TODO: Color bug in SkyMobile settings when changing theme color
-
 void main() async {
   JSONSaver jsonSaver = JSONSaver(FilesAvailable.settings);
   await SkyVars.getVars();
   var retrieved = await jsonSaver.readListData();
-  await MyHomePageState.getAccounts();
-  await MyHomePageState.getPreviouslySavedDistrict();
   if (retrieved is Map) {
     for (int i = 0; i < retrieved.length; i++) {
       retrieved[retrieved.keys.toList()[i]]['description'] =
@@ -49,7 +44,7 @@ void main() async {
 }
 
 class MyApp extends StatelessWidget {
-  final ColorTheme themeSelected;
+  ColorTheme themeSelected;
   MyApp(this.themeSelected);
   // This widget is the root of your application.
   @override
@@ -89,7 +84,7 @@ class MyHomePage extends StatefulWidget {
 }
 
 class MyHomePageState extends State<MyHomePage> {
-  static JSONSaver jsonSaver = JSONSaver(FilesAvailable.accounts);
+  JSONSaver jsonSaver = JSONSaver(FilesAvailable.accounts);
   static SkywardDistrict district = SkywardDistrict('FORT BEND ISD',
       'https://skyward-fbprod.iscorp.com/scripts/wsisa.dll/WService=wsedufortbendtx/seplog01.w');
   final _auth = LocalAuthentication();
@@ -98,6 +93,8 @@ class MyHomePageState extends State<MyHomePage> {
 
   void initState() {
     super.initState();
+    _getPreviouslySavedDistrict();
+    _getAccounts();
     _determineWhetherToLoginToPreviouslySavedAccount();
     _shouldShowWelcomeDialog();
   }
@@ -117,7 +114,7 @@ class MyHomePageState extends State<MyHomePage> {
     }
   }
 
-  void _determineWhetherToLoginToPreviouslySavedAccount() async {
+  _determineWhetherToLoginToPreviouslySavedAccount() async {
     if (settings['Automatically Re-Load Last Saved Session']['option']) {
       var retrieved = await prevSavedAccount.readListData();
       if (retrieved.runtimeType != 0) {
@@ -127,19 +124,22 @@ class MyHomePageState extends State<MyHomePage> {
     }
   }
 
-  static getPreviouslySavedDistrict() async {
+  _getPreviouslySavedDistrict() async {
     JSONSaver jsonSaver = JSONSaver(FilesAvailable.previousDistrict);
     var districta = await jsonSaver.readListData();
 
-    if (districta is SkywardDistrict) district = districta;
+    if (districta is SkywardDistrict)
+      setState(() {
+        district = districta;
+      });
   }
 
-  void _saveDistrict() async {
+  _saveDistrict() async {
     JSONSaver jsonSaver = JSONSaver(FilesAvailable.previousDistrict);
     await jsonSaver.saveListData(district);
   }
 
-  void _getGradeTerms(String user, String pass, BuildContext context) async {
+  _getGradeTerms(String user, String pass, BuildContext context) async {
     List<bool> isCancelled = [false];
     var dialog = HuntyDialogLoading('Cancel', () {
       isCancelled[0] = true;
@@ -156,7 +156,7 @@ class MyHomePageState extends State<MyHomePage> {
         Navigator.of(context).pop(dialog);
         showDialog(
             context: context,
-            builder: (_) {
+            builder: (BuildContext) {
               return HuntyDialog(
                   title: 'Uh-Oh',
                   description:
@@ -164,11 +164,11 @@ class MyHomePageState extends State<MyHomePage> {
                   buttonText: 'Ok');
             });
       } else {
-        getAccounts();
+        _getAccounts();
         if (!_isCredentialsSavedAlready(user)) {
           await showDialog(
               context: context,
-              builder: (_) {
+              builder: (BuildContext) {
                 return HuntyDialogForConfirmation(
                   title: 'New Account',
                   description:
@@ -192,7 +192,7 @@ class MyHomePageState extends State<MyHomePage> {
       if (e.toString().contains('Invalid login or password')) {
         showDialog(
             context: context,
-            builder: (_) {
+            builder: (BuildContext) {
               return HuntyDialog(
                   title: 'Uh-Oh',
                   description:
@@ -244,7 +244,7 @@ class MyHomePageState extends State<MyHomePage> {
       if (e.toString().contains('Invalid login or password')) {
         showDialog(
             context: context,
-            builder: (_) {
+            builder: (BuildContext) {
               return HuntyDialogForConfirmation(
                 title: 'Uh-Oh',
                 description:
@@ -278,7 +278,7 @@ class MyHomePageState extends State<MyHomePage> {
       Navigator.of(context).pop(dialog);
       await showDialog(
           context: context,
-          builder: (_) {
+          builder: (BuildContext) {
             return HuntyDialog(
                 title: 'Oh No!',
                 description:
@@ -319,18 +319,18 @@ class MyHomePageState extends State<MyHomePage> {
   TextEditingController _controllerPassword = TextEditingController();
   bool isInAccountChooserStatus =
       settings['Default to Account Chooser']['option'];
-  static List<Account> accounts = [];
+  List<Account> accounts = [];
 
   //NOTE: USING THIS IS VERY BUGGY!!!!!
-//  void _debugUseGenerateFakeAccounts(int numOfFakeAccounts) {
-//    accounts = [];
-//    for (int i = 0; i < numOfFakeAccounts; i++) {
-//      accounts.add(Account(i.toString(), i.toString(), i.toString(),
-//          SkywardDistrict('lol', 'ddd')));
-//    }
-//  }
+  void _debugUseGenerateFakeAccounts(int numOfFakeAccounts) {
+    accounts = [];
+    for (int i = 0; i < numOfFakeAccounts; i++) {
+      accounts.add(Account(i.toString(), i.toString(), i.toString(),
+          SkywardDistrict('lol', 'ddd')));
+    }
+  }
 
-  static getAccounts() async {
+  _getAccounts() async {
     if (await jsonSaver.doesFileExist()) {
       var unconverted = (await jsonSaver.readListData());
       if (unconverted is List) accounts = List<Account>.from(unconverted);
@@ -340,6 +340,7 @@ class MyHomePageState extends State<MyHomePage> {
     if (accounts.length == 0) {
       accounts.add(Account('You have no saved accounts', null, null, null));
     }
+    setState(() {});
   }
 
   void _removeDebugAccounts() {
