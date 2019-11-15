@@ -21,10 +21,15 @@ import 'package:skymobile/GPACalculator/settings.dart';
 import 'package:skymobile/Settings/settings_viewer.dart';
 import 'package:skymobile/ExtraViewPackages/developer_console.dart';
 
+// TODO: Use out of * if score % is empty
+// TODO: Color bug in SkyMobile settings when changing theme color
+
 void main() async {
   JSONSaver jsonSaver = JSONSaver(FilesAvailable.settings);
   await SkyVars.getVars();
   var retrieved = await jsonSaver.readListData();
+  await MyHomePageState.getAccounts();
+  await MyHomePageState.getPreviouslySavedDistrict();
   if (retrieved is Map) {
     for (int i = 0; i < retrieved.length; i++) {
       retrieved[retrieved.keys.toList()[i]]['description'] =
@@ -44,7 +49,7 @@ void main() async {
 }
 
 class MyApp extends StatelessWidget {
-  ColorTheme themeSelected;
+  final ColorTheme themeSelected;
   MyApp(this.themeSelected);
   // This widget is the root of your application.
   @override
@@ -84,7 +89,7 @@ class MyHomePage extends StatefulWidget {
 }
 
 class MyHomePageState extends State<MyHomePage> {
-  JSONSaver jsonSaver = JSONSaver(FilesAvailable.accounts);
+  static JSONSaver jsonSaver = JSONSaver(FilesAvailable.accounts);
   static SkywardDistrict district = SkywardDistrict('FORT BEND ISD',
       'https://skyward-fbprod.iscorp.com/scripts/wsisa.dll/WService=wsedufortbendtx/seplog01.w');
   final _auth = LocalAuthentication();
@@ -93,8 +98,6 @@ class MyHomePageState extends State<MyHomePage> {
 
   void initState() {
     super.initState();
-    _getPreviouslySavedDistrict();
-    _getAccounts();
     _determineWhetherToLoginToPreviouslySavedAccount();
     _shouldShowWelcomeDialog();
   }
@@ -124,7 +127,7 @@ class MyHomePageState extends State<MyHomePage> {
     }
   }
 
-  void _getPreviouslySavedDistrict() async {
+  static getPreviouslySavedDistrict() async {
     JSONSaver jsonSaver = JSONSaver(FilesAvailable.previousDistrict);
     var districta = await jsonSaver.readListData();
 
@@ -153,7 +156,7 @@ class MyHomePageState extends State<MyHomePage> {
         Navigator.of(context).pop(dialog);
         showDialog(
             context: context,
-            builder: (BuildContext) {
+            builder: (_) {
               return HuntyDialog(
                   title: 'Uh-Oh',
                   description:
@@ -161,11 +164,11 @@ class MyHomePageState extends State<MyHomePage> {
                   buttonText: 'Ok');
             });
       } else {
-        _getAccounts();
+        getAccounts();
         if (!_isCredentialsSavedAlready(user)) {
           await showDialog(
               context: context,
-              builder: (BuildContext) {
+              builder: (_) {
                 return HuntyDialogForConfirmation(
                   title: 'New Account',
                   description:
@@ -189,7 +192,7 @@ class MyHomePageState extends State<MyHomePage> {
       if (e.toString().contains('Invalid login or password')) {
         showDialog(
             context: context,
-            builder: (BuildContext) {
+            builder: (_) {
               return HuntyDialog(
                   title: 'Uh-Oh',
                   description:
@@ -241,7 +244,7 @@ class MyHomePageState extends State<MyHomePage> {
       if (e.toString().contains('Invalid login or password')) {
         showDialog(
             context: context,
-            builder: (BuildContext) {
+            builder: (_) {
               return HuntyDialogForConfirmation(
                 title: 'Uh-Oh',
                 description:
@@ -275,7 +278,7 @@ class MyHomePageState extends State<MyHomePage> {
       Navigator.of(context).pop(dialog);
       await showDialog(
           context: context,
-          builder: (BuildContext) {
+          builder: (_) {
             return HuntyDialog(
                 title: 'Oh No!',
                 description:
@@ -316,18 +319,18 @@ class MyHomePageState extends State<MyHomePage> {
   TextEditingController _controllerPassword = TextEditingController();
   bool isInAccountChooserStatus =
       settings['Default to Account Chooser']['option'];
-  List<Account> accounts = [];
+  static List<Account> accounts = [];
 
   //NOTE: USING THIS IS VERY BUGGY!!!!!
-  void _debugUseGenerateFakeAccounts(int numOfFakeAccounts) {
-    accounts = [];
-    for (int i = 0; i < numOfFakeAccounts; i++) {
-      accounts.add(Account(i.toString(), i.toString(), i.toString(),
-          SkywardDistrict('lol', 'ddd')));
-    }
-  }
+//  void _debugUseGenerateFakeAccounts(int numOfFakeAccounts) {
+//    accounts = [];
+//    for (int i = 0; i < numOfFakeAccounts; i++) {
+//      accounts.add(Account(i.toString(), i.toString(), i.toString(),
+//          SkywardDistrict('lol', 'ddd')));
+//    }
+//  }
 
-  void _getAccounts() async {
+  static getAccounts() async {
     if (await jsonSaver.doesFileExist()) {
       var unconverted = (await jsonSaver.readListData());
       if (unconverted is List) accounts = List<Account>.from(unconverted);

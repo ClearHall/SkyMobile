@@ -84,6 +84,7 @@ class HuntyDialog extends StatelessWidget {
   }
 }
 
+// ignore: must_be_immutable
 class HuntyDialogLoading extends HuntyDialog {
   final String cancelText;
   final Function runWhenCancelled;
@@ -327,10 +328,10 @@ class _HuntyDistrictSearcherWidgetState
 }
 
 class HuntyDialogForConfirmation extends HuntyDialog {
-  Function() runIfUserConfirms;
-  String btnTextForConfirmation;
-  String btnTextForCancel;
-  Function runIfUserCancels;
+  final Function() runIfUserConfirms;
+  final String btnTextForConfirmation;
+  final String btnTextForCancel;
+  final Function runIfUserCancels;
 
   HuntyDialogForConfirmation(
       {@required title,
@@ -434,8 +435,8 @@ class HuntyDialogForMoreText extends HuntyDialog {
 
 class HuntyDialogWithText extends HuntyDialog {
   final String hint;
-  var textController = TextEditingController();
-  Function okPressed;
+  final TextEditingController textController;
+  final Function okPressed;
 
   HuntyDialogWithText(
       {@required this.hint,
@@ -505,7 +506,7 @@ class HuntyDialogWithText extends HuntyDialog {
 
 class HuntyDialogDebugCredentials extends HuntyDialog {
   final String hint;
-  var textController2 = TextEditingController();
+  final TextEditingController textController2 = TextEditingController();
 
   HuntyDialogDebugCredentials(
       {@required this.hint,
@@ -590,11 +591,12 @@ class HuntyDialogDebugCredentials extends HuntyDialog {
   }
 }
 
+// ignore: must_be_immutable
 class HuntyDialogOfList extends HuntyDialog {
   final String hint;
-  Function okPressed;
+  final Function okPressed;
   int indexOfValueChosen = 0;
-  List listOfValues;
+  final List listOfValues;
 
   HuntyDialogOfList(
       {@required this.hint,

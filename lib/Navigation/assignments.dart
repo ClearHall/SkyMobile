@@ -7,10 +7,9 @@ import 'package:skymobile/HelperUtilities/global.dart';
 import 'package:skymobile/ExtraViewPackages/hunty_dialogs.dart';
 
 class AssignmentsViewer extends StatefulWidget {
-  MaterialColor secondColor;
-  String courseName;
+  final String courseName;
 
-  AssignmentsViewer({this.secondColor, this.courseName});
+  AssignmentsViewer({this.courseName});
   @override
   _AssignmentsViewerState createState() =>
       new _AssignmentsViewerState(courseName);
@@ -67,10 +66,11 @@ class _AssignmentsViewerState extends BiometricBlur<AssignmentsViewer> {
       );
     List<Widget> body = [];
     for (AssignmentsGridBox box in assignmentsGridBoxes) {
-      print(box);
       bool isBoxCatHeader = box is CategoryHeader;
-      if(isBoxCatHeader) print((box as CategoryHeader).attributes);
       String grade = box.attributes.containsKey('Score(%)') ? box.attributes['Score(%)'] : box.getDecimal();
+      if(grade != null && grade.trim().isEmpty && box.attributes.containsKey("Points Earned")){
+        grade = box.attributes["Points Earned"];
+      }
       bool secondContNeeded =
           (isBoxCatHeader && (box as CategoryHeader).weight != null);
 

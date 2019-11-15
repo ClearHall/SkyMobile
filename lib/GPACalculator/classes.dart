@@ -7,9 +7,8 @@ import 'package:skymobile/HelperUtilities/global.dart';
 import '../HelperUtilities/gpa_calculator_support_utils.dart';
 
 class GPACalculatorClasses extends StatefulWidget {
-  MaterialColor secondColor;
-  SchoolYear schoolYear;
-  GPACalculatorClasses(this.schoolYear, {this.secondColor});
+  final SchoolYear schoolYear;
+  GPACalculatorClasses(this.schoolYear);
   @override
   GPACalculatorClassesState createState() =>
       new GPACalculatorClassesState(this.schoolYear);

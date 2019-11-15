@@ -2,7 +2,6 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:skymobile/ExtraViewPackages/biometric_blur_view.dart';
-import 'package:skymobile/HelperUtilities/manage_sky_vars.dart';
 import 'package:skymobile/Settings/theme_color_manager.dart';
 import 'package:skyscrapeapi/data_types.dart';
 import 'package:skymobile/HelperUtilities/global.dart';
@@ -10,8 +9,7 @@ import 'package:skymobile/ExtraViewPackages/hunty_dialogs.dart';
 import 'package:skymobile/HelperUtilities/gpa_calculator_support_utils.dart';
 
 class TermViewerPage extends StatefulWidget {
-  MaterialColor secondColor;
-  TermViewerPage({this.secondColor});
+  TermViewerPage();
   @override
   _TermViewer createState() => new _TermViewer();
 }
@@ -118,33 +116,33 @@ class _TermViewer extends BiometricBlur<TermViewerPage> {
     if (currentTermIndex < 0) currentTermIndex = 0;
   }
 
-  _showChildrenChangeDialog() async {
-    List newList = [];
-    if (skywardAPI.children != null) {
-      for (SkywardAccount s in skywardAPI.children) {
-        newList.add(s.name);
-      }
-    }
-    if (newList.length >= 1) newList.removeAt(0);
-
-    bool isCancelled = true;
-    var dialog = HuntyDialogOfList(
-      hint: null,
-      listOfValues: newList,
-      title: 'Children',
-      description: 'Choose which child\'s grades you would like to view.',
-      buttonText: 'Enter',
-      okPressed: () {
-        isCancelled = false;
-      },
-    );
-
-    await showDialog(context: context, builder: (bc) => dialog);
-
-    if (!isCancelled) {
-      _submitAndChangeChild(dialog.indexOfValueChosen + 1);
-    }
-  }
+//  _showChildrenChangeDialog() async {
+//    List newList = [];
+//    if (skywardAPI.children != null) {
+//      for (SkywardAccount s in skywardAPI.children) {
+//        newList.add(s.name);
+//      }
+//    }
+//    if (newList.length >= 1) newList.removeAt(0);
+//
+//    bool isCancelled = true;
+//    var dialog = HuntyDialogOfList(
+//      hint: null,
+//      listOfValues: newList,
+//      title: 'Children',
+//      description: 'Choose which child\'s grades you would like to view.',
+//      buttonText: 'Enter',
+//      okPressed: () {
+//        isCancelled = false;
+//      },
+//    );
+//
+//    await showDialog(context: context, builder: (bc) => dialog);
+//
+//    if (!isCancelled) {
+//      _submitAndChangeChild(dialog.indexOfValueChosen + 1);
+//    }
+//  }
 
   _submitAndChangeChild(int ind) async {
     skywardAPI.switchUserIndex(ind);
@@ -175,7 +173,7 @@ class _TermViewer extends BiometricBlur<TermViewerPage> {
       Navigator.of(context).pop(dialog1);
       await showDialog(
           context: context,
-          builder: (BuildContext) {
+          builder: (_) {
             return HuntyDialog(
                 title: 'Oh No!',
                 description:

@@ -11,8 +11,7 @@ import 'package:skymobile/ExtraViewPackages/constant_visibile_scrollbar.dart';
 import '../HelperUtilities/gpa_calculator_support_utils.dart';
 
 class GPACalculatorSchoolYear extends StatefulWidget {
-  MaterialColor secondColor;
-  GPACalculatorSchoolYear({this.secondColor});
+  GPACalculatorSchoolYear();
   @override
   _GPACalculatorSchoolYearState createState() =>
       new _GPACalculatorSchoolYearState();

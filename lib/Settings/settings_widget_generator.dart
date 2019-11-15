@@ -224,6 +224,7 @@ class SettingsWidgetGenerator {
               ),
               trailing: Switch(
                 value: options[x],
+                activeColor: themeManager.getColor(TypeOfWidget.text),
                 onChanged: (newVal) {
                   options[x] = newVal;
                   for (int i = 0; i < options.keys.length; i++) {

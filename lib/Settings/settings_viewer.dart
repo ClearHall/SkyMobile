@@ -3,9 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:skymobile/ExtraViewPackages/biometric_blur_view.dart';
 import 'package:skymobile/ExtraViewPackages/hunty_dialogs.dart';
 import 'package:skymobile/HelperUtilities/json_saver.dart';
-import 'package:skymobile/HelperUtilities/manage_sky_vars.dart';
 import 'package:skymobile/Settings/settings_widget_generator.dart';
-import 'package:skymobile/main.dart';
 import 'theme_color_manager.dart';
 import 'package:skymobile/HelperUtilities/global.dart';
 

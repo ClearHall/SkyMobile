@@ -6,10 +6,9 @@ import 'package:skyscrapeapi/data_types.dart';
 import 'package:skymobile/HelperUtilities/global.dart';
 
 class AssignmentInfoViewer extends StatefulWidget {
-  MaterialColor secondColor;
-  String courseName;
+  final String courseName;
 
-  AssignmentInfoViewer({this.secondColor, this.courseName});
+  AssignmentInfoViewer({this.courseName});
   @override
   _AssignmentInfoViewerState createState() =>
       new _AssignmentInfoViewerState(courseName);
