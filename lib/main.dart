@@ -44,7 +44,7 @@ void main() async {
 }
 
 class MyApp extends StatelessWidget {
-  ColorTheme themeSelected;
+  final ColorTheme themeSelected;
   MyApp(this.themeSelected);
   // This widget is the root of your application.
   @override
@@ -156,7 +156,7 @@ class MyHomePageState extends State<MyHomePage> {
         Navigator.of(context).pop(dialog);
         showDialog(
             context: context,
-            builder: (BuildContext) {
+            builder: (_) {
               return HuntyDialog(
                   title: 'Uh-Oh',
                   description:
@@ -168,7 +168,7 @@ class MyHomePageState extends State<MyHomePage> {
         if (!_isCredentialsSavedAlready(user)) {
           await showDialog(
               context: context,
-              builder: (BuildContext) {
+              builder: (_) {
                 return HuntyDialogForConfirmation(
                   title: 'New Account',
                   description:
@@ -192,7 +192,7 @@ class MyHomePageState extends State<MyHomePage> {
       if (e.toString().contains('Invalid login or password')) {
         showDialog(
             context: context,
-            builder: (BuildContext) {
+            builder: (_) {
               return HuntyDialog(
                   title: 'Uh-Oh',
                   description:
@@ -244,7 +244,7 @@ class MyHomePageState extends State<MyHomePage> {
       if (e.toString().contains('Invalid login or password')) {
         showDialog(
             context: context,
-            builder: (BuildContext) {
+            builder: (_) {
               return HuntyDialogForConfirmation(
                 title: 'Uh-Oh',
                 description:
@@ -278,7 +278,7 @@ class MyHomePageState extends State<MyHomePage> {
       Navigator.of(context).pop(dialog);
       await showDialog(
           context: context,
-          builder: (BuildContext) {
+          builder: (_) {
             return HuntyDialog(
                 title: 'Oh No!',
                 description:
@@ -322,13 +322,13 @@ class MyHomePageState extends State<MyHomePage> {
   List<Account> accounts = [];
 
   //NOTE: USING THIS IS VERY BUGGY!!!!!
-  void _debugUseGenerateFakeAccounts(int numOfFakeAccounts) {
-    accounts = [];
-    for (int i = 0; i < numOfFakeAccounts; i++) {
-      accounts.add(Account(i.toString(), i.toString(), i.toString(),
-          SkywardDistrict('lol', 'ddd')));
-    }
-  }
+//  void _debugUseGenerateFakeAccounts(int numOfFakeAccounts) {
+//    accounts = [];
+//    for (int i = 0; i < numOfFakeAccounts; i++) {
+//      accounts.add(Account(i.toString(), i.toString(), i.toString(),
+//          SkywardDistrict('lol', 'ddd')));
+//    }
+//  }
 
   _getAccounts() async {
     if (await jsonSaver.doesFileExist()) {
