@@ -1,4 +1,4 @@
-import 'package:skyscrapeapi/skyscrape.dart';
+import 'package:skyscrapeapi/sky_core.dart';
 import 'package:skyscrapeapi/data_types.dart';
 import '../Settings/theme_color_manager.dart';
 import 'package:flutter/material.dart';

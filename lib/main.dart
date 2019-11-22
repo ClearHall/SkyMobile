@@ -5,7 +5,7 @@ import 'package:skymobile/ExtraViewPackages/biometric_blur_view.dart';
 import 'package:skymobile/HelperUtilities/manage_sky_vars.dart';
 import 'package:skymobile/Navigation/messages.dart';
 import 'package:skymobile/Settings/theme_color_manager.dart';
-import 'package:skyscrapeapi/skyscrape.dart';
+import 'package:skyscrapeapi/sky_core.dart';
 import 'package:skymobile/Navigation//gradebook.dart';
 import 'ExtraViewPackages/hunty_dialogs.dart';
 import 'HelperUtilities/global.dart';
