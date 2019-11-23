@@ -20,7 +20,8 @@ Map<String, dynamic> settings = Map.fromIterables([
   'Dark Mode',
   'Re-Authenticate With Biometrics',
   'Automatically Re-Load Last Saved Session',
-  'Default to Account Chooser'
+  'Default to Account Chooser',
+  //'Icon'
 ], [
   Map.fromIterables([
     'description',

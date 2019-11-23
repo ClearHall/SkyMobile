@@ -25,10 +25,24 @@ class SettingsViewer extends StatefulWidget {
 }
 
 class _SettingsViewerState extends BiometricBlur<SettingsViewer> {
+  static const platform = const MethodChannel('com.lingfeishengtian.SkyMobile/choose_icon');
+  String _response;
+
+  changeIcon() async{
+    try{
+      final String res = await platform.invokeMethod('changeIcon', {
+        'iconName':'Icon3'
+      });
+    } on PlatformException catch(e){
+      print('FAILED');
+    }
+  }
 
   @override
   Widget generateBody(BuildContext context) {
-    List<Widget> settingsWidgets = [];
+    List<Widget> settingsWidgets = [RaisedButton(onPressed: (){
+      changeIcon();
+    }, color: Colors.white,)];
     for (String k in settings.keys) {
       if (settings[k]['option'] is Map)
         settingsWidgets.add(

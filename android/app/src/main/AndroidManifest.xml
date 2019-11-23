@@ -31,5 +31,55 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
+        <activity-alias android:label="SkyMobile"
+            android:name=".MainIcon1"
+            android:targetActivity=".MainActivity"
+            android:enabled="false"
+            android:icon="@drawable/icon1">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"></action>
+                <category android:name="android.intent.category.LAUNCHER" ></category>
+            </intent-filter>
+        </activity-alias>
+        <activity-alias android:label="SkyMobile"
+            android:name=".MainIcon2"
+            android:targetActivity=".MainActivity"
+            android:enabled="false"
+            android:icon="@drawable/icon2">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"></action>
+                <category android:name="android.intent.category.LAUNCHER" ></category>
+            </intent-filter>
+        </activity-alias>
+        <activity-alias android:label="SkyMobile"
+            android:name=".MainIcon3"
+            android:targetActivity=".MainActivity"
+            android:enabled="false"
+            android:icon="@drawable/icon3">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"></action>
+                <category android:name="android.intent.category.LAUNCHER" ></category>
+            </intent-filter>
+        </activity-alias>
+        <activity-alias android:label="SkyMobile"
+            android:name=".MainIcon4"
+            android:targetActivity=".MainActivity"
+            android:enabled="false"
+            android:icon="@drawable/icon4">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"></action>
+                <category android:name="android.intent.category.LAUNCHER" ></category>
+            </intent-filter>
+        </activity-alias>
+        <activity-alias android:label="SkyMobile"
+            android:name=".MainIconChristmas"
+            android:targetActivity=".MainActivity"
+            android:enabled="false"
+            android:icon="@drawable/christmastheme">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"></action>
+                <category android:name="android.intent.category.LAUNCHER" ></category>
+            </intent-filter>
+        </activity-alias>
     </application>
 </manifest>
