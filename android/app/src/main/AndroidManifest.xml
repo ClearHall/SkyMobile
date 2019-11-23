@@ -72,10 +72,10 @@
             </intent-filter>
         </activity-alias>
         <activity-alias android:label="SkyMobile"
-            android:name=".MainIconChristmas"
+            android:name=".MainIconchristmas"
             android:targetActivity=".MainActivity"
             android:enabled="false"
-            android:icon="@drawable/christmastheme">
+            android:icon="@drawable/iconchristmas">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"></action>
                 <category android:name="android.intent.category.LAUNCHER" ></category>
