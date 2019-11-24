@@ -50,7 +50,8 @@ class _SettingsViewerState extends BiometricBlur<SettingsViewer> {
           context: context,
           builder: (_) => HuntyDialog(
               title: 'Icon Change',
-              description: 'Operation succeeded.' + (Platform.isAndroid ? ' The app will now restart.' : ''),
+              description: 'Operation succeeded.' +
+                  (Platform.isAndroid ? ' The app will now restart.' : ''),
               buttonText: 'Ok'));
     } on PlatformException catch (e) {
       print('FAILED');
@@ -105,45 +106,47 @@ class _SettingsViewerState extends BiometricBlur<SettingsViewer> {
         );
     }
 
-    List icons = ['icon1', 'icon2', 'icon3', 'icon4', 'iconchristmas'];
-    List<Widget> widgets = [];
-    for (String iconName in icons) {
-      widgets.add(RaisedButton(
-        onPressed: () {
-          changeIcon("I" + iconName.substring(1));
-        },
-        child: Card(
-          child: Image(
-            image: AssetImage('assets/CustomizableIcons/$iconName' + '.png'),
-          ),
-        ),
-        color: Colors.transparent,
-      ));
-    }
+//    List icons = ['icon1', 'icon2', 'icon3', 'icon4', 'iconchristmas'];
+//    List<Widget> widgets = [];
+//    for (String iconName in icons) {
+//      widgets.add(RaisedButton(
+//        onPressed: () {
+//          changeIcon("I" + iconName.substring(1));
+//        },
+//        child: Card(
+//          color: Colors.transparent,
+//          child: Image(
+//            image: AssetImage('assets/CustomizableIcons/$iconName' + '.png'),
+//          ),
+//        ),
+//        color: Colors.transparent,
+//      ));
+//    }
 
-    settingsWidgets.add(Container(
-      child: Column(
-        children: <Widget>[
-          Container(
-              child: Container(
-            child: Text(
-              'Change icon!',
-              style: TextStyle(
-                  color: themeManager.getColor(TypeOfWidget.text),
-                  fontSize: 20),
-            ),
-            padding: EdgeInsets.all(10),
-          )),
-          SingleChildScrollViewWithScrollbar(
-            scrollDirection: Axis.horizontal,
-              scrollbarColor: Colors.white30.withOpacity(0.75),
-              scrollbarThickness: 8.0,
-            child: SingleChildScrollView(child: Row(children: widgets),
-            scrollDirection: Axis.horizontal,)
-          )
-        ],
-      ),
-    ));
+//    settingsWidgets.add(Container(
+//      child: Column(
+//        children: <Widget>[
+//          Container(
+//              child: Container(
+//            child: Text(
+//              'Change icon!',
+//              style: TextStyle(
+//                  color: themeManager.getColor(TypeOfWidget.text),
+//                  fontSize: 20),
+//            ),
+//            padding: EdgeInsets.all(10),
+//          )),
+//          SingleChildScrollViewWithScrollbar(
+//              scrollDirection: Axis.horizontal,
+//              scrollbarColor: Colors.white30.withOpacity(0.75),
+//              scrollbarThickness: 8.0,
+//              child: SingleChildScrollView(
+//                child: Row(children: widgets),
+//                scrollDirection: Axis.horizontal,
+//              ))
+//        ],
+//      ),
+//    ));
 
     return Scaffold(
         appBar: AppBar(

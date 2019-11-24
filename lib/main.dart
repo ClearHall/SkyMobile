@@ -26,10 +26,10 @@ void main() async {
   await SkyVars.getVars();
   var retrieved = await jsonSaver.readListData();
   if (retrieved is Map) {
-    if(retrieved.length != settings.length){
+    if (retrieved.length != settings.length) {
       Map tmp;
-      for(int i = 0; i < settings.length; i++){
-        if(retrieved.containsKey(settings.keys.toList()[i])){
+      for (int i = 0; i < settings.length; i++) {
+        if (retrieved.containsKey(settings.keys.toList()[i])) {
           tmp.addAll(retrieved[settings.keys.toList()[i]]);
         }
       }

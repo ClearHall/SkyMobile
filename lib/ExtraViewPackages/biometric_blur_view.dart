@@ -90,7 +90,7 @@ class BiometricBlur<T extends StatefulWidget> extends State<T>
         setState(() {
           shouldBlur = false;
         });
-      }else{
+      } else {
         showDialog(
             barrierDismissible: false,
             context: context,
@@ -179,21 +179,21 @@ class BiometricBlur<T extends StatefulWidget> extends State<T>
                       Card(
                         color: themeManager.getColor(TypeOfWidget.button),
                         child: InkWell(
-                          onTap: (){
-                            Navigator.popUntil(context, (route) {
-                              return route.settings.name == '/';
-                            });
-                          },
+                            onTap: () {
+                              Navigator.popUntil(context, (route) {
+                                return route.settings.name == '/';
+                              });
+                            },
                             child: Container(
-                          padding: EdgeInsets.all(10),
-                          child: Text('Cancel',
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                  color: themeManager.getColor(null),
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.w700,
-                                  letterSpacing: 2)),
-                        )),
+                              padding: EdgeInsets.all(10),
+                              child: Text('Cancel',
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                      color: themeManager.getColor(null),
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.w700,
+                                      letterSpacing: 2)),
+                            )),
                       ),
                       SizedBox(
                         width: 15,
