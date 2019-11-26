@@ -1,3 +1,7 @@
+import 'dart:io';
+
+import 'package:flutter/foundation.dart'
+    show debugDefaultTargetPlatformOverride;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:local_auth/local_auth.dart';
@@ -21,7 +25,20 @@ import 'package:skymobile/GPACalculator/settings.dart';
 import 'package:skymobile/Settings/settings_viewer.dart';
 import 'package:skymobile/ExtraViewPackages/developer_console.dart';
 
+void _setTargetPlatformForDesktop() {
+  TargetPlatform targetPlatform;
+  if (Platform.isMacOS) {
+    targetPlatform = TargetPlatform.iOS;
+  } else if (Platform.isLinux || Platform.isWindows) {
+    targetPlatform = TargetPlatform.android;
+  }
+  if (targetPlatform != null) {
+    debugDefaultTargetPlatformOverride = targetPlatform;
+  }
+}
+
 void main() async {
+  _setTargetPlatformForDesktop();
   JSONSaver jsonSaver = JSONSaver(FilesAvailable.settings);
   await SkyVars.getVars();
   var retrieved = await jsonSaver.readListData();
