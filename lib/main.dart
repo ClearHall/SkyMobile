@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:local_auth/local_auth.dart';
 import 'package:skymobile/ExtraViewPackages/biometric_blur_view.dart';
+import 'package:skymobile/HelperUtilities/custom_overscroll_behavior.dart';
 import 'package:skymobile/HelperUtilities/manage_sky_vars.dart';
 import 'package:skymobile/Navigation/messages.dart';
 import 'package:skymobile/Settings/theme_color_manager.dart';
@@ -434,6 +435,41 @@ class MyHomePageState extends State<MyHomePage> {
       _removeDebugAccounts();
     }
     ListView listView;
+    Row utilRow = Row(mainAxisSize: MainAxisSize.min, children: <Widget>[
+      IconButton(
+        icon: Icon(
+          Icons.info,
+          color: themeManager.getColor(null),
+        ),
+        onPressed: () {
+          showDialog(
+              context: context,
+              builder: (c) => HuntyDialogForMoreText(
+                  title: 'Information',
+                  description:
+                  'SkyMobile login page has a simple and intuitive design. The search button on the top indicates the district searcher. Use it to search and select different districts. The settings icon brings you to settings and the info dialog shows this dialog. Login like you would normally and press Choose Accounts to access your saved accounts.',
+                  buttonText: 'Ok!'));
+        },
+      ),
+      IconButton(
+        icon: Icon(
+          Icons.search,
+          color: themeManager.getColor(null),
+        ),
+        onPressed: () {
+          _showDialog();
+        },
+      ),
+      IconButton(
+        icon: Icon(
+          Icons.settings,
+          color: themeManager.getColor(null),
+        ),
+        onPressed: () {
+          Navigator.of(context).pushNamed('/settings');
+        },
+      ),
+    ]);
 
     if (isInAccountChooserStatus) {
       List<Widget> widget = [];
@@ -546,17 +582,20 @@ class MyHomePageState extends State<MyHomePage> {
         height: 24,
       ));
       listView = ListView(shrinkWrap: true, children: <Widget>[
+        ListTile(
+            title: Container(
+              child: Text('Accounts',
+                  style: TextStyle(
+                      color: themeManager.getColor(null),
+                      fontSize: 40,
+                      fontWeight: FontWeight.w700,
+                      letterSpacing: 2)),
+              alignment: Alignment.centerLeft,
+              padding: EdgeInsets.only(left: 10, bottom: 10),
+            ),
+            trailing: utilRow),
         Container(
-          child: Text('Accounts',
-              style: TextStyle(
-                  color: themeManager.getColor(null),
-                  fontSize: 50,
-                  fontWeight: FontWeight.w700,
-                  letterSpacing: 2)),
-          alignment: Alignment.centerLeft,
-          padding: EdgeInsets.only(left: 20, bottom: 10),
-        ),
-        Container(
+            padding: EdgeInsets.only(left: 10, right: 10),
             decoration: new BoxDecoration(boxShadow: [
               new BoxShadow(
                 color: Colors.black,
@@ -631,44 +670,11 @@ class MyHomePageState extends State<MyHomePage> {
                       fontWeight: FontWeight.w700,
                       letterSpacing: 2)),
               alignment: Alignment.centerLeft,
-              padding: EdgeInsets.only(left: 20, bottom: 10),
+              padding: EdgeInsets.only(left: 10, bottom: 10),
             ),
-            trailing: Row(mainAxisSize: MainAxisSize.min, children: <Widget>[
-              IconButton(
-                icon: Icon(
-                  Icons.info,
-                  color: themeManager.getColor(null),
-                ),
-                onPressed: () {
-                  showDialog(
-                      context: context,
-                      builder: (c) => HuntyDialogForMoreText(
-                          title: 'Information',
-                          description:
-                              'SkyMobile login page has a simple and intuitive design. The search button on the top indicates the district searcher. Use it to search and select different districts. The settings icon brings you to settings and the info dialog shows this dialog. Login like you would normally and press Choose Accounts to access your saved accounts.',
-                          buttonText: 'Ok!'));
-                },
-              ),
-              IconButton(
-                icon: Icon(
-                  Icons.search,
-                  color: themeManager.getColor(null),
-                ),
-                onPressed: () {
-                  _showDialog();
-                },
-              ),
-              IconButton(
-                icon: Icon(
-                  Icons.settings,
-                  color: themeManager.getColor(null),
-                ),
-                onPressed: () {
-                  Navigator.of(context).pushNamed('/settings');
-                },
-              ),
-            ])),
+            trailing: utilRow),
         Container(
+          padding: EdgeInsets.only(left: 10, right: 10),
             decoration: new BoxDecoration(boxShadow: [
               new BoxShadow(
                 color: Colors.black,
@@ -696,7 +702,7 @@ class MyHomePageState extends State<MyHomePage> {
                       )),
                   Container(
                       padding: EdgeInsets.only(
-                          top: 20, left: 16, right: 16, bottom: 15),
+                          top: 20, left: 20, right: 20, bottom: 15),
                       child: TextFormField(
                         textInputAction: TextInputAction.next,
                         autofocus: false,
@@ -726,7 +732,7 @@ class MyHomePageState extends State<MyHomePage> {
                       )),
                   Container(
                       padding: EdgeInsets.only(
-                          top: 0, left: 16, right: 16, bottom: 10),
+                          top: 0, left: 20, right: 20, bottom: 10),
                       child: TextFormField(
                         focusNode: focus,
                         controller: _controllerPassword,
@@ -861,6 +867,6 @@ class MyHomePageState extends State<MyHomePage> {
             child: Container(
                 padding: EdgeInsets.all(10),
                 alignment: Alignment.center,
-                child: listView)));
+            child: ScrollConfiguration(behavior: CustomOverscroll(), child: listView,),)));
   }
 }

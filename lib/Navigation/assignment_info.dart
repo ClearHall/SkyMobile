@@ -29,12 +29,15 @@ class _AssignmentInfoViewerState extends BiometricBlur<AssignmentInfoViewer> {
     for (AssignmentInfoBox box in assignmentInfoBoxes) {
       String uiMessage = box.getUIMessage();
       body.add(Card(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20.0),
+        ),
         color: themeManager.getColor(TypeOfWidget.subBackground),
         child: Container(
           alignment: Alignment.centerLeft,
           constraints: BoxConstraints(
               maxWidth: MediaQuery.of(context).size.width / 6 * 4.4),
-          padding: EdgeInsets.only(top: 10, left: 10, right: 10, bottom: 10),
+          padding: EdgeInsets.only(top: 15, left: 15, right: 15, bottom: 15),
           child: Text(
             uiMessage,
             maxLines: 2,

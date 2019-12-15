@@ -39,6 +39,9 @@ class SettingsWidgetGenerator {
           Container(
             width: double.infinity,
             child: Card(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20.0),
+                ),
                 child: ListTile(
                   title: Container(
                     child: Text(
@@ -186,6 +189,9 @@ class SettingsWidgetGenerator {
         children: <Widget>[
           Container(
             child: Card(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20.0),
+              ),
               child: Column(
                 children: widgets,
               ),
@@ -246,9 +252,12 @@ class SettingsWidgetGenerator {
         children: <Widget>[
           Container(
             child: Card(
-              child: Column(
-                children: widgets,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20.0),
               ),
+              child: Container(padding: EdgeInsets.only(top: 10, bottom: 10, left: 10, right: 10),child: Column(
+                children: widgets,
+              ),),
               color: themeManager.getColor(TypeOfWidget.subBackground),
             ),
           ),

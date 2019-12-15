@@ -361,31 +361,28 @@ class _TermViewer extends BiometricBlur<TermViewerPage> {
               },
             )
           : Container(),
-//      SkyVars.getVar('version') >= 3
-//          ? ListTile(
-//              leading: Icon(Icons.message,
-//                  color: themeManager.getColor(TypeOfWidget.text)),
-//              title: Text(
-//                'Messages',
-//                style: TextStyle(
-//                    color: themeManager.getColor(TypeOfWidget.text),
-//                    fontSize: 25),
-//              ),
-//              onTap: () {
-//                if (messages == null) {
-//                  showDialog(
-//                      context: context,
-//                      builder: (b) => HuntyDialog(
-//                          title: 'Uh-Oh',
-//                          description:
-//                              ('Messages hasn\'t finished loading yet. Please wait'),
-//                          buttonText: 'Ok'));
-//                } else {
-//                  Navigator.pushNamed(context, '/messages');
-//                }
-//              },
-//            )
-//          : Container(),
+      ListTile(
+        leading: Icon(Icons.message,
+            color: themeManager.getColor(TypeOfWidget.text)),
+        title: Text(
+          'Messages',
+          style: TextStyle(
+              color: themeManager.getColor(TypeOfWidget.text), fontSize: 25),
+        ),
+        onTap: () {
+          if (messages == null) {
+            showDialog(
+                context: context,
+                builder: (b) => HuntyDialog(
+                    title: 'Uh-Oh',
+                    description:
+                        ('Messages hasn\'t finished loading yet. Please wait'),
+                    buttonText: 'Ok'));
+          } else {
+            Navigator.pushNamed(context, '/messages');
+          }
+        },
+      ),
       ListTile(
         leading: Icon(
           Icons.arrow_back,

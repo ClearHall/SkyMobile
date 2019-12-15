@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:skymobile/ExtraViewPackages/biometric_blur_view.dart';
 import 'package:skymobile/ExtraViewPackages/constant_visibile_scrollbar.dart';
 import 'package:skymobile/ExtraViewPackages/hunty_dialogs.dart';
+import 'package:skymobile/HelperUtilities/custom_overscroll_behavior.dart';
 import 'package:skymobile/HelperUtilities/json_saver.dart';
 import 'package:skymobile/Settings/settings_widget_generator.dart';
 import 'theme_color_manager.dart';
@@ -30,7 +31,6 @@ class SettingsViewer extends StatefulWidget {
 class _SettingsViewerState extends BiometricBlur<SettingsViewer> {
   static const platform =
       const MethodChannel('com.lingfeishengtian.SkyMobile/choose_icon');
-  String _response;
 
   changeIcon(String iconName) async {
     HuntyDialogLoading loading = HuntyDialogLoading(
@@ -110,20 +110,27 @@ class _SettingsViewerState extends BiometricBlur<SettingsViewer> {
     List<Widget> widgets = [];
     for (String iconName in icons) {
       widgets.add(RaisedButton(
+        padding: EdgeInsets.all(0),
         onPressed: () {
           changeIcon("I" + iconName.substring(1));
         },
         child: Card(
-          color: Colors.transparent,
-          child: Image(
-            image: AssetImage('assets/CustomizableIcons/$iconName' + '.png'),
-          ),
-        ),
+            color: Colors.transparent,
+            child: ClipRRect(
+              borderRadius: BorderRadius.all(Radius.circular(10)),
+              child: Image(
+                height: 100,
+                width: 100,
+                image:
+                    AssetImage('assets/CustomizableIcons/$iconName' + '.png'),
+              ),
+            )),
         color: Colors.transparent,
       ));
     }
 
     settingsWidgets.add(Container(
+      padding: EdgeInsets.only(left: 20, right: 20),
       child: Column(
         children: <Widget>[
           Container(
@@ -141,11 +148,14 @@ class _SettingsViewerState extends BiometricBlur<SettingsViewer> {
               scrollbarColor: Colors.white30.withOpacity(0.75),
               scrollbarThickness: 8.0,
               child: SingleChildScrollView(
-                child: Row(children: widgets),
+                child: Row(children: widgets,),
                 scrollDirection: Axis.horizontal,
               ))
         ],
       ),
+    ));
+    settingsWidgets.add(SizedBox(
+      height: 15,
     ));
 
     return Scaffold(
@@ -179,9 +189,13 @@ class _SettingsViewerState extends BiometricBlur<SettingsViewer> {
         ),
         backgroundColor: themeManager.getColor(TypeOfWidget.background),
         body: Center(
-          child: ListView(
-            children: settingsWidgets,
-          ),
-        ));
+            child: Container(
+                padding: EdgeInsets.all(10),
+                child: ScrollConfiguration(
+                  behavior: CustomOverscroll(),
+                  child: ListView(
+                    children: settingsWidgets,
+                  ),
+                ))));
   }
 }

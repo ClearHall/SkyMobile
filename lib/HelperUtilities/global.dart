@@ -21,6 +21,7 @@ Map<String, dynamic> settings = Map.fromIterables([
   'Re-Authenticate With Biometrics',
   'Automatically Re-Load Last Saved Session',
   'Default to Account Chooser',
+  'Hierarchical Grades'
 ], [
   Map.fromIterables([
     'description',
@@ -58,6 +59,8 @@ Map<String, dynamic> settings = Map.fromIterables([
   ]),
   Map.fromIterables(['description', 'option'],
       ['Show account retriever as default instead of login screen.', false]),
+  Map.fromIterables(['description', 'option'],
+      ['Displays assignment grades as a hiearchy.', true]),
 ]);
 
 List<String> termIdentifiersCountingTowardGPA = ['S1', 'S2'];

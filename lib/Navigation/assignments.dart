@@ -78,8 +78,14 @@ class _AssignmentsViewerState extends BiometricBlur<AssignmentsViewer> {
       bool secondContNeeded =
           (isBoxCatHeader && (box as CategoryHeader).weight != null);
 
-      body.add(Card(
+      body.add(Container(
+        padding: EdgeInsets.only(left: settings['Hierarchical Grades']['option'] ? (isBoxCatHeader ? (secondContNeeded ? 10 : 0) : (20)) : 0),
+          child: Card(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20.0),
+        ),
         child: InkWell(
+            borderRadius: BorderRadius.circular(20.0),
             onTap: () {
               if (box != null && box is Assignment) _goToAssignmentInfo(box);
             },
@@ -96,10 +102,10 @@ class _AssignmentsViewerState extends BiometricBlur<AssignmentsViewer> {
                             maxWidth:
                                 MediaQuery.of(context).size.width / 6 * 3.8),
                         padding: EdgeInsets.only(
-                            top: 10,
-                            left: 10,
+                            top: 15,
+                            left: 15,
                             right: 10,
-                            bottom: secondContNeeded ? 0 : 10),
+                            bottom: secondContNeeded ? 0 : 15),
                         alignment: Alignment.centerLeft,
                         child: Text(
                           isBoxCatHeader
@@ -125,7 +131,7 @@ class _AssignmentsViewerState extends BiometricBlur<AssignmentsViewer> {
                                       6 *
                                       4.3),
                               padding: EdgeInsets.only(
-                                  top: 5, left: 10, right: 10, bottom: 10),
+                                  top: 5, left: 15, right: 10, bottom: 15),
                               alignment: Alignment.centerLeft,
                               child: Text((box as CategoryHeader).weight,
                                   style: TextStyle(
@@ -142,7 +148,7 @@ class _AssignmentsViewerState extends BiometricBlur<AssignmentsViewer> {
                 ),
                 Container(
                   constraints: BoxConstraints(minHeight: 60),
-                  padding: EdgeInsets.only(right: 10),
+                  padding: EdgeInsets.only(right: 15),
                   alignment: Alignment.centerRight,
                   child: Text(
                     grade == null
@@ -159,7 +165,7 @@ class _AssignmentsViewerState extends BiometricBlur<AssignmentsViewer> {
               ],
             )),
         color: themeManager.getColor(TypeOfWidget.subBackground),
-      ));
+      )));
     }
 
     return Scaffold(
