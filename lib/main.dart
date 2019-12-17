@@ -327,15 +327,14 @@ class MyHomePageState extends State<MyHomePage> {
   _showDialog() async {
     await SkywardDistrictSearcher.getStatesAndPostRequiredBodyElements();
     showDialog(
-            context: context,
-            builder: ((BuildContext context) {
-              return HuntyDistrictSearcherWidget(
-                  title: 'District Searcher',
-                  description:
-                      "Select your state and enter your district's name. (Ex: Fort Bend ISD)",
-                  buttonText: 'OK');
-            }))
-        .then((val) {
+        context: context,
+        builder: ((BuildContext context) {
+          return HuntyDistrictSearcherWidget(
+              title: 'District Searcher',
+              description:
+                  "Select your state and enter your district's name. (Ex: Fort Bend ISD)",
+              buttonText: 'OK');
+        })).then((val) {
       setState(() {});
     }).then((val) {
       _saveDistrict();
@@ -447,7 +446,7 @@ class MyHomePageState extends State<MyHomePage> {
               builder: (c) => HuntyDialogForMoreText(
                   title: 'Information',
                   description:
-                  'SkyMobile login page has a simple and intuitive design. The search button on the top indicates the district searcher. Use it to search and select different districts. The settings icon brings you to settings and the info dialog shows this dialog. Login like you would normally and press Choose Accounts to access your saved accounts.',
+                      'SkyMobile login page has a simple and intuitive design. The search button on the top indicates the district searcher. Use it to search and select different districts. The settings icon brings you to settings and the info dialog shows this dialog. Login like you would normally and press Choose Accounts to access your saved accounts.',
                   buttonText: 'Ok!'));
         },
       ),
@@ -587,7 +586,7 @@ class MyHomePageState extends State<MyHomePage> {
               child: Text('Accounts',
                   style: TextStyle(
                       color: themeManager.getColor(null),
-                      fontSize: 40,
+                      fontSize: 35,
                       fontWeight: FontWeight.w700,
                       letterSpacing: 2)),
               alignment: Alignment.centerLeft,
@@ -674,7 +673,7 @@ class MyHomePageState extends State<MyHomePage> {
             ),
             trailing: utilRow),
         Container(
-          padding: EdgeInsets.only(left: 10, right: 10),
+            padding: EdgeInsets.only(left: 10, right: 10),
             decoration: new BoxDecoration(boxShadow: [
               new BoxShadow(
                 color: Colors.black,
@@ -865,8 +864,12 @@ class MyHomePageState extends State<MyHomePage> {
         backgroundColor: themeManager.getColor(TypeOfWidget.background),
         body: Center(
             child: Container(
-                padding: EdgeInsets.all(10),
-                alignment: Alignment.center,
-            child: ScrollConfiguration(behavior: CustomOverscroll(), child: listView,),)));
+          padding: EdgeInsets.all(10),
+          alignment: Alignment.center,
+          child: ScrollConfiguration(
+            behavior: CustomOverscroll(),
+            child: listView,
+          ),
+        )));
   }
 }
