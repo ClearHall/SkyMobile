@@ -255,9 +255,13 @@ class SettingsWidgetGenerator {
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(20.0),
               ),
-              child: Container(padding: EdgeInsets.only(top: 10, bottom: 10, left: 10, right: 10),child: Column(
-                children: widgets,
-              ),),
+              child: Container(
+                padding:
+                    EdgeInsets.only(top: 10, bottom: 10, left: 10, right: 10),
+                child: Column(
+                  children: widgets,
+                ),
+              ),
               color: themeManager.getColor(TypeOfWidget.subBackground),
             ),
           ),

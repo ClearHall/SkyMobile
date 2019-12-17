@@ -133,7 +133,8 @@ class _GPACalculatorSchoolYearState
                   child: Container(
                     padding: EdgeInsets.only(top: 10, left: 20, right: 0),
                     child: Card(
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15 )),
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(15)),
                         child: buildGradeDisplayWidget(
                             '100 Point', getFinalGPA(averages), bold: true),
                         color:

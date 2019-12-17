@@ -79,93 +79,100 @@ class _AssignmentsViewerState extends BiometricBlur<AssignmentsViewer> {
           (isBoxCatHeader && (box as CategoryHeader).weight != null);
 
       body.add(Container(
-        padding: EdgeInsets.only(left: settings['Hierarchical Grades']['option'] ? (isBoxCatHeader ? (secondContNeeded ? 10 : 0) : (20)) : 0),
+          padding: EdgeInsets.only(
+              left: settings['Hierarchical Grades']['option']
+                  ? (isBoxCatHeader ? (secondContNeeded ? 10 : 0) : (20))
+                  : 0),
           child: Card(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20.0),
-        ),
-        child: InkWell(
-            borderRadius: BorderRadius.circular(20.0),
-            onTap: () {
-              if (box != null && box is Assignment) _goToAssignmentInfo(box);
-            },
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[
-                Container(
-                  alignment: Alignment.centerLeft,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      Container(
-                        constraints: BoxConstraints(
-                            maxWidth:
-                                MediaQuery.of(context).size.width / 6 * 3.8),
-                        padding: EdgeInsets.only(
-                            top: 15,
-                            left: 15,
-                            right: 10,
-                            bottom: secondContNeeded ? 0 : 15),
-                        alignment: Alignment.centerLeft,
-                        child: Text(
-                          isBoxCatHeader
-                              ? (box as CategoryHeader).catName
-                              : (box as Assignment).assignmentName,
-                          maxLines: 2,
-                          overflow: TextOverflow.ellipsis,
-                          style: TextStyle(
-                              color: isBoxCatHeader
-                                  ? secondContNeeded
-                                      ? themeManager.getColor(TypeOfWidget.text)
-                                      : themeManager
-                                          .getColor(TypeOfWidget.button)
-                                  : themeManager.getColor(null),
-                              fontSize: isBoxCatHeader ? 20 : 15),
-                          textAlign: TextAlign.start,
-                        ),
-                      ),
-                      secondContNeeded
-                          ? Container(
-                              constraints: BoxConstraints(
-                                  maxWidth: MediaQuery.of(context).size.width /
-                                      6 *
-                                      4.3),
-                              padding: EdgeInsets.only(
-                                  top: 5, left: 15, right: 10, bottom: 15),
-                              alignment: Alignment.centerLeft,
-                              child: Text((box as CategoryHeader).weight,
-                                  style: TextStyle(
-                                      color: themeManager
-                                          .getColor(TypeOfWidget.text),
-                                      fontSize: 15),
-                                  textAlign: TextAlign.start),
-                            )
-                          : Container(
-                              height: 0,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20.0),
+            ),
+            child: InkWell(
+                borderRadius: BorderRadius.circular(20.0),
+                onTap: () {
+                  if (box != null && box is Assignment)
+                    _goToAssignmentInfo(box);
+                },
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
+                    Container(
+                      alignment: Alignment.centerLeft,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          Container(
+                            constraints: BoxConstraints(
+                                maxWidth: MediaQuery.of(context).size.width /
+                                    6 *
+                                    3.8),
+                            padding: EdgeInsets.only(
+                                top: 15,
+                                left: 15,
+                                right: 10,
+                                bottom: secondContNeeded ? 0 : 15),
+                            alignment: Alignment.centerLeft,
+                            child: Text(
+                              isBoxCatHeader
+                                  ? (box as CategoryHeader).catName
+                                  : (box as Assignment).assignmentName,
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                              style: TextStyle(
+                                  color: isBoxCatHeader
+                                      ? secondContNeeded
+                                          ? themeManager
+                                              .getColor(TypeOfWidget.text)
+                                          : themeManager
+                                              .getColor(TypeOfWidget.button)
+                                      : themeManager.getColor(null),
+                                  fontSize: isBoxCatHeader ? 20 : 15),
+                              textAlign: TextAlign.start,
                             ),
-                    ],
-                  ),
-                ),
-                Container(
-                  constraints: BoxConstraints(minHeight: 60),
-                  padding: EdgeInsets.only(right: 15),
-                  alignment: Alignment.centerRight,
-                  child: Text(
-                    grade == null
-                        ? box.attributes.containsKey('Points Earned')
-                            ? box.attributes['Points Earned']
-                            : ""
-                        : grade,
-                    style: TextStyle(
-                        fontSize: 17,
-                        fontWeight: FontWeight.w700,
-                        color: getColorFrom(grade)),
-                  ),
-                ),
-              ],
-            )),
-        color: themeManager.getColor(TypeOfWidget.subBackground),
-      )));
+                          ),
+                          secondContNeeded
+                              ? Container(
+                                  constraints: BoxConstraints(
+                                      maxWidth:
+                                          MediaQuery.of(context).size.width /
+                                              6 *
+                                              4.3),
+                                  padding: EdgeInsets.only(
+                                      top: 5, left: 15, right: 10, bottom: 15),
+                                  alignment: Alignment.centerLeft,
+                                  child: Text((box as CategoryHeader).weight,
+                                      style: TextStyle(
+                                          color: themeManager
+                                              .getColor(TypeOfWidget.text),
+                                          fontSize: 15),
+                                      textAlign: TextAlign.start),
+                                )
+                              : Container(
+                                  height: 0,
+                                ),
+                        ],
+                      ),
+                    ),
+                    Container(
+                      constraints: BoxConstraints(minHeight: 60),
+                      padding: EdgeInsets.only(right: 15),
+                      alignment: Alignment.centerRight,
+                      child: Text(
+                        grade == null
+                            ? box.attributes.containsKey('Points Earned')
+                                ? box.attributes['Points Earned']
+                                : ""
+                            : grade,
+                        style: TextStyle(
+                            fontSize: 17,
+                            fontWeight: FontWeight.w700,
+                            color: getColorFrom(grade)),
+                      ),
+                    ),
+                  ],
+                )),
+            color: themeManager.getColor(TypeOfWidget.subBackground),
+          )));
     }
 
     return Scaffold(
