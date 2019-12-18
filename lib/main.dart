@@ -39,6 +39,7 @@ void _setTargetPlatformForDesktop() {
 }
 
 void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
   _setTargetPlatformForDesktop();
   JSONSaver jsonSaver = JSONSaver(FilesAvailable.settings);
   await SkyVars.getVars();

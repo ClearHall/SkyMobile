@@ -56,7 +56,7 @@ class _SettingsViewerState extends BiometricBlur<SettingsViewer> {
                   (Platform.isAndroid ? ' The app will now restart.' : ''),
               buttonText: 'Ok'));
     } on PlatformException catch (e) {
-      print('FAILED');
+      print(e);
     }
   }
 

@@ -84,6 +84,8 @@ class _GPACalculatorSchoolYearState
     _checkTerms(stringList);
     List<double> averages =
         getAveragesOfTermsCountingTowardGPA100PointScale(enabledSchoolYears);
+    var finalGPA = getFinalGPA(averages);
+    var final40 = get40Scale(enabledSchoolYears);
 
     return Scaffold(
         appBar: AppBar(
@@ -128,31 +130,64 @@ class _GPACalculatorSchoolYearState
         body: Center(
           child: ListView(
             children: <Widget>[
-              Row(children: <Widget>[
-                Expanded(
-                  child: Container(
-                    padding: EdgeInsets.only(top: 10, left: 20, right: 0),
-                    child: Card(
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(15)),
-                        child: buildGradeDisplayWidget(
-                            '100 Point', getFinalGPA(averages), bold: true),
-                        color:
-                            themeManager.getColor(TypeOfWidget.subBackground)),
+              Container(
+                padding: EdgeInsets.only(top: 10, left: 20, right: 20),
+                child: Card(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20.0),
+                  ),
+                  color: themeManager.getColor(TypeOfWidget.subBackground),
+                  child: Column(
+                    children: <Widget>[
+                      Container(
+                        padding: EdgeInsets.only(top: 10),
+                        child: Text(
+                          "GPA: ${finalGPA.toString() != 'null' ? finalGPA.toStringAsFixed(3) : 'N/A'}",
+                          style: TextStyle(
+                              color: themeManager.getColor(TypeOfWidget.text),
+                              fontSize: 20,
+                              fontWeight: FontWeight.w700),
+                        ),
+                      ),
+                      Container(
+                        padding: EdgeInsets.only(top: 10, bottom: 10),
+                        child: Text(
+                          "4.0 GPA: ${final40.toString() != 'null' ? final40.toStringAsFixed(3) : 'N/A'}",
+                          style: TextStyle(
+                              color: themeManager.getColor(TypeOfWidget.text),
+                              fontSize: 20,
+                              fontWeight: FontWeight.w700),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
-                Expanded(
-                  child: Container(
-                    padding: EdgeInsets.only(top: 10, left: 0, right: 20),
-                    child: Card(
-                        child: buildGradeDisplayWidget(
-                            '4.0 Scale', get40Scale(enabledSchoolYears),
-                            bold: true),
-                        color:
-                            themeManager.getColor(TypeOfWidget.subBackground)),
-                  ),
-                )
-              ]),
+              ),
+//              Row(children: <Widget>[
+//                Expanded(
+//                  child: Container(
+//                    padding: EdgeInsets.only(top: 10, left: 20, right: 0),
+//                    child: Card(
+//                        shape: RoundedRectangleBorder(
+//                            borderRadius: BorderRadius.circular(15)),
+//                        child: buildGradeDisplayWidget(
+//                            '100 Point', getFinalGPA(averages), bold: true),
+//                        color:
+//                            themeManager.getColor(TypeOfWidget.subBackground)),
+//                  ),
+//                ),
+//                Expanded(
+//                  child: Container(
+//                    padding: EdgeInsets.only(top: 10, left: 0, right: 20),
+//                    child: Card(
+//                        child: buildGradeDisplayWidget(
+//                            '4.0 Scale', get40Scale(enabledSchoolYears),
+//                            bold: true),
+//                        color:
+//                            themeManager.getColor(TypeOfWidget.subBackground)),
+//                  ),
+//                )
+//              ]),
               Container(
                 padding: EdgeInsets.only(
                     top: termIdentifiersCountingTowardGPA.isEmpty ? 0 : 10,
@@ -161,34 +196,34 @@ class _GPACalculatorSchoolYearState
                 child: ConstrainedBox(
                   constraints: BoxConstraints(maxHeight: 100),
                   child: Card(
-                      //shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
                       color: themeManager.getColor(TypeOfWidget.subBackground),
                       child: SingleChildScrollViewWithScrollbar(
                         scrollbarColor: Colors.white30.withOpacity(0.75),
                         scrollbarThickness: 8.0,
                         child: SingleChildScrollView(
-                            child: buildArrayOfTermAverageWidgets(averages)),
+                            child: Container(padding: EdgeInsets.only(right: 20, left: 20),child: buildArrayOfTermAverageWidgets(averages))),
                       )),
                 ),
               ),
-              Container(
-                child: Text(
-                  'If your district shows your GPA in portfolio, then your GPA in portfolio is most likely without the current year.',
-                  style: TextStyle(
-                      color: themeManager.getColor(TypeOfWidget.text),
-                      fontSize: 20),
-                ),
-                padding: EdgeInsets.only(left: 20, right: 20, top: 10),
-              ),
-              Container(
-                child: Text(
-                  'Select the terms below that should count toward your final GPA.',
-                  style: TextStyle(
-                      color: themeManager.getColor(TypeOfWidget.text),
-                      fontSize: 20),
-                ),
-                padding: EdgeInsets.only(left: 20, right: 20, top: 10),
-              ),
+//              Container(
+//                child: Text(
+//                  'If your district shows your GPA in portfolio, then your GPA in portfolio is most likely without the current year.',
+//                  style: TextStyle(
+//                      color: themeManager.getColor(TypeOfWidget.text),
+//                      fontSize: 20),
+//                ),
+//                padding: EdgeInsets.only(left: 20, right: 20, top: 10),
+//              ),
+//              Container(
+//                child: Text(
+//                  'Select the terms below that should count toward your final GPA.',
+//                  style: TextStyle(
+//                      color: themeManager.getColor(TypeOfWidget.text),
+//                      fontSize: 20),
+//                ),
+//                padding: EdgeInsets.only(left: 20, right: 20, top: 10),
+//              ),
               Container(
                 padding: EdgeInsets.only(top: 10, left: 20, right: 20),
                 child: ConstrainedBox(

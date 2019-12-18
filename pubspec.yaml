@@ -10,7 +10,7 @@ dependencies:
   flutter:
     sdk: flutter
 
-  skyscrapeapi: ^2.3.5+1
+  skyscrapeapi: ^2.3.5+3
   url_launcher: ^5.2.5
   path_provider: ^1.2.0
   local_auth: ^0.5.2+3
@@ -27,7 +27,7 @@ flutter_icons:
   android: true
   ios: true
   image_path_ios: "assets/CustomizableIcons/icon1.png"
-  image_path_android: "assets/icon.png"
+  image_path_android: "assets/CustomizableIcons/icon1.png"
 
 flutter:
 

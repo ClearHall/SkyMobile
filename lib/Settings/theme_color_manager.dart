@@ -7,7 +7,7 @@ class ThemeManager {
     ColorTheme(Colors.lightBlue, Colors.deepPurple),
     ColorTheme(Colors.yellow, Colors.blue),
     ColorTheme(Colors.orange, Colors.blue),
-    ColorTheme(Colors.teal, Colors.brown)
+    //ColorTheme(Colors.teal, Colors.brown)
   ];
   static Map<ColorTheme, String> colorNameToThemes =
       Map.fromIterables(defaultThemes, [
@@ -15,7 +15,7 @@ class ThemeManager {
     'Purple Shadows',
     'Golden Shimmer',
     'Dark Orange',
-    'Albon\'s Sea'
+    //'Albon\'s Sea'
   ]);
   ColorTheme currentTheme =
       defaultThemes[3]; //ColorTheme(Colors.orange, Colors.blue);

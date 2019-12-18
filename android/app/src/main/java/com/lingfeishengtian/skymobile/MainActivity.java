@@ -26,6 +26,7 @@ public class MainActivity extends FlutterFragmentActivity {
         /*
           Icon1,2,3,4,IconChristmas are valid.
          */
+          System.out.println(iconName);
           getPackageManager().setComponentEnabledSetting(
                   getComponentName(), PackageManager.COMPONENT_ENABLED_STATE_DISABLED, PackageManager.DONT_KILL_APP);
           getPackageManager().setComponentEnabledSetting(
