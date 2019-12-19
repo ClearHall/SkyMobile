@@ -128,41 +128,42 @@ class _GPACalculatorSchoolYearState
         ),
         backgroundColor: themeManager.getColor(TypeOfWidget.background),
         body: Center(
-          child: ListView(
-            children: <Widget>[
-              Container(
-                padding: EdgeInsets.only(top: 10, left: 20, right: 20),
-                child: Card(
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20.0),
-                  ),
-                  color: themeManager.getColor(TypeOfWidget.subBackground),
-                  child: Column(
-                    children: <Widget>[
-                      Container(
-                        padding: EdgeInsets.only(top: 10),
-                        child: Text(
-                          "GPA: ${finalGPA.toString() != 'null' ? finalGPA.toStringAsFixed(3) : 'N/A'}",
-                          style: TextStyle(
-                              color: themeManager.getColor(TypeOfWidget.text),
-                              fontSize: 20,
-                              fontWeight: FontWeight.w700),
+          child: Container(
+            child: ListView(
+              children: <Widget>[
+                Container(
+                  padding: EdgeInsets.only(top: 10, left: 20, right: 20),
+                  child: Card(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20.0),
+                    ),
+                    color: themeManager.getColor(TypeOfWidget.subBackground),
+                    child: Column(
+                      children: <Widget>[
+                        Container(
+                          padding: EdgeInsets.only(top: 10),
+                          child: Text(
+                            "GPA: ${finalGPA.toString() != 'null' ? finalGPA.toStringAsFixed(3) : 'N/A'}",
+                            style: TextStyle(
+                                color: themeManager.getColor(TypeOfWidget.text),
+                                fontSize: 20,
+                                fontWeight: FontWeight.w700),
+                          ),
                         ),
-                      ),
-                      Container(
-                        padding: EdgeInsets.only(top: 10, bottom: 10),
-                        child: Text(
-                          "4.0 GPA: ${final40.toString() != 'null' ? final40.toStringAsFixed(3) : 'N/A'}",
-                          style: TextStyle(
-                              color: themeManager.getColor(TypeOfWidget.text),
-                              fontSize: 20,
-                              fontWeight: FontWeight.w700),
+                        Container(
+                          padding: EdgeInsets.only(top: 10, bottom: 10),
+                          child: Text(
+                            "4.0 GPA: ${final40.toString() != 'null' ? final40.toStringAsFixed(3) : 'N/A'}",
+                            style: TextStyle(
+                                color: themeManager.getColor(TypeOfWidget.text),
+                                fontSize: 20,
+                                fontWeight: FontWeight.w700),
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
-              ),
 //              Row(children: <Widget>[
 //                Expanded(
 //                  child: Container(
@@ -188,24 +189,36 @@ class _GPACalculatorSchoolYearState
 //                  ),
 //                )
 //              ]),
-              Container(
-                padding: EdgeInsets.only(
-                    top: termIdentifiersCountingTowardGPA.isEmpty ? 0 : 10,
-                    left: 20,
-                    right: 20),
-                child: ConstrainedBox(
-                  constraints: BoxConstraints(maxHeight: 100),
-                  child: Card(
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-                      color: themeManager.getColor(TypeOfWidget.subBackground),
-                      child: SingleChildScrollViewWithScrollbar(
-                        scrollbarColor: Colors.white30.withOpacity(0.75),
-                        scrollbarThickness: 8.0,
-                        child: SingleChildScrollView(
-                            child: Container(padding: EdgeInsets.only(right: 20, left: 20),child: buildArrayOfTermAverageWidgets(averages))),
-                      )),
+                Container(
+                  padding: EdgeInsets.only(
+                      top: termIdentifiersCountingTowardGPA.isEmpty ? 0 : 10,
+                      left: 20,
+                      right: 20),
+                  child: buildBasedOnTwo(averages),
                 ),
-              ),
+//                Container(
+//                  padding: EdgeInsets.only(
+//                      top: termIdentifiersCountingTowardGPA.isEmpty ? 0 : 10,
+//                      left: 20,
+//                      right: 20),
+//                  child: ConstrainedBox(
+//                    constraints: BoxConstraints(maxHeight: 100),
+//                    child: Card(
+//                        shape: RoundedRectangleBorder(
+//                            borderRadius: BorderRadius.circular(20)),
+//                        color:
+//                            themeManager.getColor(TypeOfWidget.subBackground),
+//                        child: SingleChildScrollViewWithScrollbar(
+//                          scrollbarColor: Colors.white30.withOpacity(0.75),
+//                          scrollbarThickness: 8.0,
+//                          child: SingleChildScrollView(
+//                              child: Container(
+//                                  padding: EdgeInsets.only(right: 20, left: 20),
+//                                  child: buildArrayOfTermAverageWidgets(
+//                                      averages))),
+//                        )),
+//                  ),
+//                ),
 //              Container(
 //                child: Text(
 //                  'If your district shows your GPA in portfolio, then your GPA in portfolio is most likely without the current year.',
@@ -224,43 +237,47 @@ class _GPACalculatorSchoolYearState
 //                ),
 //                padding: EdgeInsets.only(left: 20, right: 20, top: 10),
 //              ),
-              Container(
-                padding: EdgeInsets.only(top: 10, left: 20, right: 20),
-                child: ConstrainedBox(
-                  constraints: BoxConstraints(maxHeight: 200),
-                  child: Card(
-                      //shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-                      color: themeManager.getColor(TypeOfWidget.subBackground),
-                      child: SingleChildScrollViewWithScrollbar(
-                        scrollbarColor: Colors.white30.withOpacity(0.75),
-                        scrollbarThickness: 8.0,
-                        child: SingleChildScrollView(
-                            child: buildArrayOfSelectableTerms(stringList)),
-                      )),
-                ),
-              ),
-              Container(
-                child: Text(
-                  'Select which school years count toward final GPA below. To modify which classes count toward GPA, click the arrow.',
-                  style: TextStyle(
-                      color: themeManager.getColor(TypeOfWidget.text),
-                      fontSize: 20),
-                ),
-                padding: EdgeInsets.all(20),
-              ),
-              Container(
-                padding:
-                    EdgeInsets.only(top: 0, left: 20, right: 20, bottom: 10.0),
-                child: Container(
-                    //padding: EdgeInsets.all(10.0),
-                    // constraints: BoxConstraints(maxHeight: 100),
+                Container(
+                  padding: EdgeInsets.only(top: 10, left: 20, right: 20),
+                  child: ConstrainedBox(
+                    constraints: BoxConstraints(maxHeight: 200),
                     child: Card(
-                        //shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(20.0),
+                        ),
                         color:
                             themeManager.getColor(TypeOfWidget.subBackground),
-                        child: buildArrayOfSchoolYears())),
-              ),
-            ],
+                        child: SingleChildScrollViewWithScrollbar(
+                          scrollbarColor: Colors.white30.withOpacity(0.75),
+                          scrollbarThickness: 8.0,
+                          child: SingleChildScrollView(
+                              child: buildArrayOfSelectableTerms(stringList)),
+                        )),
+                  ),
+                ),
+                Container(
+                  child: Text(
+                    'Select which school years count toward final GPA below. To modify which classes count toward GPA, click the arrow.',
+                    style: TextStyle(
+                        color: themeManager.getColor(TypeOfWidget.text),
+                        fontSize: 20),
+                  ),
+                  padding: EdgeInsets.all(20),
+                ),
+                Container(
+                  padding: EdgeInsets.only(
+                      top: 0, left: 20, right: 20, bottom: 10.0),
+                  child: Container(
+                      //padding: EdgeInsets.all(10.0),
+                      // constraints: BoxConstraints(maxHeight: 100),
+                      child: Card(
+                          //shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                          color:
+                              themeManager.getColor(TypeOfWidget.subBackground),
+                          child: buildArrayOfSchoolYears())),
+                ),
+              ],
+            ),
           ),
         ));
   }
@@ -453,8 +470,31 @@ class _GPACalculatorSchoolYearState
     );
   }
 
+  Column buildBasedOnTwo(List<double> grades){
+    List<Widget> widgets = [];
+    for (int i = 0; i < grades.length; i += 2) {
+        widgets.add(Row(children: <Widget>[Flexible(child: _generateMiniCard(grades, i)),
+          (grades.length > i + 1) ? Flexible(child: _generateMiniCard(grades, i + 1)) : Container()
+        ]));
+    }
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: widgets,
+    );
+  }
+
+  Card _generateMiniCard(List<double> grades, int index){
+    return Card(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20.0),
+        ),
+        color: themeManager.getColor(TypeOfWidget.subBackground),
+        child: buildGradeDisplayWidget(
+            termIdentifiersCountingTowardGPA[index], grades[index], align: TextAlign.center));
+  }
+
   Widget buildGradeDisplayWidget(String term, double grade,
-      {Color colorOverride, bool bold = false}) {
+      {Color colorOverride, bool bold = false, TextAlign align = TextAlign.left}) {
     return Container(
       width: double.infinity,
       child: Text(
@@ -463,7 +503,7 @@ class _GPACalculatorSchoolYearState
             color: colorOverride ?? themeManager.getColor(TypeOfWidget.text),
             fontSize: 20,
             fontWeight: bold ? FontWeight.w700 : FontWeight.normal),
-      ),
+      textAlign: align,),
       padding: EdgeInsets.only(left: 10, top: 10, right: 10, bottom: 10),
     );
   }

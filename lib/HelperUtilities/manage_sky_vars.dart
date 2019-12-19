@@ -4,9 +4,16 @@ class SkyVars {
   static JSONSaver skyVarsJsonSaver =
       JSONSaver(FilesAvailable.consoleOnlyVariables);
 
+  static final Map<String, String> skyVarsDefault = {
+    'version': '2',
+    'permdev': 'false',
+    'iconchangesupport' : 'false'
+  };
+
   static Map<String, String> skyVars = {
     'version': '2',
     'permdev': 'false',
+    'iconchangesupport' : 'false'
   };
 
   static saveVars() async {

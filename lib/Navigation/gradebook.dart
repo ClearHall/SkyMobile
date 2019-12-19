@@ -26,7 +26,6 @@ class _TermViewer extends BiometricBlur<TermViewerPage> {
 
   _retrieveMessagesInTheBackground() async {
     messages = await skywardAPI.getMessages();
-    for (Message m in messages) print(m);
   }
 
   _goToGPACalculator() async {

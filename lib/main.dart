@@ -42,7 +42,6 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   _setTargetPlatformForDesktop();
   JSONSaver jsonSaver = JSONSaver(FilesAvailable.settings);
-  await SkyVars.getVars();
   var retrieved = await jsonSaver.readListData();
   if (retrieved is Map) {
     if (retrieved.length != settings.length) {
@@ -125,6 +124,18 @@ class MyHomePageState extends State<MyHomePage> {
     _getAccounts();
     _determineWhetherToLoginToPreviouslySavedAccount();
     _shouldShowWelcomeDialog();
+    _checkSkyVars();
+  }
+  
+  _checkSkyVars() async{
+    await SkyVars.getVars();
+    print(SkyVars.skyVars);
+    for(int i = 0; i < SkyVars.skyVarsDefault.length; i++){
+      if(!SkyVars.skyVars.containsKey(SkyVars.skyVarsDefault.keys.toList()[i])){
+        SkyVars.skyVars[SkyVars.skyVarsDefault.keys.toList()[i]] = SkyVars.skyVarsDefault.values.toList()[i];
+      }
+    }
+    SkyVars.saveVars();
   }
 
   _shouldShowWelcomeDialog() async {

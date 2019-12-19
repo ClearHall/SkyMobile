@@ -33,6 +33,7 @@ class SettingsViewer extends StatefulWidget {
 class _SettingsViewerState extends BiometricBlur<SettingsViewer> {
   static const platform =
       const MethodChannel('com.lingfeishengtian.SkyMobile/choose_icon');
+  List icons = ['icon1', 'icon2', 'icon3', 'icon4', 'iconchristmas'];
 
   changeIcon(String iconName) async {
     HuntyDialogLoading loading = HuntyDialogLoading(
@@ -108,7 +109,6 @@ class _SettingsViewerState extends BiometricBlur<SettingsViewer> {
         );
     }
 
-    List icons = ['icon1', 'icon2', 'icon3', 'icon4', 'iconchristmas'];
     List<Widget> widgets = [];
     for (String iconName in icons) {
       widgets.add(RaisedButton(
@@ -131,36 +131,38 @@ class _SettingsViewerState extends BiometricBlur<SettingsViewer> {
       ));
     }
 
-    settingsWidgets.add(Container(
-      padding: EdgeInsets.only(left: 20, right: 20),
-      child: Column(
-        children: <Widget>[
-          Container(
-              child: Container(
-            child: Text(
-              'Change icon!',
-              style: TextStyle(
-                  color: themeManager.getColor(TypeOfWidget.text),
-                  fontSize: 20),
-            ),
-            padding: EdgeInsets.all(10),
-          )),
-          SingleChildScrollViewWithScrollbar(
-              scrollDirection: Axis.horizontal,
-              scrollbarColor: Colors.white30.withOpacity(0.75),
-              scrollbarThickness: 8.0,
-              child: SingleChildScrollView(
-                child: Row(
-                  children: widgets,
-                ),
+    if (SkyVars.skyVars['iconchangesupport'] == 'true') {
+      settingsWidgets.add(Container(
+        padding: EdgeInsets.only(left: 20, right: 20),
+        child: Column(
+          children: <Widget>[
+            Container(
+                child: Container(
+              child: Text(
+                'Change icon!',
+                style: TextStyle(
+                    color: themeManager.getColor(TypeOfWidget.text),
+                    fontSize: 20),
+              ),
+              padding: EdgeInsets.all(10),
+            )),
+            SingleChildScrollViewWithScrollbar(
                 scrollDirection: Axis.horizontal,
-              ))
-        ],
-      ),
-    ));
-    settingsWidgets.add(SizedBox(
-      height: 15,
-    ));
+                scrollbarColor: Colors.white30.withOpacity(0.75),
+                scrollbarThickness: 8.0,
+                child: SingleChildScrollView(
+                  child: Row(
+                    children: widgets,
+                  ),
+                  scrollDirection: Axis.horizontal,
+                ))
+          ],
+        ),
+      ));
+      settingsWidgets.add(SizedBox(
+        height: 15,
+      ));
+    }
 
     return Scaffold(
         appBar: AppBar(
