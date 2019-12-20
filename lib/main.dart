@@ -42,15 +42,12 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   _setTargetPlatformForDesktop();
   JSONSaver jsonSaver = JSONSaver(FilesAvailable.settings);
-  var retrieved = await jsonSaver.readListData();
+  Map<String, dynamic> retrieved = await jsonSaver.readListData();
   if (retrieved is Map) {
     if (retrieved.length != settings.length) {
-      Map tmp;
-      for (int i = 0; i < settings.length; i++) {
-        if (retrieved.containsKey(settings.keys.toList()[i])) {
-          tmp.addAll(retrieved[settings.keys.toList()[i]]);
-        }
-      }
+      Map<String, dynamic> tmp = Map();
+      tmp.addAll(settings);
+      tmp.addAll(retrieved);
       retrieved = tmp;
     }
     for (int i = 0; i < retrieved.length; i++) {
@@ -58,7 +55,7 @@ void main() async {
           settings[retrieved.keys.toList()[i]]['description'];
     }
     settings.addAll(retrieved);
-    (settings['Theme']['option'] as Map).forEach((k, v) {
+    (settings['Theme']['option']).forEach((k, v) {
       if (v == true)
         runApp(MyApp(ThemeManager.colorNameToThemes.keys.toList()[
             ThemeManager.colorNameToThemes.values.toList().indexOf(k)]));
@@ -129,7 +126,6 @@ class MyHomePageState extends State<MyHomePage> {
   
   _checkSkyVars() async{
     await SkyVars.getVars();
-    print(SkyVars.skyVars);
     for(int i = 0; i < SkyVars.skyVarsDefault.length; i++){
       if(!SkyVars.skyVars.containsKey(SkyVars.skyVarsDefault.keys.toList()[i])){
         SkyVars.skyVars[SkyVars.skyVarsDefault.keys.toList()[i]] = SkyVars.skyVarsDefault.values.toList()[i];
