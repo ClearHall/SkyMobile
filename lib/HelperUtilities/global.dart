@@ -79,3 +79,8 @@ Color getColorFrom(String grade) {
   }
   return Color.fromARGB(255, 0, (0.8471 * 255).round(), (0.8039 * 255).round());
 }
+
+refreshGradebook() async{
+  terms = await skywardAPI.getGradeBookTerms();
+  gradeBoxes = await skywardAPI.getGradeBookGrades(terms);
+}

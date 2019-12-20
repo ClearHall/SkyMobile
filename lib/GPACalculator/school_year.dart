@@ -7,17 +7,16 @@ import 'package:skymobile/ExtraViewPackages/hunty_dialogs.dart';
 import 'package:skymobile/Settings/theme_color_manager.dart';
 import 'package:skyscrapeapi/data_types.dart';
 import 'package:skymobile/HelperUtilities/global.dart';
-import 'package:skymobile/ExtraViewPackages/constant_visibile_scrollbar.dart';
 import '../HelperUtilities/gpa_calculator_support_utils.dart';
 
 class GPACalculatorSchoolYear extends StatefulWidget {
   GPACalculatorSchoolYear();
   @override
-  _GPACalculatorSchoolYearState createState() =>
-      new _GPACalculatorSchoolYearState();
+  GPACalculatorSchoolYearState createState() =>
+      new GPACalculatorSchoolYearState();
 }
 
-class _GPACalculatorSchoolYearState
+class GPACalculatorSchoolYearState
     extends BiometricBlur<GPACalculatorSchoolYear> {
   @override
   void initState() {
@@ -66,7 +65,7 @@ class _GPACalculatorSchoolYearState
     }
   }
 
-  List<SchoolYear> getEnabledHistGrades() {
+  static List<SchoolYear> getEnabledHistGrades() {
     List<SchoolYear> fin = [];
     for (SchoolYear x in historyGrades) {
       if (x.isEnabled) fin.add(x);
@@ -80,7 +79,7 @@ class _GPACalculatorSchoolYearState
     // _testGPACalcSaving();
 //    if (historyGrades != null) didSuccessfullyGetOlderGrades = true
     List<SchoolYear> enabledSchoolYears = getEnabledHistGrades();
-    List<String> stringList = _getSelectableTermsString(enabledSchoolYears);
+    List<String> stringList = getSelectableTermsString(enabledSchoolYears);
     _checkTerms(stringList);
     List<double> averages =
         getAveragesOfTermsCountingTowardGPA100PointScale(enabledSchoolYears);
@@ -238,118 +237,26 @@ class _GPACalculatorSchoolYearState
 //                padding: EdgeInsets.only(left: 20, right: 20, top: 10),
 //              ),
                 Container(
-                  padding: EdgeInsets.only(top: 10, left: 20, right: 20),
-                  child: ConstrainedBox(
-                    constraints: BoxConstraints(maxHeight: 200),
-                    child: Card(
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(20.0),
-                        ),
-                        color:
-                            themeManager.getColor(TypeOfWidget.subBackground),
-                        child: SingleChildScrollViewWithScrollbar(
-                          scrollbarColor: Colors.white30.withOpacity(0.75),
-                          scrollbarThickness: 8.0,
-                          child: SingleChildScrollView(
-                              child: buildArrayOfSelectableTerms(stringList)),
-                        )),
-                  ),
-                ),
-                Container(
                   child: Text(
-                    'Select which school years count toward final GPA below. To modify which classes count toward GPA, click the arrow.',
+                    'Add/Edit School Years',
                     style: TextStyle(
+                      fontWeight: FontWeight.w700,
                         color: themeManager.getColor(TypeOfWidget.text),
                         fontSize: 20),
                   ),
-                  padding: EdgeInsets.all(20),
+                  padding: EdgeInsets.only(top: 20, left: 35, right: 35, bottom: 5),
                 ),
                 Container(
                   padding: EdgeInsets.only(
                       top: 0, left: 20, right: 20, bottom: 10.0),
                   child: Container(
                       //padding: EdgeInsets.all(10.0),
-                      // constraints: BoxConstraints(maxHeight: 100),
-                      child: Card(
-                          //shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-                          color:
-                              themeManager.getColor(TypeOfWidget.subBackground),
-                          child: buildArrayOfSchoolYears())),
+                          child: buildArrayOfSchoolYears()),
                 ),
               ],
             ),
           ),
         ));
-  }
-
-  Row buildArrayOfSelectableTerms(List<String> stringList) {
-    List<Widget> widgets = [];
-
-    for (String term in stringList) {
-      if (!term.contains('\n'))
-        widgets.add(Container(
-          child: ListTile(
-            title: Text(
-              "$term",
-              style: TextStyle(
-                  color: themeManager.getColor(TypeOfWidget.text),
-                  fontSize: 20),
-            ),
-            trailing: IconButton(
-              icon: Icon(
-                  termIdentifiersCountingTowardGPA.contains(term)
-                      ? Icons.check_box
-                      : Icons.check_box_outline_blank,
-                  color: themeManager.getColor(null)),
-              onPressed: () {
-                setState(() {
-                  if (termIdentifiersCountingTowardGPA.contains(term)) {
-                    termIdentifiersCountingTowardGPA.remove(term);
-                  } else {
-                    int index = stringList.indexOf(term);
-                    for (int i = 0;
-                        i < termIdentifiersCountingTowardGPA.length;
-                        i++) {
-                      if (stringList
-                              .indexOf(termIdentifiersCountingTowardGPA[i]) >
-                          index) {
-                        termIdentifiersCountingTowardGPA.insert(i, term);
-                        break;
-                      }
-                    }
-                    if (!termIdentifiersCountingTowardGPA.contains(term))
-                      termIdentifiersCountingTowardGPA.add(term);
-                  }
-                  saveTermsToRead();
-                });
-              },
-            ),
-          ),
-        ));
-    }
-    List<Widget> first, second;
-    first = [];
-    second = [];
-    for (int i = 0; i < widgets.length; i++) {
-      if (i <= widgets.length / 2) {
-        first.add(widgets[i]);
-      } else {
-        second.add(widgets[i]);
-      }
-    }
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Expanded(
-            child: Column(
-          children: first,
-        )),
-        Expanded(
-            child: Column(
-          children: second,
-        )),
-      ],
-    );
   }
 
   _checkTerms(List<String> selectableTerms) {
@@ -360,7 +267,7 @@ class _GPACalculatorSchoolYearState
     }
   }
 
-  List<String> _getSelectableTermsString(List<SchoolYear> enabled) {
+  static List<String> getSelectableTermsString(List<SchoolYear> enabled) {
     LinkedHashSet<Term> termList = LinkedHashSet<Term>();
 
     for (SchoolYear year in enabled) {
@@ -376,12 +283,13 @@ class _GPACalculatorSchoolYearState
     for (int i = 0; i < historyGrades.length; i++) {
       widgets.add(Container(
           padding: EdgeInsets.only(
-              left: 5,
-              right: 5,
               top: 5.0,
               bottom: i == historyGrades.length - 1 ? 5 : 0),
           child: Card(
-              color: themeManager.getColor(TypeOfWidget.background),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20.0),
+              ),
+              color: themeManager.getColor(TypeOfWidget.subBackground),
               child: ListTile(
                   title: Container(
                     width: double.infinity,

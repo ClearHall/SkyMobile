@@ -115,34 +115,6 @@ class _TermViewer extends BiometricBlur<TermViewerPage> {
     if (currentTermIndex < 0) currentTermIndex = 0;
   }
 
-//  _showChildrenChangeDialog() async {
-//    List newList = [];
-//    if (skywardAPI.children != null) {
-//      for (SkywardAccount s in skywardAPI.children) {
-//        newList.add(s.name);
-//      }
-//    }
-//    if (newList.length >= 1) newList.removeAt(0);
-//
-//    bool isCancelled = true;
-//    var dialog = HuntyDialogOfList(
-//      hint: null,
-//      listOfValues: newList,
-//      title: 'Children',
-//      description: 'Choose which child\'s grades you would like to view.',
-//      buttonText: 'Enter',
-//      okPressed: () {
-//        isCancelled = false;
-//      },
-//    );
-//
-//    await showDialog(context: context, builder: (bc) => dialog);
-//
-//    if (!isCancelled) {
-//      _submitAndChangeChild(dialog.indexOfValueChosen + 1);
-//    }
-//  }
-
   _submitAndChangeChild(int ind) async {
     skywardAPI.switchUserIndex(ind);
 
@@ -180,6 +152,19 @@ class _TermViewer extends BiometricBlur<TermViewerPage> {
                 buttonText: 'Ok');
           });
     }
+  }
+
+  refresh() async{
+    var dialog = HuntyDialogLoading('Cancel', () {
+    }, title: 'Loading', description: ('Getting your grades..'),);
+    dialog.restrictCancel = true;
+
+    showDialog(barrierDismissible: false, context: context, builder: (BuildContext context) => dialog);
+
+    await refreshGradebook();
+    setState(() {
+      Navigator.of(context).pop();
+    });
   }
 
   bool expanded = false;
@@ -227,9 +212,9 @@ class _TermViewer extends BiometricBlur<TermViewerPage> {
 
         body.add(Card(
           shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
           child: InkWell(
-              borderRadius: BorderRadius.circular(10),
+              borderRadius: BorderRadius.circular(20),
               onTap: () {
                 if (gradeBox != null && gradeBox is GradeBox)
                   _goToAssignmentsViewer(gradeBox, teacherIDBox.courseName);
@@ -247,7 +232,7 @@ class _TermViewer extends BiometricBlur<TermViewerPage> {
                               maxWidth:
                                   MediaQuery.of(context).size.width / 6 * 4),
                           padding: EdgeInsets.only(
-                              top: 10, left: 15, right: 10, bottom: 0),
+                              top: 15, left: 20, right: 20, bottom: 0),
                           alignment: Alignment.centerLeft,
                           child: Text(
                             teacherIDBox.courseName,
@@ -262,7 +247,7 @@ class _TermViewer extends BiometricBlur<TermViewerPage> {
                         ),
                         Container(
                           padding: EdgeInsets.only(
-                              top: 5, left: 15, right: 10, bottom: 0),
+                              top: 5, left: 20, right: 20, bottom: 0),
                           alignment: Alignment.centerLeft,
                           child: Text(teacherIDBox.teacherName,
                               style: TextStyle(
@@ -272,7 +257,7 @@ class _TermViewer extends BiometricBlur<TermViewerPage> {
                         ),
                         Container(
                             padding: EdgeInsets.only(
-                                top: 5, left: 15, right: 10, bottom: 10),
+                                top: 5, left: 20, right: 20, bottom: 15),
                             alignment: Alignment.centerLeft,
                             child: Text(teacherIDBox.timePeriod,
                                 style: TextStyle(
@@ -304,20 +289,21 @@ class _TermViewer extends BiometricBlur<TermViewerPage> {
     List<Widget> drawerWidgets = [
       DrawerHeader(
         child: FittedBox(
-          fit: BoxFit.fitWidth,
+          fit: BoxFit.fitHeight,
           child: Text(
-            skywardAPI.currentUser,
+            skywardAPI.currentUser.replaceAll(" ", "\n"),
             style: TextStyle(
               color: themeManager.getColor(TypeOfWidget.text),
             ),
+            maxLines: 10,
           ),
         ),
       ),
       ListTile(
-        leading: Icon(
+        leading: Container(padding: EdgeInsets.only(left: 10), child: Icon(
           Icons.settings,
           color: themeManager.getColor(TypeOfWidget.text),
-        ),
+        ),),
         title: Text(
           'Settings',
           style: TextStyle(
@@ -328,10 +314,10 @@ class _TermViewer extends BiometricBlur<TermViewerPage> {
         },
       ),
       ListTile(
-        leading: Icon(
+        leading: Container(padding: EdgeInsets.only(left: 10), child: Icon(
           Icons.assessment,
           color: themeManager.getColor(TypeOfWidget.text),
-        ),
+        )),
         title: Text(
           'GPA Calculator',
           style: TextStyle(
@@ -343,10 +329,10 @@ class _TermViewer extends BiometricBlur<TermViewerPage> {
       ),
       skywardAPI.children != null
           ? ListTile(
-              leading: Icon(
+              leading: Container(padding: EdgeInsets.only(left: 10), child: Icon(
                 expanded ? Icons.arrow_drop_down : Icons.arrow_drop_up,
                 color: themeManager.getColor(TypeOfWidget.text),
-              ),
+              )),
               title: Text(
                 'Change Child',
                 style: TextStyle(
@@ -361,8 +347,9 @@ class _TermViewer extends BiometricBlur<TermViewerPage> {
             )
           : Container(),
       ListTile(
-        leading: Icon(Icons.message,
-            color: themeManager.getColor(TypeOfWidget.text)),
+        leading: Container(padding: EdgeInsets.only(left: 10), child: Icon(
+            Icons.message,
+            color: themeManager.getColor(TypeOfWidget.text))),
         title: Text(
           'Messages',
           style: TextStyle(
@@ -383,10 +370,10 @@ class _TermViewer extends BiometricBlur<TermViewerPage> {
         },
       ),
       ListTile(
-        leading: Icon(
+        leading: Container(padding: EdgeInsets.only(left: 10), child: Icon(
           Icons.arrow_back,
           color: themeManager.getColor(TypeOfWidget.text),
-        ),
+        )),
         title: Text(
           'Logout',
           style: TextStyle(
@@ -421,10 +408,10 @@ class _TermViewer extends BiometricBlur<TermViewerPage> {
                   SizedBox(
                     width: 20,
                   ),
-                  Icon(
+                Container(padding: EdgeInsets.only(left: 10), child: Icon(
                     Icons.person,
                     color: themeManager.getColor(TypeOfWidget.text),
-                  ),
+                  )),
                 ]),
                 title: Text(
                   children[j].name,
@@ -463,9 +450,13 @@ class _TermViewer extends BiometricBlur<TermViewerPage> {
                   fontWeight: FontWeight.w700,
                 ))),
         actions: <Widget>[
-          SizedBox(
-            width: 50,
-          )
+          IconButton(
+            icon: Icon(Icons.refresh),
+            onPressed: (){
+              refresh();
+            },
+          ),
+          SizedBox(width: 10,)
         ],
 //          IconButton(
 //            icon: Icon(
@@ -601,7 +592,7 @@ class _TermViewer extends BiometricBlur<TermViewerPage> {
             ),
             Expanded(
               child: ListView(
-                padding: EdgeInsets.only(left: 10, right: 10, bottom: 10),
+                padding: EdgeInsets.only(left: 15, right: 15, bottom: 10),
                 children: body,
               ),
             )

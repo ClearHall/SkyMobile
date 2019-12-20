@@ -96,6 +96,7 @@ class HuntyDialogLoading extends HuntyDialog {
   @override
   createDialogBoxContents(BuildContext context) {
     return <Widget>[
+      Container(),
       Text(
         title,
         style: TextStyle(
@@ -113,7 +114,7 @@ class HuntyDialogLoading extends HuntyDialog {
       CircularProgressIndicator(),
       SizedBox(height: 40.0),
       restrictCancel
-          ? Container()
+          ? SizedBox(height: 20,)
           : Align(
               alignment: Alignment.bottomRight,
               child: FlatButton(

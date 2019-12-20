@@ -77,7 +77,10 @@ class _MessageViewerState extends BiometricBlur<MessageViewer> {
       }
 
       children.add(Container(
+          padding: EdgeInsets.only(top: 10, left: 20, right: 20),
         child: Card(
+          shape:
+          RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
           child: Column(
             children: <Widget>[
               message.header != null
@@ -90,7 +93,7 @@ class _MessageViewerState extends BiometricBlur<MessageViewer> {
                                 color: themeManager.getColor(TypeOfWidget.text),
                                 fontSize: 20),
                           )),
-                      padding: EdgeInsets.only(top: 10, left: 10, right: 10),
+                      padding: EdgeInsets.only(top: 15, left: 20, right: 20),
                     )
                   : Container(),
               message.title?.title != null
@@ -103,7 +106,7 @@ class _MessageViewerState extends BiometricBlur<MessageViewer> {
                                 color: themeManager.getColor(TypeOfWidget.text),
                                 fontSize: 17),
                           )),
-                      padding: EdgeInsets.only(top: 10, left: 10, right: 10),
+                      padding: EdgeInsets.only(top: 15, left: 20, right: 20),
                     )
                   : Container(),
               message.title?.attachment != null
@@ -119,7 +122,7 @@ class _MessageViewerState extends BiometricBlur<MessageViewer> {
                                     fontSize: 15),
                                 recognizer: tapForAttach),
                           )),
-                      padding: EdgeInsets.only(top: 10, left: 10, right: 10),
+                      padding: EdgeInsets.only(top: 10, left: 20, right: 20),
                     )
                   : Container(),
               message.date != null
@@ -132,7 +135,7 @@ class _MessageViewerState extends BiometricBlur<MessageViewer> {
                                 color: themeManager.getColor(TypeOfWidget.text),
                                 fontSize: 15),
                           )),
-                      padding: EdgeInsets.only(top: 10, left: 10, right: 10),
+                      padding: EdgeInsets.only(top: 10, left: 20, right: 20),
                     )
                   : Container(),
 //              Divider(
@@ -145,13 +148,12 @@ class _MessageViewerState extends BiometricBlur<MessageViewer> {
               ),
               Container(
                 child: RichText(text: TextSpan(children: textSpans)),
-                padding: EdgeInsets.only(left: 10, right: 10),
+                padding: EdgeInsets.only(left: 20, right: 20),
               )
             ],
           ),
           color: themeManager.getColor(TypeOfWidget.subBackground),
         ),
-        padding: EdgeInsets.only(top: 10, left: 10, right: 10),
       ));
     }
 
