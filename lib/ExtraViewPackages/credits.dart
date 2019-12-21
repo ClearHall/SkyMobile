@@ -29,19 +29,101 @@ class _CreditsState extends BiometricBlur<Credits> {
         ),
         backgroundColor: themeManager.getColor(TypeOfWidget.background),
         body: Center(
-            child: Column(children: <Widget>[
-              RichText(
-                  text: TextSpan(
-                      text: 'Main Developer\n',
-                      style: TextStyle(fontSize: 50,),
-                      children: [TextSpan(text: "Hunter Han",
-                        style: TextStyle(fontSize: 15),)])),
-              RichText(
-                  text: TextSpan(
-                      text: 'Graphic Designer\n',
-                      style: TextStyle(fontSize: 50,),
-                      children: [TextSpan(text: "Albon Wu",
-                        style: TextStyle(fontSize: 15),)]))
-            ],)));
+            child: Column(
+          children: <Widget>[
+            SizedBox(
+              height: 10,
+            ),
+            Align(
+              alignment: Alignment.center,
+              child: Text(
+                'Main Developer',
+                style:
+                    TextStyle(fontSize: 30, color: themeManager.getColor(null), fontWeight: FontWeight.bold),
+              ),
+            ),
+            Align(
+              alignment: Alignment.center,
+              child: Text(
+                '\nHunter Han\n',
+                style:
+                TextStyle(fontSize: 20, color: themeManager.getColor(null)),
+              ),
+            ),
+            Align(
+              alignment: Alignment.center,
+              child: Text(
+                'Graphic Designer',
+                style:
+                TextStyle(fontSize: 30, color: themeManager.getColor(null), fontWeight: FontWeight.bold),
+              ),
+            ),
+            Align(
+              alignment: Alignment.center,
+              child: Text(
+                '\nAlbon Wu\n',
+                style:
+                TextStyle(fontSize: 20, color: themeManager.getColor(null)),
+              ),
+            ),
+            Align(
+              alignment: Alignment.center,
+              child: Text(
+                'Beta Testers',
+                style:
+                TextStyle(fontSize: 30, color: themeManager.getColor(null), fontWeight: FontWeight.bold),
+              ),
+            ),
+            Align(
+              alignment: Alignment.center,
+              child: Text(
+                '\nEvelyn N.\n',
+                style:
+                TextStyle(fontSize: 20, color: themeManager.getColor(null)),
+              ),
+            ),
+            Align(
+              alignment: Alignment.center,
+              child: Text(
+                'Damian L.\n',
+                style:
+                TextStyle(fontSize: 20, color: themeManager.getColor(null)),
+              ),
+            ),
+            Align(
+              alignment: Alignment.center,
+              child: Text(
+                'Kishlaya R.\n',
+                style:
+                TextStyle(fontSize: 20, color: themeManager.getColor(null)),
+              ),
+            ),
+            Align(
+              alignment: Alignment.center,
+              child: Text(
+                'Yifan M.\n',
+                style:
+                TextStyle(fontSize: 20, color: themeManager.getColor(null)),
+              ),
+            ),
+            Align(
+              alignment: Alignment.center,
+              child: Text(
+                'Play Store & App Store Graphics',
+                style:
+                TextStyle(fontSize: 30, color: themeManager.getColor(null), fontWeight: FontWeight.bold),
+                textAlign: TextAlign.center,
+              ),
+            ),
+            Align(
+              alignment: Alignment.center,
+              child: Text(
+                '\nYifan M.\n',
+                style:
+                TextStyle(fontSize: 20, color: themeManager.getColor(null)),
+              ),
+            ),
+          ],
+        )));
   }
 }
