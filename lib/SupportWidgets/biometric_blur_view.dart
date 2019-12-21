@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:skymobile/Settings/settings_viewer.dart';
 import 'package:skymobile/Settings/theme_color_manager.dart';
 import '../HelperUtilities/global.dart';
-import 'hunty_dialogs.dart';
+import '../ExtraViewPackages/hunty_dialogs.dart';
 import 'package:local_auth/local_auth.dart';
 
 bool shouldBlur = false;

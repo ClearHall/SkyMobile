@@ -1,7 +1,7 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:skymobile/ExtraViewPackages/biometric_blur_view.dart';
+import 'package:skymobile/SupportWidgets/biometric_blur_view.dart';
 import 'package:skymobile/Settings/theme_color_manager.dart';
 import 'package:skyscrapeapi/data_types.dart';
 import 'package:skymobile/HelperUtilities/global.dart';
@@ -367,6 +367,20 @@ class _TermViewer extends BiometricBlur<TermViewerPage> {
           } else {
             Navigator.pushNamed(context, '/messages');
           }
+        },
+      ),
+      ListTile(
+        leading: Container(padding: EdgeInsets.only(left: 10), child: Icon(
+          Icons.info,
+          color: themeManager.getColor(TypeOfWidget.text),
+        )),
+        title: Text(
+          'Credits',
+          style: TextStyle(
+              color: themeManager.getColor(TypeOfWidget.text), fontSize: 25),
+        ),
+        onTap: () {
+          Navigator.pushNamed(context, '/credits');
         },
       ),
       ListTile(

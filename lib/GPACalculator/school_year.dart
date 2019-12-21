@@ -2,7 +2,7 @@ import 'dart:collection';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:skymobile/ExtraViewPackages/biometric_blur_view.dart';
+import 'package:skymobile/SupportWidgets/biometric_blur_view.dart';
 import 'package:skymobile/ExtraViewPackages/hunty_dialogs.dart';
 import 'package:skymobile/Settings/theme_color_manager.dart';
 import 'package:skyscrapeapi/data_types.dart';

@@ -1,8 +1,8 @@
 import 'dart:collection';
 
 import 'package:flutter/material.dart';
-import 'package:skymobile/ExtraViewPackages/biometric_blur_view.dart';
-import 'package:skymobile/ExtraViewPackages/constant_visibile_scrollbar.dart';
+import 'package:skymobile/SupportWidgets/biometric_blur_view.dart';
+import 'package:skymobile/SupportWidgets/constant_visibile_scrollbar.dart';
 import 'package:skymobile/GPACalculator/school_year.dart';
 import 'package:skymobile/HelperUtilities/global.dart';
 import 'package:skymobile/Settings/settings_widget_generator.dart';

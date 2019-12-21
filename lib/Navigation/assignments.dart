@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:skymobile/ExtraViewPackages/biometric_blur_view.dart';
+import 'package:skymobile/SupportWidgets/biometric_blur_view.dart';
 import 'package:skymobile/Settings/theme_color_manager.dart';
 import 'package:skyscrapeapi/data_types.dart';
 import 'package:skymobile/HelperUtilities/global.dart';

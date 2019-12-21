@@ -5,8 +5,9 @@ import 'package:flutter/foundation.dart'
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:local_auth/local_auth.dart';
-import 'package:skymobile/ExtraViewPackages/biometric_blur_view.dart';
-import 'package:skymobile/HelperUtilities/custom_overscroll_behavior.dart';
+import 'package:skymobile/ExtraViewPackages/credits.dart';
+import 'package:skymobile/SupportWidgets/biometric_blur_view.dart';
+import 'package:skymobile/SupportWidgets/custom_overscroll_behavior.dart';
 import 'package:skymobile/HelperUtilities/manage_sky_vars.dart';
 import 'package:skymobile/Navigation/messages.dart';
 import 'package:skymobile/Settings/theme_color_manager.dart';
@@ -42,8 +43,9 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   _setTargetPlatformForDesktop();
   JSONSaver jsonSaver = JSONSaver(FilesAvailable.settings);
-  Map<String, dynamic> retrieved = await jsonSaver.readListData();
-  if (retrieved is Map) {
+  var a = await jsonSaver.readListData();
+  if (a is Map) {
+    Map<String, dynamic> retrieved = a;
     if (retrieved.length != settings.length) {
       Map<String, dynamic> tmp = Map();
       tmp.addAll(settings);
@@ -93,7 +95,8 @@ class MyApp extends StatelessWidget {
         "/gpacalculatorsettings": (context) => GPACalculatorSettings(),
         "/settings": (context) => SettingsViewer(),
         '/devconsole': (context) => DeveloperConsole(),
-        '/messages': (context) => MessageViewer()
+        '/messages': (context) => MessageViewer(),
+        '/credits' : (context) => Credits()
       },
     );
   }
@@ -154,7 +157,7 @@ class MyHomePageState extends State<MyHomePage> {
       var retrieved = await prevSavedAccount.readListData();
       if (retrieved.runtimeType != 0) {
         district = SkywardDistrict('No Name', retrieved['link']);
-        _getGradeTerms(retrieved['user'], retrieved['pass'], context);
+        _getGradeTerms(retrieved['user'], retrieved['pass']);
       }
     }
   }
@@ -174,7 +177,7 @@ class MyHomePageState extends State<MyHomePage> {
     await jsonSaver.saveListData(district);
   }
 
-  _getGradeTerms(String user, String pass, BuildContext context) async {
+  _getGradeTerms(String user, String pass) async {
     List<bool> isCancelled = [false];
     var dialog = HuntyDialogLoading('Cancel', () {
       isCancelled[0] = true;
@@ -782,7 +785,7 @@ class MyHomePageState extends State<MyHomePage> {
                             onTap: () => {
                                   focus.unfocus(),
                                   _getGradeTerms(_controllerUsername.text,
-                                      _controllerPassword.text, context)
+                                      _controllerPassword.text)
                                 },
                             child: Container(
                               alignment: Alignment.center,

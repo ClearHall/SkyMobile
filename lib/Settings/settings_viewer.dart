@@ -2,10 +2,10 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:skymobile/ExtraViewPackages/biometric_blur_view.dart';
-import 'package:skymobile/ExtraViewPackages/constant_visibile_scrollbar.dart';
+import 'package:skymobile/SupportWidgets/biometric_blur_view.dart';
+import 'package:skymobile/SupportWidgets/constant_visibile_scrollbar.dart';
 import 'package:skymobile/ExtraViewPackages/hunty_dialogs.dart';
-import 'package:skymobile/HelperUtilities/custom_overscroll_behavior.dart';
+import 'package:skymobile/SupportWidgets/custom_overscroll_behavior.dart';
 import 'package:skymobile/HelperUtilities/json_saver.dart';
 import 'package:skymobile/HelperUtilities/manage_sky_vars.dart';
 import 'package:skymobile/Settings/settings_widget_generator.dart';
