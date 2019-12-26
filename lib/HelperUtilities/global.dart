@@ -12,6 +12,7 @@ List<AssignmentsGridBox> assignmentsGridBoxes;
 List<AssignmentInfoBox> assignmentInfoBoxes;
 List<SchoolYear> historyGrades;
 List<Message> messages;
+bool developerModeEnabled = false;
 ThemeManager themeManager = ThemeManager();
 
 Map<String, dynamic> settings = Map.fromIterables([

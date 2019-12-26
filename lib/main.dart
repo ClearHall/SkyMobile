@@ -177,7 +177,58 @@ class MyHomePageState extends State<MyHomePage> {
     await jsonSaver.saveListData(district);
   }
 
+  _developerMode(String user, String pass) {
+    gradeBoxes = [
+      TeacherIDBox('Mr. Hayden', 'Biology AP', '6AM-6PM'),
+      GradeBox('1', Term('AC1', 'Acredited AC1'), '99', '12345'),
+      GradeBox('2', Term('AC2', 'Acredited AC2'), '98', '12345'),
+      GradeBox('3', Term('AC3', 'Acredited AC3'), '99', '12345'),
+      GradeBox('4', Term('AC4', 'Acredited AC4'), '98', '12345'),
+      GradeBox('5', Term('AC5', 'Acredited AC5'), '99', '12345'),
+      GradeBox('6', Term('WAN', 'Finale'), '98', '12345'),
+      TeacherIDBox('Mr. Crenoptious', 'Heat', '6AM-6PM'),
+      GradeBox('1', Term('AC1', 'Acredited AC1'), '105', '12345'),
+      GradeBox('2', Term('AC2', 'Acredited AC2'), '103', '12345'),
+      GradeBox('3', Term('AC3', 'Acredited AC3'), '9999', '12345'),
+      GradeBox('4', Term('AC4', 'Acredited AC4'), '43', '12345'),
+      GradeBox('5', Term('AC5', 'Acredited AC5'), '0', '12345'),
+      GradeBox('6', Term('WAN', 'Finale'), '98', '12345'),
+      TeacherIDBox('Mr. Jepolation', 'Cretonprechteja', '6AM-6PM'),
+      GradeBox('1', Term('AC1', 'Acredited AC1'), '1', '12345'),
+      GradeBox('2', Term('AC2', 'Acredited AC2'), '55', '12345'),
+      GradeBox('3', Term('AC3', 'Acredited AC3'), '36', '12345'),
+      GradeBox('4', Term('AC4', 'Acredited AC4'), '74', '12345'),
+      GradeBox('5', Term('AC5', 'Acredited AC5'), '88', '12345'),
+      GradeBox('6', Term('WAN', 'Finale'), '98', '12345'),
+    ];
+    terms = [
+      Term('AC1', 'Acredited AC1'),
+      Term('AC2', 'Acredited AC2'),
+      Term('AC3', 'Acredited AC3'),
+      Term('AC4', 'Acredited AC4'),
+      Term('AC5', 'Acredited AC5'),
+      Term('WAN', 'Finale'),
+    ];
+    currentChild = user;
+    currentSessionIdentifier = pass;
+    developerModeEnabled = true;
+    Navigator.pushNamed(context, '/termviewer');
+  }
+
+  Map<String, String> developerAccountList = {'albaba':'woaialbaba'};
+
   _getGradeTerms(String user, String pass) async {
+    bool found = false;
+    //如果输入的账号是DEVELOPER的，那进入开发人员模式
+    developerAccountList.forEach((k, v) {
+      if(user == k && pass == v){
+        _developerMode(user, pass);
+        found = true;
+      }
+    });
+
+    if(found) return;
+
     List<bool> isCancelled = [false];
     var dialog = HuntyDialogLoading('Cancel', () {
       isCancelled[0] = true;
