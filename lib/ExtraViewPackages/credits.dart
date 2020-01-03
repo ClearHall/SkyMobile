@@ -29,7 +29,7 @@ class _CreditsState extends BiometricBlur<Credits> {
         ),
         backgroundColor: themeManager.getColor(TypeOfWidget.background),
         body: Center(
-            child: Column(
+            child: ListView(
           children: <Widget>[
             SizedBox(
               height: 10,

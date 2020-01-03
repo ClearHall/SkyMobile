@@ -111,7 +111,7 @@ class GPACalculatorSchoolYearState
                     builder: (bC) => HuntyDialogForMoreText(
                           title: 'Confused?',
                           description:
-                              'The GPA Calculator contains many aspects. First, different districts use different TERMS to calculate your GPA. You should select the terms based on what your district uses. Note: Fort Bend ISD uses S1 and S2. Below the term selector, there is a school year selector. Choose which school years contain classes that count toward GPA. To modify the level of your classes in a school year, click the arrow in each school year box. You may see your grades from that school year with the TERM Selector and you can also let SkyMobile autoselect levels for the classes. There is also a Deselect All button for convenience.\n4.0 Scale is based off of College Board scale.',
+                              'The GPA Calculator contains many aspects. First, different districts use different TERMS to calculate your GPA. You should select the terms based on what your district uses. Note: Fort Bend ISD uses S1 and S2. Below the term selector, there is a school year selector. Choose which school years contain classes that count toward GPA. To modify the level of your classes in a school year, click the edit in each school year box. You may see your grades from that school year with the TERM Selector and you can also let SkyMobile autoselect levels for the classes. There is also a Deselect All button for convenience.\n4.0 Scale is based off of College Board scale.',
                           buttonText: 'Got it!',
                         ));
               },
@@ -324,7 +324,7 @@ class GPACalculatorSchoolYearState
                       },
                     ),
                     IconButton(
-                      icon: Icon(Icons.play_circle_filled,
+                      icon: Icon(Icons.edit,
                           color: themeManager.getColor(null)),
                       onPressed: () {
                         Navigator.pushNamed(context, '/gpacalculatorclasses',

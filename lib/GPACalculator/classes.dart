@@ -147,15 +147,15 @@ class GPACalculatorClassesState extends BiometricBlur<GPACalculatorClasses> {
                   child: Card(
                     color: themeManager.getColor(TypeOfWidget.text),
                     shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20)),
+                        borderRadius: BorderRadius.circular(30)),
                     child: Container(
                       child: Text(
-                        'Guess Class Levels',
+                        'Guess Classes',
                         style: TextStyle(
                             fontSize: 18, fontWeight: FontWeight.w700),
                         textAlign: TextAlign.center,
                       ),
-                      padding: EdgeInsets.all(10),
+                      padding: EdgeInsets.all(15),
                     ),
                   ),
                   onTap: () {
@@ -186,15 +186,15 @@ class GPACalculatorClassesState extends BiometricBlur<GPACalculatorClasses> {
                   child: Card(
                     color: themeManager.getColor(TypeOfWidget.text),
                     shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20)),
+                        borderRadius: BorderRadius.circular(30)),
                     child: Container(
                       child: Text(
-                        'Set Class Levels to None',
+                        'Disable All Classes',
                         style: TextStyle(
                             fontSize: 18, fontWeight: FontWeight.w700),
                         textAlign: TextAlign.center,
                       ),
-                      padding: EdgeInsets.all(10),
+                      padding: EdgeInsets.all(15),
                     ),
                   ),
                   onTap: () {
@@ -213,10 +213,10 @@ class GPACalculatorClassesState extends BiometricBlur<GPACalculatorClasses> {
               ))
             ]),
             Expanded(
-              child: ListView(
+              child: Container(padding: EdgeInsets.only(top: 15, left: 20, right: 20), child:  ListView(
                 children: buildArrayOfClasses(currentTermIndex + offset),
               ),
-            ),
+            ),),
           ],
         )));
   }
@@ -226,6 +226,8 @@ class GPACalculatorClassesState extends BiometricBlur<GPACalculatorClasses> {
 
     for (Class schoolClass in schoolYear.classes) {
       fin.add(Card(
+        shape:
+        RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget>[
@@ -238,7 +240,7 @@ class GPACalculatorClassesState extends BiometricBlur<GPACalculatorClasses> {
                     constraints: BoxConstraints(
                         maxWidth: MediaQuery.of(context).size.width / 6 * 4),
                     padding: EdgeInsets.only(
-                        top: 10, left: 15, right: 10, bottom: 0),
+                        top: 15, left: 15, right: 10, bottom: 0),
                     alignment: Alignment.centerLeft,
                     child: Text(
                       schoolClass.name.trim(),
@@ -253,7 +255,7 @@ class GPACalculatorClassesState extends BiometricBlur<GPACalculatorClasses> {
                   ),
                   Row(children: <Widget>[
                     Container(
-                        padding: EdgeInsets.only(left: 15, bottom: 5),
+                        padding: EdgeInsets.only(left: 15, bottom: 10),
                         child: Theme(
                             data: Theme.of(context)
                                 .copyWith(canvasColor: Colors.black),
@@ -286,7 +288,7 @@ class GPACalculatorClassesState extends BiometricBlur<GPACalculatorClasses> {
                               },
                             ))),
                     Container(
-                        padding: EdgeInsets.only(left: 15, bottom: 5),
+                        padding: EdgeInsets.only(left: 15, bottom: 10),
                         child: Theme(
                             data: Theme.of(context)
                                 .copyWith(canvasColor: Colors.black),
