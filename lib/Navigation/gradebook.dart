@@ -171,7 +171,8 @@ class _TermViewer extends BiometricBlur<TermViewerPage> {
 
   @override
   Widget generateBody(BuildContext context) {
-    currentChild = skywardAPI.retrieveAccountIfParent()?.dataID;
+    if(!developerModeEnabled)
+      currentChild = skywardAPI.retrieveAccountIfParent()?.dataID;
     final FixedExtentScrollController scrollController =
         FixedExtentScrollController(initialItem: currentTermIndex);
 
@@ -291,7 +292,7 @@ class _TermViewer extends BiometricBlur<TermViewerPage> {
         child: FittedBox(
           fit: BoxFit.fitHeight,
           child: Text(
-            skywardAPI.currentUser.replaceAll(" ", "\n"),
+            developerModeEnabled ? currentChild : skywardAPI.currentUser.replaceAll(" ", "\n"),
             style: TextStyle(
               color: themeManager.getColor(TypeOfWidget.text),
             ),
@@ -327,7 +328,7 @@ class _TermViewer extends BiometricBlur<TermViewerPage> {
           _goToGPACalculator();
         },
       ),
-      skywardAPI.children != null
+      (developerModeEnabled ? false : skywardAPI.children != null)
           ? ListTile(
               leading: Container(padding: EdgeInsets.only(left: 10), child: Icon(
                 expanded ? Icons.arrow_drop_down : Icons.arrow_drop_up,
@@ -397,6 +398,7 @@ class _TermViewer extends BiometricBlur<TermViewerPage> {
           messages = null;
           gradeBoxes = null;
           terms = null;
+          developerModeEnabled = false;
           Navigator.popUntil(context, (pred) {
             return pred.settings.name == '/';
           });
@@ -405,7 +407,7 @@ class _TermViewer extends BiometricBlur<TermViewerPage> {
     ];
 
     List children = [];
-    if (skywardAPI.children != null && skywardAPI.children.isNotEmpty) {
+    if (!developerModeEnabled && skywardAPI.children != null && skywardAPI.children.isNotEmpty) {
       children = List.from(skywardAPI.children);
       children.removeAt(0);
     }

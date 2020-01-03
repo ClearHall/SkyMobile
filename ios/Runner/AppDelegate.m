@@ -5,6 +5,18 @@
 
 - (BOOL)application:(UIApplication *)application
     didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
+//    FlutterViewController* controller = (FlutterViewController*)self.window.rootViewController;
+//
+//    FlutterMethodChannel* iconChange = [FlutterMethodChannel
+//                                            methodChannelWithName:@"com.lingfeishengtian.SkyMobile/choose_icon"
+//                                            binaryMessenger:controller];
+//
+//    [iconChange setMethodCallHandler:^(FlutterMethodCall* call, FlutterResult result) {
+//        if ([call.method isEqual:@"changeIcon"]) {
+//            NSString *iconName = [call argument:(@"iconName")];
+//            NSLog(@"TEST: %@\n", iconName );
+//        }
+//    }];
   [GeneratedPluginRegistrant registerWithRegistry:self];
   // Override point for customization after application launch.
   return [super application:application didFinishLaunchingWithOptions:launchOptions];

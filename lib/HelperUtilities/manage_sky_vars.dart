@@ -7,13 +7,15 @@ class SkyVars {
   static final Map<String, String> skyVarsDefault = {
     'version': '2',
     'permdev': 'false',
-    'iconchangesupport' : 'false'
+    'iconchangesupport' : 'false',
+    'developeraccounts' : 'false'
   };
 
   static Map<String, String> skyVars = {
     'version': '2',
     'permdev': 'false',
-    'iconchangesupport' : 'false'
+    'iconchangesupport' : 'false',
+    'developeraccounts' : 'false'
   };
 
   static saveVars() async {
