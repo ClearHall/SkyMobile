@@ -46,8 +46,7 @@ class _SettingsViewerState extends BiometricBlur<SettingsViewer> {
     showDialog(
         context: context, builder: (_) => loading, barrierDismissible: false);
     try {
-      final String res =
-          await platform.invokeMethod('changeIcon', {'iconName': iconName});
+      await platform.invokeMethod('changeIcon', {'iconName': iconName});
       Navigator.of(context).pop();
       showDialog(
           context: context,

@@ -1,5 +1,3 @@
-import 'dart:collection';
-
 import 'package:flutter/material.dart';
 import 'package:skymobile/SupportWidgets/biometric_blur_view.dart';
 import 'package:skymobile/SupportWidgets/constant_visibile_scrollbar.dart';
@@ -7,7 +5,6 @@ import 'package:skymobile/GPACalculator/school_year.dart';
 import 'package:skymobile/HelperUtilities/global.dart';
 import 'package:skymobile/Settings/settings_widget_generator.dart';
 import 'package:skymobile/Settings/theme_color_manager.dart';
-import 'package:skyscrapeapi/data_types.dart';
 import '../HelperUtilities/gpa_calculator_support_utils.dart';
 
 class GPACalculatorSettings extends StatefulWidget {
