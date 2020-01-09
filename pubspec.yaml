@@ -1,7 +1,7 @@
 name: skymobile
 description: SkyMobile
 
-version: 3.0.0+41
+version: 3.0.1+42
 
 environment:
   sdk: ">=2.2.0 <3.0.0"
@@ -57,4 +57,4 @@ flutter:
         - asset: fonts/Roboto/Roboto-Bold.ttf
           weight: 700
         - asset: fonts/Roboto/Roboto-Black.ttf
-          weight: 900
+          weight: 900 

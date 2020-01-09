@@ -159,7 +159,8 @@ class GPACalculatorClassesState extends BiometricBlur<GPACalculatorClasses> {
                     ),
                   ),
                   onTap: () {
-                    for (Class classYear in schoolYear.classes) {
+                    for (int i = 0; i < schoolYear.classes.length; i++) {
+                      Class classYear = schoolYear.classes[i];
                       String courseName = classYear.name;
                       if (courseName.contains('PreA') ||
                           courseName.contains('Honor') ||
@@ -199,11 +200,10 @@ class GPACalculatorClassesState extends BiometricBlur<GPACalculatorClasses> {
                   ),
                   onTap: () {
                     setState(() {
-                      for (Class classYear in schoolYear.classes) {
-                        classYear.classLevel = ClassLevel.None;
-                        dropDownIndexesClassLevel[
-                                schoolYear.classes.indexOf(classYear)] =
-                            availableClassLevels.indexOf(classYear.classLevel);
+                      for (int i = 0; i < schoolYear.classes.length; i++) {
+                        schoolYear.classes[i].classLevel = ClassLevel.None;
+                        dropDownIndexesClassLevel[i] =
+                            availableClassLevels.indexOf(schoolYear.classes[i].classLevel);
                       }
                       gpaCalculatorSettingsSaveForCurrentSession();
                     });
@@ -224,7 +224,8 @@ class GPACalculatorClassesState extends BiometricBlur<GPACalculatorClasses> {
   List<Widget> buildArrayOfClasses(int indexOfTermWithOffset) {
     List<Widget> fin = [];
 
-    for (Class schoolClass in schoolYear.classes) {
+    for (int i = 0; i < schoolYear.classes.length; i++) {
+      Class schoolClass = schoolYear.classes[i];
       fin.add(Card(
         shape:
         RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
@@ -272,14 +273,11 @@ class GPACalculatorClassesState extends BiometricBlur<GPACalculatorClasses> {
                                 );
                               }).toList(),
                               value: availableClassLevels[
-                                      dropDownIndexesClassLevel[schoolYear
-                                          .classes
-                                          .indexOf(schoolClass)]]
+                                      dropDownIndexesClassLevel[i]]
                                   .toString(),
                               onChanged: (String newVal) {
                                 setState(() {
-                                  dropDownIndexesClassLevel[schoolYear.classes
-                                          .indexOf(schoolClass)] =
+                                  dropDownIndexesClassLevel[i] =
                                       availableClassLevels.indexOf(
                                           ClassLevel.values.firstWhere(
                                               (e) => e.toString() == newVal));
@@ -304,13 +302,11 @@ class GPACalculatorClassesState extends BiometricBlur<GPACalculatorClasses> {
                                   ),
                                 );
                               }).toList(),
-                              value: availableCredits[dropDownIndexesCredits[
-                                      schoolYear.classes.indexOf(schoolClass)]]
+                              value: availableCredits[dropDownIndexesCredits[i]]
                                   .toString(),
                               onChanged: (String newVal) {
                                 setState(() {
-                                  dropDownIndexesCredits[schoolYear.classes
-                                          .indexOf(schoolClass)] =
+                                  dropDownIndexesCredits[i] =
                                       availableCredits.indexOf(
                                           double.tryParse(newVal) ?? 1.0);
                                   setDropDown();

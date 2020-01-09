@@ -81,9 +81,9 @@ class GPACalculatorSchoolYearState
     List<SchoolYear> enabledSchoolYears = getEnabledHistGrades();
     List<String> stringList = getSelectableTermsString(enabledSchoolYears);
     _checkTerms(stringList);
-    List<double> averages =
-        getAveragesOfTermsCountingTowardGPA100PointScale(enabledSchoolYears);
-    var finalGPA = getFinalGPA(averages);
+//    List<double> averages =
+//        getAveragesOfTermsCountingTowardGPA100PointScale(enabledSchoolYears);
+    var finalGPA = get100GPA(enabledSchoolYears); //getFinalGPA(averages);
     var final40 = get40Scale(enabledSchoolYears);
 
     return Scaffold(
@@ -142,7 +142,7 @@ class GPACalculatorSchoolYearState
                         Container(
                           padding: EdgeInsets.only(top: 10),
                           child: Text(
-                            "GPA: ${finalGPA.toString() != 'null' ? finalGPA.toStringAsFixed(3) : 'N/A'}",
+                            "GPA: ${finalGPA.toString() != 'null' ? finalGPA.toStringAsFixed(5) : 'N/A'}",
                             style: TextStyle(
                                 color: themeManager.getColor(TypeOfWidget.text),
                                 fontSize: 20,
@@ -152,7 +152,7 @@ class GPACalculatorSchoolYearState
                         Container(
                           padding: EdgeInsets.only(top: 10, bottom: 10),
                           child: Text(
-                            "4.0 GPA: ${final40.toString() != 'null' ? final40.toStringAsFixed(3) : 'N/A'}",
+                            "4.0 GPA: ${final40.toString() != 'null' ? final40.toStringAsFixed(5) : 'N/A'}",
                             style: TextStyle(
                                 color: themeManager.getColor(TypeOfWidget.text),
                                 fontSize: 20,
@@ -188,13 +188,13 @@ class GPACalculatorSchoolYearState
 //                  ),
 //                )
 //              ]),
-                Container(
-                  padding: EdgeInsets.only(
-                      top: termIdentifiersCountingTowardGPA.isEmpty ? 0 : 10,
-                      left: 20,
-                      right: 20),
-                  child: buildBasedOnTwo(averages),
-                ),
+//                Container(
+//                  padding: EdgeInsets.only(
+//                      top: termIdentifiersCountingTowardGPA.isEmpty ? 0 : 10,
+//                      left: 20,
+//                      right: 20),
+//                  child: buildBasedOnTwo(averages),
+//                ),
 //                Container(
 //                  padding: EdgeInsets.only(
 //                      top: termIdentifiersCountingTowardGPA.isEmpty ? 0 : 10,

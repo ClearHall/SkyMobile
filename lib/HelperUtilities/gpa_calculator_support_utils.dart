@@ -82,38 +82,75 @@ double get40Scale(List<SchoolYear> enabledSchoolYears) {
       ln;
 }
 
-List<double> getAveragesOfTermsCountingTowardGPA100PointScale(
-    List<SchoolYear> enabledSchoolYears) {
-  List<double> averagesRespeciveOfTerms = [];
-  for (String term in termIdentifiersCountingTowardGPA) {
-    double finalGrade = 0;
-    double credits = 0;
-    for (SchoolYear schoolYear in enabledSchoolYears) {
-      if (schoolYear.terms.contains(Term(term, null))) {
-        int indexOfTerm = schoolYear.terms.indexOf(Term(term, null));
-        for (Class classYear in schoolYear.classes) {
-          int addOnPoints = extraGPASettings['Class Level Worth']['option'][
-              classYear.classLevel != null
-                  ? classYear.classLevel.toString().substring(11)
-                  : ClassLevel.Regular.toString().substring(11)];
-          if (addOnPoints == null) addOnPoints = -1;
-          if (addOnPoints >= 0) {
-            if (indexOfTerm < classYear.grades.length) {
+// OLD ALGORITHM!!!
+//List<double> getAveragesOfTermsCountingTowardGPA100PointScale(
+//    List<SchoolYear> enabledSchoolYears) {
+//  List<double> averagesRespeciveOfTerms = [];
+//  for (String term in termIdentifiersCountingTowardGPA) {
+//    double finalGrade = 0;
+//    double credits = 0;
+//    for (SchoolYear schoolYear in enabledSchoolYears) {
+//      if (schoolYear.terms.contains(Term(term, null))) {
+//        int indexOfTerm = schoolYear.terms.indexOf(Term(term, null));
+//        for (Class classYear in schoolYear.classes) {
+//          int addOnPoints = extraGPASettings['Class Level Worth']['option'][
+//              classYear.classLevel != null
+//                  ? classYear.classLevel.toString().substring(11)
+//                  : ClassLevel.Regular.toString().substring(11)];
+//          if (addOnPoints == null) addOnPoints = -1;
+//          if (addOnPoints >= 0) {
+//            if (indexOfTerm < classYear.grades.length) {
+//              double attemptedDoubleParse =
+//                  double.tryParse(classYear.grades[indexOfTerm]);
+//              if (attemptedDoubleParse != null) {
+//                finalGrade += (attemptedDoubleParse + addOnPoints) *
+//                    (classYear.credits ?? 1.0);
+//                credits += classYear.credits ?? 1.0;
+//              }
+//            }
+//          }
+//        }
+//      }
+//    }
+//    averagesRespeciveOfTerms.add(credits > 0 ? finalGrade / credits : null);
+//  }
+//  return averagesRespeciveOfTerms;
+//}
+
+double get100GPA(List<SchoolYear> enabledSchoolYears) {
+  double finalGrade = 0;
+  double credits = 0;
+  for (SchoolYear schoolYear in enabledSchoolYears) {
+    if (schoolYear.isEnabled) {
+      for (Class classYear in schoolYear.classes) {
+        int addOnPoints = extraGPASettings['Class Level Worth']['option'][
+            classYear.classLevel != null
+                ? classYear.classLevel.toString().substring(11)
+                : ClassLevel.Regular.toString().substring(11)];
+        if (addOnPoints == null) addOnPoints = -1;
+        if (addOnPoints >= 0) {
+          double classTot = 0;
+          int totAdd = 0;
+          for (String term in termIdentifiersCountingTowardGPA) {
+            int indexOfTerm = schoolYear.terms.indexOf(Term(term, null));
+            if (indexOfTerm < classYear.grades.length && indexOfTerm >= 0) {
               double attemptedDoubleParse =
                   double.tryParse(classYear.grades[indexOfTerm]);
               if (attemptedDoubleParse != null) {
-                finalGrade += (attemptedDoubleParse + addOnPoints) *
-                    (classYear.credits ?? 1.0);
-                credits += classYear.credits ?? 1.0;
+                classTot += (attemptedDoubleParse + addOnPoints);
+                totAdd++;
               }
             }
           }
+          double credAmt = ((classYear.credits ?? 1.0) * totAdd) / termIdentifiersCountingTowardGPA.length;
+          classTot = classTot / totAdd * (credAmt ?? 1);
+          finalGrade += classTot.isNaN ? 0 : classTot;
+          credits += credAmt;
         }
       }
     }
-    averagesRespeciveOfTerms.add(credits > 0 ? finalGrade / credits : null);
   }
-  return averagesRespeciveOfTerms;
+  return credits > 0 ? finalGrade / credits : null;
 }
 
 gpaCalculatorSettingsSaveForCurrentSession() async {
