@@ -94,7 +94,8 @@ class _DeveloperConsoleState extends BiometricBlur<DeveloperConsole> {
         currentText += 'Commands Available\n'
             'help: Displays this message.\n'
             'set and remove: Sets and Remove values from the gradebook. Syntax of this command is \'<set/remove> <gradebook/terms> <all/index> <(not needed if remove) value to change to>\'\n'
-            'display: Displays what is shown in the second parameter. For instance, \'display gradebook\' will display the gradebook. If there is a third parameter, for example: \'display gradebook 1\', it will display gradebook\'s second value.';
+            'display: Displays what is shown in the second parameter. For instance, \'display gradebook\' will display the gradebook. If there is a third parameter, for example: \'display gradebook 1\', it will display gradebook\'s second value.'
+            'modvar: Modifies a variable in the SkyMobile enviornment to enable or disable extra functions.';
       } else if (command == 'display') {
         if (split.length < 3)
           currentText += modifier.toString();

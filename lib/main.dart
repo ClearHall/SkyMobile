@@ -648,7 +648,7 @@ class MyHomePageState extends State<MyHomePage> {
               child: Text('Accounts',
                   style: TextStyle(
                       color: themeManager.getColor(null),
-                      fontSize: 35,
+                      fontSize: 27,
                       fontWeight: FontWeight.w700,
                       letterSpacing: 2)),
               alignment: Alignment.centerLeft,
