@@ -93,3 +93,6 @@ Skyward API Name Credits: @[yquan162](https://github.com/yquan162)
 Skyward API & SkyMobile Development: @[lingfeishengtian](https://github.com/lingfeishengtian)
 
 SkyMobile Maintenence: @[PotatoCurry](https://github.com/PotatoCurry)
+
+SkyPlan: @[Thomas Kaldahl](https://github.com/ei14)
+
