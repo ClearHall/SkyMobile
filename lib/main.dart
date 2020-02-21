@@ -515,7 +515,7 @@ class MyHomePageState extends State<MyHomePage> {
               builder: (c) => HuntyDialogForMoreText(
                   title: 'Information',
                   description:
-                      'SkyMobile login page has a simple and intuitive design. The search button on the top indicates the district searcher. Use it to search and select different districts. The settings icon brings you to settings and the info dialog shows this dialog. Login like you would normally and press Choose Accounts to access your saved accounts.',
+                    isInAccountChooserStatus ? 'Long press to reorder accounts!' : 'SkyMobile login page has a simple and intuitive design. The search button on the top indicates the district searcher. Use it to search and select different districts. The settings icon brings you to settings and the info dialog shows this dialog. Login like you would normally and press Choose Accounts to access your saved accounts.',
                   buttonText: 'Ok!'));
         },
       ),
@@ -543,121 +543,135 @@ class MyHomePageState extends State<MyHomePage> {
       List<Widget> widget = [];
 
       for (Account acc in accounts) {
-        widget.add(Container(
-            key: ValueKey(
-                '${acc.user}${acc.district.districtName}${acc.pass.hashCode}'),
-            padding: EdgeInsets.only(top: 10, left: 20, right: 20, bottom: 10),
-            child: ConstrainedBox(
-              constraints: BoxConstraints(maxHeight: 65),
-              child: Material(
-                color: Colors.transparent,
-                child: InkWell(
-                    splashColor: themeManager.getColor(TypeOfWidget.button),
-                    borderRadius: BorderRadius.circular(16),
-                    onTap: !(accounts.length > 0 &&
-                            accounts.first.district == null)
-                        ? () {
-                            focus.unfocus();
-                            _shouldAuthenticateAndContinue(
-                                acc, _getGradeTermsFromAccount);
-                          }
-                        : () => {},
-                    child: Container(
-                      alignment: Alignment.center,
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(16.0),
-                          border: Border.all(
-                              color: themeManager.getColor(TypeOfWidget.text),
-                              width: 2)),
-                      child: accounts.length > 0 &&
-                              accounts.first.district == null
-                          ? ListTile(
-                              title: Text(
-                              acc.nick,
-                              style: new TextStyle(
-                                  fontSize: 20.0,
-                                  color:
-                                      themeManager.getColor(TypeOfWidget.text)),
-                            ))
-                          : ListTile(
-                              title: Text(
-                                acc.nick,
-                                style: new TextStyle(
-                                    fontSize: 20.0,
-                                    color: themeManager
-                                        .getColor(TypeOfWidget.text)),
-                              ),
-                              trailing: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: <Widget>[
-                                  IconButton(
-                                      icon: Icon(
-                                        Icons.delete_forever,
-                                        color: themeManager.getColor(null),
-                                      ),
-                                      onPressed: () {
-                                        _shouldAuthenticateAndContinue(acc,
-                                            (acc) {
-                                          showDialog(
-                                              context: context,
-                                              builder: (BuildContext context) =>
-                                                  HuntyDialogForConfirmation(
-                                                      title: 'Account Deletion',
-                                                      description:
-                                                          'Are you sure you want to remove this account from your device?',
-                                                      runIfUserConfirms: () {
-                                                        setState(() {
-                                                          accounts.remove(acc);
-                                                          jsonSaver
-                                                              .saveListData(
-                                                                  accounts);
-                                                        });
-                                                      },
-                                                      btnTextForConfirmation:
-                                                          'Yes',
-                                                      btnTextForCancel: 'No'));
-                                        });
-                                      }),
-                                  IconButton(
-                                    icon: Icon(Icons.edit),
-                                    color: themeManager.getColor(null),
-                                    onPressed: () {
-                                      _shouldAuthenticateAndContinue(acc,
-                                          (acc) {
-                                        TextEditingController accountEditor =
-                                            TextEditingController();
-                                        showDialog(
-                                            context: context,
-                                            builder: (BuildContext context) =>
-                                                HuntyDialogWithText(
-                                                    hint: 'Edit Account',
-                                                    textController:
-                                                        accountEditor,
-                                                    okPressed: () {
-                                                      setState(() {
-                                                        acc.nick =
-                                                            accountEditor.text;
-                                                        jsonSaver.saveListData(
-                                                            accounts);
-                                                      });
-                                                    },
-                                                    title: 'Edit Account Name',
-                                                    description:
-                                                        'Type in a new account name to be displayed. This does not affect logging in and logging out.',
-                                                    buttonText: 'Submit'));
-                                      });
-                                    },
-                                  )
-                                ],
+        widget.add(ReorderableItem(
+          key: ValueKey(
+              '${acc.user}${acc.district.districtName}${acc.pass.hashCode}'),
+          childBuilder: (BuildContext context, ReorderableItemState state) =>
+              DelayedReorderableListener(
+                child: Opacity(
+                  opacity: state == ReorderableItemState.placeholder ? 0.0 : 1.0,
+                  child: Container(
+                      padding: EdgeInsets.only(
+                          top: 10, left: 20, right: 20, bottom: 10),
+                      child: ConstrainedBox(
+                        constraints: BoxConstraints(maxHeight: 65),
+                        child: Material(
+                          color: Colors.transparent,
+                          child: InkWell(
+                              splashColor: themeManager.getColor(
+                                  TypeOfWidget.button),
+                              borderRadius: BorderRadius.circular(16),
+                              onTap: !(accounts.length > 0 &&
+                                  accounts.first.district == null)
+                                  ? () {
+                                focus.unfocus();
+                                _shouldAuthenticateAndContinue(
+                                    acc, _getGradeTermsFromAccount);
+                              }
+                                  : () => {},
+                              child: Container(
+                                alignment: Alignment.center,
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(16.0),
+                                    border: Border.all(
+                                        color: themeManager.getColor(
+                                            TypeOfWidget.text),
+                                        width: 2)),
+                                child: accounts.length > 0 &&
+                                    accounts.first.district == null
+                                    ? ListTile(
+                                    title: Text(
+                                      acc.nick,
+                                      style: new TextStyle(
+                                          fontSize: 20.0,
+                                          color:
+                                          themeManager.getColor(
+                                              TypeOfWidget.text)),
+                                    ))
+                                    : ListTile(
+                                    title: Text(
+                                      acc.nick,
+                                      style: new TextStyle(
+                                          fontSize: 20.0,
+                                          color: themeManager
+                                              .getColor(TypeOfWidget.text)),
+                                    ),
+                                    trailing: Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: <Widget>[
+                                        IconButton(
+                                            icon: Icon(
+                                              Icons.delete_forever,
+                                              color: themeManager.getColor(null),
+                                            ),
+                                            onPressed: () {
+                                              _shouldAuthenticateAndContinue(acc,
+                                                      (acc) {
+                                                    showDialog(
+                                                        context: context,
+                                                        builder: (
+                                                            BuildContext context) =>
+                                                            HuntyDialogForConfirmation(
+                                                                title: 'Account Deletion',
+                                                                description:
+                                                                'Are you sure you want to remove this account from your device?',
+                                                                runIfUserConfirms: () {
+                                                                  setState(() {
+                                                                    accounts
+                                                                        .remove(
+                                                                        acc);
+                                                                    jsonSaver
+                                                                        .saveListData(
+                                                                        accounts);
+                                                                  });
+                                                                },
+                                                                btnTextForConfirmation:
+                                                                'Yes',
+                                                                btnTextForCancel: 'No'));
+                                                  });
+                                            }),
+                                        IconButton(
+                                          icon: Icon(Icons.edit),
+                                          color: themeManager.getColor(null),
+                                          onPressed: () {
+                                            _shouldAuthenticateAndContinue(acc,
+                                                    (acc) {
+                                                  TextEditingController accountEditor =
+                                                  TextEditingController();
+                                                  showDialog(
+                                                      context: context,
+                                                      builder: (
+                                                          BuildContext context) =>
+                                                          HuntyDialogWithText(
+                                                              hint: 'Edit Account',
+                                                              textController:
+                                                              accountEditor,
+                                                              okPressed: () {
+                                                                setState(() {
+                                                                  acc.nick =
+                                                                      accountEditor
+                                                                          .text;
+                                                                  jsonSaver
+                                                                      .saveListData(
+                                                                      accounts);
+                                                                });
+                                                              },
+                                                              title: 'Edit Account Name',
+                                                              description:
+                                                              'Type in a new account name to be displayed. This does not affect logging in and logging out.',
+                                                              buttonText: 'Submit'));
+                                                });
+                                          },
+                                        )
+                                      ],
+                                    )),
                               )),
-                    )),
+                        ),
+                      )),
+                ),
               ),
-            )));
+        ));
       }
-      widget.add(SizedBox(
-        key: ValueKey("RandSizedBox19928374"),
-        height: 24,
-      ));
       listView = ListView(shrinkWrap: true, children: <Widget>[
         ListTile(
             title: Container(
@@ -684,55 +698,50 @@ class MyHomePageState extends State<MyHomePage> {
                   borderRadius: BorderRadius.circular(15.0),
                 ),
                 color: themeManager.getColor(TypeOfWidget.subBackground),
-                child: Column(
+                child: ListView(
+                  shrinkWrap: true,
                   children: <Widget>[
                     // widget.length > 5 ?
-                    Container(
-                        padding: EdgeInsets.only(bottom: 20, top: 20),
-                        child: ConstrainedBox(
-                          constraints:
-                              BoxConstraints(maxHeight: 300, minHeight: 100),
-                          //child: SingleChildScrollView(
-                          child: ReorderableList(
-                            onReorder: (Key item, Key newPosition) {
-                              int draggingIndex = _indexOfKey(widget, item);
-                              int newPositionIndex =
-                                  _indexOfKey(widget, newPosition);
+                    ConstrainedBox(
+                        constraints: const BoxConstraints(maxHeight: 300),
+                          child: Padding(
+                            padding: EdgeInsets.only(bottom: 20, top: 20),
+                            child: ReorderableList(
+                              onReorder: (Key item, Key newPosition) {
+                                int draggingIndex = _indexOfKey(widget, item);
+                                int newPositionIndex =
+                                    _indexOfKey(widget, newPosition);
 
-                              // Uncomment to allow only even target reorder possition
-                              // if (newPositionIndex % 2 == 1)
-                              //   return false;
-
-                              final draggedItem = widget[draggingIndex];
-                              setState(() {
-                                debugPrint("Reordering $item -> $newPosition");
-                                widget.removeAt(draggingIndex);
-                                widget.insert(newPositionIndex, draggedItem);
-                              });
-                              return true;
-                            },
-                            child: CustomScrollView(slivers: [
-                              SliverPadding(
-                                  padding: EdgeInsets.only(
-                                      bottom: MediaQuery.of(context)
-                                          .padding
-                                          .bottom),
-                                  sliver: SliverList(
-                                    delegate: SliverChildBuilderDelegate(
-                                      (BuildContext context, int index) {
-                                        return Container(
-                                          child: DelayedReorderableListener(
-                                            child: widget.elementAt(index),
-                                          ),
-                                        );
-                                      },
-                                      childCount: widget.length,
-                                    ),
-                                  )),
-                            ]),
-                          ),
-                          //)
-                        )),
+                                final draggedItem = accounts[draggingIndex];
+                                setState(() {
+                                  debugPrint("Reordering $draggingIndex -> $newPositionIndex");
+                                  accounts.removeAt(draggingIndex);
+                                  accounts.insert(newPositionIndex, draggedItem);
+                                });
+                                return true;
+                              },
+                              onReorderDone: (Key item) {
+                                final draggedItem = widget[_indexOfKey(widget, item)];
+                                debugPrint("Reordering finished for ${draggedItem.key}}");
+                              },
+                              child: CustomScrollView(slivers: [
+                                SliverPadding(
+                                    padding: EdgeInsets.only(
+                                        bottom: MediaQuery.of(context)
+                                            .padding
+                                            .bottom),
+                                    sliver: SliverList(
+                                      delegate: SliverChildBuilderDelegate(
+                                        (BuildContext context, int index) {
+                                              return widget.elementAt(index);
+                                        },
+                                        childCount: widget.length,
+                                      ),
+                                    )),
+                              ]),
+                            //)
+                        ),
+                          )),
 //                        : Container(
 //                            padding: EdgeInsets.only(bottom: 20, top: 20),
 //                            child: ReorderableListView(
