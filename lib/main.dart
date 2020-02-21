@@ -545,7 +545,7 @@ class MyHomePageState extends State<MyHomePage> {
       for (Account acc in accounts) {
         widget.add(ReorderableItem(
           key: ValueKey(
-              '${acc.user}${acc.district.districtName}${acc.pass.hashCode}'),
+              '${acc.user}${acc.district != null ? acc.district.districtName : acc.district}${acc.pass.hashCode}'),
           childBuilder: (BuildContext context, ReorderableItemState state) =>
               DelayedReorderableListener(
                 child: Opacity(
