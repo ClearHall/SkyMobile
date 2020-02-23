@@ -100,7 +100,7 @@ class _TermViewer extends BiometricBlur<TermViewerPage> {
       Navigator.of(context, rootNavigator: true).popUntil((result) {
         return result.settings.name == '/termviewer';
       });
-      Navigator.pushNamed(context, '/assignmentsviewer');
+      Navigator.pushNamed(context, '/assignmentsviewer', arguments: courseName);
     }
   }
 
@@ -368,6 +368,20 @@ class _TermViewer extends BiometricBlur<TermViewerPage> {
           } else {
             Navigator.pushNamed(context, '/messages');
           }
+        },
+      ),
+      ListTile(
+        leading: Container(padding: EdgeInsets.only(left: 10), child: Icon(
+          Icons.access_time,
+          color: themeManager.getColor(TypeOfWidget.text),
+        )),
+        title: Text(
+          'SkyLine',
+          style: TextStyle(
+              color: themeManager.getColor(TypeOfWidget.text), fontSize: 25),
+        ),
+        onTap: () {
+          showDialog(context: context, builder: (context) => HuntyDialog(title: "SkyLine Integration", description: "Unfortunately, SkyLine is still in it's beta phases, we cannot connect you to SkyLine yet." , buttonText: "Ok"));
         },
       ),
       ListTile(

@@ -9,7 +9,7 @@ import 'package:skymobile/ExtraViewPackages/hunty_dialogs.dart';
 class AssignmentsViewer extends StatefulWidget {
   final String courseName;
 
-  AssignmentsViewer({this.courseName});
+  AssignmentsViewer(this.courseName);
   @override
   _AssignmentsViewerState createState() =>
       new _AssignmentsViewerState(courseName);
@@ -17,6 +17,7 @@ class AssignmentsViewer extends StatefulWidget {
 
 class _AssignmentsViewerState extends BiometricBlur<AssignmentsViewer> {
   String courseName;
+  bool editingMode = false;
 
   _AssignmentsViewerState(this.courseName);
 
@@ -53,7 +54,7 @@ class _AssignmentsViewerState extends BiometricBlur<AssignmentsViewer> {
         Navigator.of(context, rootNavigator: true).popUntil((result) {
           return result.settings.name == '/assignmentsviewer';
         });
-        Navigator.pushNamed(context, '/assignmentsinfoviewer');
+        Navigator.pushNamed(context, '/assignmentsinfoviewer', arguments: box.assignmentName);
       }
     }
   }
@@ -105,7 +106,7 @@ class _AssignmentsViewerState extends BiometricBlur<AssignmentsViewer> {
                             constraints: BoxConstraints(
                                 maxWidth: MediaQuery.of(context).size.width /
                                     6 *
-                                    3.8),
+                                    3.5),
                             padding: EdgeInsets.only(
                                 top: 15,
                                 left: 15,
@@ -189,6 +190,42 @@ class _AssignmentsViewerState extends BiometricBlur<AssignmentsViewer> {
                   fontSize: 30,
                   fontWeight: FontWeight.w700)),
         ),
+        actions: <Widget>[
+          IconButton(icon: Icon(Icons.edit), onPressed: () {
+              if(editingMode){
+                setState(() {
+                  editingMode = false;
+                });
+              }else{
+                int currentwei = 0;
+                bool qualify = false;
+                for(AssignmentsGridBox a in assignmentsGridBoxes){
+                  if(a is CategoryHeader){
+                    if(a.weight == null) {
+                      if(currentwei > 1){
+                        qualify = true;
+                        break;
+                      }
+                      currentwei = 0;
+                    }else
+                      currentwei++;
+                  }
+                }
+                if(qualify){
+                  showDialog(context: context, builder: (context) => HuntyDialogForConfirmation(title: "Warning!", description: "This is a semester! Using mock assignments on semesters will not be accurate. Are you sure you want to continue?", runIfUserConfirms: (){
+                    setState(() {
+                      editingMode = true;
+                    });
+                  }, btnTextForConfirmation: "Yes", btnTextForCancel: "No"));
+                }else{
+                  setState(() {
+                    editingMode = true;
+                  });
+                }
+              }
+          }),
+          SizedBox(width: 10,)
+        ],
       ),
       backgroundColor: themeManager.getColor(TypeOfWidget.background),
       body: Center(

@@ -88,8 +88,8 @@ class MyApp extends StatelessWidget {
       routes: {
         "/": (context) => MyHomePage(),
         "/termviewer": (context) => TermViewerPage(),
-        "/assignmentsviewer": (context) => AssignmentsViewer(),
-        "/assignmentsinfoviewer": (context) => AssignmentInfoViewer(),
+        "/assignmentsviewer": (context) => AssignmentsViewer(ModalRoute.of(context).settings.arguments),
+        "/assignmentsinfoviewer": (context) => AssignmentInfoViewer(ModalRoute.of(context).settings.arguments),
         "/gpacalculatorschoolyear": (context) => GPACalculatorSchoolYear(),
         "/gpacalculatorclasses": (context) =>
             GPACalculatorClasses(ModalRoute.of(context).settings.arguments),
