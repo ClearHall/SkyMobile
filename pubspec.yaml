@@ -10,7 +10,7 @@ dependencies:
   flutter:
     sdk: flutter
 
-  skyscrapeapi: ^2.3.5+3
+  skyscrapeapi: ^2.3.6+1
   url_launcher: ^5.2.5
   path_provider: ^1.2.0
   local_auth: ^0.5.2+3
