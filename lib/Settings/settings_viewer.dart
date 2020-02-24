@@ -170,7 +170,7 @@ class _SettingsViewerState extends BiometricBlur<SettingsViewer> {
           backgroundColor: themeManager.getColor(TypeOfWidget.background),
           title: Align(
             alignment: Alignment.centerLeft,
-            child: Text('Settings',
+            child: Text(neiceban ? '内测版' : 'Settings',
                 textAlign: TextAlign.center,
                 style: TextStyle(
                     color: themeManager.getColor(TypeOfWidget.text),

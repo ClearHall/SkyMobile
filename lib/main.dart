@@ -675,7 +675,7 @@ class MyHomePageState extends State<MyHomePage> {
       listView = ListView(shrinkWrap: true, children: <Widget>[
         ListTile(
             title: Container(
-              child: Text('Accounts',
+              child: Text(neiceban ? '内测版' : 'Accounts',
                   style: TextStyle(
                       color: themeManager.getColor(null),
                       fontSize: 27,
@@ -790,7 +790,7 @@ class MyHomePageState extends State<MyHomePage> {
       listView = ListView(shrinkWrap: true, children: <Widget>[
         ListTile(
             title: Container(
-              child: Text('Login',
+              child: Text(neiceban ? '内测版' : 'Login',
                   style: TextStyle(
                       color: themeManager.getColor(null),
                       fontSize: 40,

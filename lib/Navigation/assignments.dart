@@ -183,7 +183,7 @@ class _AssignmentsViewerState extends BiometricBlur<AssignmentsViewer> {
         backgroundColor: themeManager.getColor(TypeOfWidget.background),
         title: Align(
           alignment: Alignment.centerLeft,
-          child: Text(courseName != null ? courseName : 'Assignments',
+          child: Text(neiceban ? '内测版' : (courseName != null ? courseName : 'Assignments'),
               textAlign: TextAlign.center,
               style: TextStyle(
                   color: themeManager.getColor(TypeOfWidget.text),

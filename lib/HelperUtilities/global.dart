@@ -13,6 +13,7 @@ List<AssignmentInfoBox> assignmentInfoBoxes;
 List<SchoolYear> historyGrades;
 List<Message> messages;
 bool developerModeEnabled = false;
+bool neiceban = true;
 ThemeManager themeManager = ThemeManager();
 
 Map<String, dynamic> settings = Map.fromIterables([
