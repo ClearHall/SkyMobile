@@ -41,13 +41,6 @@ class BiometricBlur<T extends StatefulWidget> extends State<T>
         });
       });
     }
-//    } else if (!wasInPausedState &&
-//        state == AppLifecycleState.resumed &&
-//        ModalRoute.of(context).isCurrent) {
-//      setState(() {
-//        shouldBlur = false;
-//      });
-//    }
   }
 
   @override
@@ -55,30 +48,6 @@ class BiometricBlur<T extends StatefulWidget> extends State<T>
     WidgetsBinding.instance.removeObserver(this);
     super.dispose();
   }
-
-//  _ohNoDialog() async {
-//    Navigator.of(context).popUntil((route) {
-//      return route.settings.name != null;
-//    });
-//    showDialog(
-//        barrierDismissible: false,
-//        context: context,
-//        builder: (bc) => HuntyDialogForConfirmation(
-//              title: 'Re-Authenticate',
-//              description: "Please re-authenticate?",
-//              btnTextForConfirmation: 'Ok',
-//              btnTextForCancel: 'Cancel',
-//              runIfUserConfirms: () {
-//                _authenticate();
-//              },
-//              runIfUserCancels: () {
-//                shouldBlur = false;
-//                Navigator.popUntil(context, (route) {
-//                  return route.settings.name == '/';
-//                });
-//              },
-//            ));
-//  }
 
   _authenticate() async {
     LocalAuthentication localAuthentication = LocalAuthentication();

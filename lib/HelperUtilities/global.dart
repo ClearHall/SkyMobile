@@ -86,3 +86,7 @@ refreshGradebook() async{
   terms = await skywardAPI.getGradeBookTerms();
   gradeBoxes = await skywardAPI.getGradeBookGrades(terms);
 }
+
+int indexOfKey(List<Widget> data, Key key) {
+  return data.indexWhere((Widget d) => d.key == key);
+}

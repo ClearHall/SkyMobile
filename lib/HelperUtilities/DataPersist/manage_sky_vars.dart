@@ -1,4 +1,4 @@
-import 'package:skymobile/HelperUtilities/json_saver.dart';
+import 'package:skymobile/HelperUtilities/DataPersist/json_saver.dart';
 
 class SkyVars {
   static JSONSaver skyVarsJsonSaver =

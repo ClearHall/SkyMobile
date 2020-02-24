@@ -4,7 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:skymobile/SupportWidgets/biometric_blur_view.dart';
 import 'package:skymobile/HelperUtilities/global.dart';
-import 'package:skymobile/HelperUtilities/manage_sky_vars.dart';
+import 'package:skymobile/HelperUtilities/DataPersist/manage_sky_vars.dart';
 import 'package:skymobile/Settings/theme_color_manager.dart';
 import 'package:skyscrapeapi/data_types.dart';
 

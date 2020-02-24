@@ -9,7 +9,7 @@ import 'package:local_auth/local_auth.dart';
 import 'package:skymobile/ExtraViewPackages/credits.dart';
 import 'package:skymobile/SupportWidgets/biometric_blur_view.dart';
 import 'package:skymobile/SupportWidgets/custom_overscroll_behavior.dart';
-import 'package:skymobile/HelperUtilities/manage_sky_vars.dart';
+import 'package:skymobile/HelperUtilities/DataPersist/manage_sky_vars.dart';
 import 'package:skymobile/Navigation/messages.dart';
 import 'package:skymobile/Settings/theme_color_manager.dart';
 import 'package:skyscrapeapi/sky_core.dart';
@@ -21,7 +21,7 @@ import 'package:skymobile/Navigation/assignments.dart';
 import 'package:skyscrapeapi/district_searcher.dart';
 import 'package:skyscrapeapi/data_types.dart';
 import 'package:skymobile/HelperUtilities/account_types.dart';
-import 'package:skymobile/HelperUtilities/json_saver.dart';
+import 'package:skymobile/HelperUtilities/DataPersist/json_saver.dart';
 import 'package:skymobile/GPACalculator/school_year.dart';
 import 'package:skymobile/GPACalculator/classes.dart';
 import 'package:skymobile/GPACalculator/settings.dart';
@@ -354,10 +354,6 @@ class MyHomePageState extends State<MyHomePage> {
       } else
         _underMaintence(context);
     }
-  }
-
-  int _indexOfKey(List<Widget> data, Key key) {
-    return data.indexWhere((Widget d) => d.key == key);
   }
 
   Future getTermsAndGradeBook(
@@ -708,9 +704,9 @@ class MyHomePageState extends State<MyHomePage> {
                             padding: EdgeInsets.only(bottom: 20, top: 20),
                             child: ReorderableList(
                               onReorder: (Key item, Key newPosition) {
-                                int draggingIndex = _indexOfKey(widget, item);
+                                int draggingIndex = indexOfKey(widget, item);
                                 int newPositionIndex =
-                                    _indexOfKey(widget, newPosition);
+                                    indexOfKey(widget, newPosition);
 
                                 final draggedItem = accounts[draggingIndex];
                                 setState(() {
@@ -721,7 +717,7 @@ class MyHomePageState extends State<MyHomePage> {
                                 return true;
                               },
                               onReorderDone: (Key item) {
-                                final draggedItem = widget[_indexOfKey(widget, item)];
+                                final draggedItem = widget[indexOfKey(widget, item)];
                                 debugPrint("Reordering finished for ${draggedItem.key}}");
                               },
                               child: CustomScrollView(slivers: [

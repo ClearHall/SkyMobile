@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter_reorderable_list/flutter_reorderable_list.dart';
 import 'package:skymobile/SupportWidgets/biometric_blur_view.dart';
 import 'package:skymobile/Settings/theme_color_manager.dart';
 import 'package:skyscrapeapi/data_types.dart';
@@ -18,6 +19,7 @@ class AssignmentsViewer extends StatefulWidget {
 class _AssignmentsViewerState extends BiometricBlur<AssignmentsViewer> {
   String courseName;
   bool editingMode = false;
+  List<AssignmentsGridBox> tmpAssignments;
 
   _AssignmentsViewerState(this.courseName);
 
@@ -57,6 +59,11 @@ class _AssignmentsViewerState extends BiometricBlur<AssignmentsViewer> {
         Navigator.pushNamed(context, '/assignmentsinfoviewer', arguments: box.assignmentName);
       }
     }
+  }
+
+  _enterEditingMode(){
+    editingMode = true;
+    tmpAssignments = List.from(assignmentsGridBoxes);
   }
 
   @override
@@ -214,12 +221,12 @@ class _AssignmentsViewerState extends BiometricBlur<AssignmentsViewer> {
                 if(qualify){
                   showDialog(context: context, builder: (context) => HuntyDialogForConfirmation(title: "Warning!", description: "This is a semester! Using mock assignments on semesters will not be accurate. Are you sure you want to continue?", runIfUserConfirms: (){
                     setState(() {
-                      editingMode = true;
+                     _enterEditingMode();
                     });
                   }, btnTextForConfirmation: "Yes", btnTextForCancel: "No"));
                 }else{
                   setState(() {
-                    editingMode = true;
+                    _enterEditingMode();
                   });
                 }
               }
@@ -229,9 +236,45 @@ class _AssignmentsViewerState extends BiometricBlur<AssignmentsViewer> {
       ),
       backgroundColor: themeManager.getColor(TypeOfWidget.background),
       body: Center(
-        child: ListView(
+        child: Container(
           padding: EdgeInsets.all(10),
+          child: editingMode ? ReorderableList(
+            onReorder: (Key item, Key newPosition) {
+              int draggingIndex = _indexOfKey(body, item);
+              int newPositionIndex =
+              _indexOfKey(widget, newPosition);
+
+              final draggedItem = accounts[draggingIndex];
+              setState(() {
+                debugPrint("Reordering $draggingIndex -> $newPositionIndex");
+                accounts.removeAt(draggingIndex);
+                accounts.insert(newPositionIndex, draggedItem);
+              });
+              return true;
+            },
+            onReorderDone: (Key item) {
+              final draggedItem = widget[_indexOfKey(widget, item)];
+              debugPrint("Reordering finished for ${draggedItem.key}}");
+            },
+            child: CustomScrollView(slivers: [
+              SliverPadding(
+                  padding: EdgeInsets.only(
+                      bottom: MediaQuery.of(context)
+                          .padding
+                          .bottom),
+                  sliver: SliverList(
+                    delegate: SliverChildBuilderDelegate(
+                          (BuildContext context, int index) {
+                        return widget.elementAt(index);
+                      },
+                      childCount: widget.length,
+                    ),
+                  )),
+            ]),
+            //)
+          ) : ListView(
           children: body,
+        ),
         ),
       ),
     );
