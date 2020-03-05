@@ -20,6 +20,7 @@ class _AssignmentsViewerState extends BiometricBlur<AssignmentsViewer> {
   String courseName;
   bool editingMode = false;
   List<AssignmentsGridBox> tmpAssignments;
+  static const String EDITED_KEY_GRADE = 'editedDeci';
 
   _AssignmentsViewerState(this.courseName);
 
@@ -61,6 +62,30 @@ class _AssignmentsViewerState extends BiometricBlur<AssignmentsViewer> {
     }
   }
 
+  _recalculateTmp(){
+    double tmpSum = 0;
+    int numOfVals = 0;
+
+    CategoryHeader t;
+    for(AssignmentsGridBox gridBox in tmpAssignments){
+      if(gridBox is CategoryHeader && gridBox.weight == null){
+        if(t != null){
+          t.attributes[EDITED_KEY_GRADE] = (tmpSum / numOfVals).toString();
+        }
+        tmpSum = 0;
+        numOfVals = 0;
+        t = gridBox;
+      }else if(gridBox is GradeBox){
+        if(gridBox.attributes[EDITED_KEY_GRADE] != null){
+          tmpSum += double.parse(gridBox.attributes[EDITED_KEY_GRADE]);
+        }else{
+          tmpSum += double.parse(gridBox.getDecimal());
+        }
+        numOfVals++;
+      }
+    }
+  }
+
   _enterEditingMode(){
     editingMode = true;
     tmpAssignments = List.from(assignmentsGridBoxes);
@@ -68,25 +93,44 @@ class _AssignmentsViewerState extends BiometricBlur<AssignmentsViewer> {
 
   @override
   Widget generateBody(BuildContext context) {
+    int lastInstOfBefCat = -1;
+
+    for(AssignmentsGridBox box in assignmentsGridBoxes){
+      if(box is CategoryHeader){
+        lastInstOfBefCat++;
+      }else{
+        break;
+      }
+    }
+
     if (shouldBlur)
       return Scaffold(
         backgroundColor: themeManager.getColor(TypeOfWidget.background),
       );
     List<Widget> body = [];
-    for (AssignmentsGridBox box in assignmentsGridBoxes) {
+    int ind = 0;
+    for (AssignmentsGridBox box in (editingMode ? tmpAssignments : assignmentsGridBoxes)) {
       bool isBoxCatHeader = box is CategoryHeader;
       String grade = box.attributes.containsKey('Score(%)')
           ? box.attributes['Score(%)']
           : box.getDecimal();
-      if (grade != null &&
-          grade.trim().isEmpty &&
+      if (((grade != null &&
+          grade.trim().isEmpty) || grade == null) &&
           box.attributes.containsKey("Points Earned")) {
         grade = box.attributes["Points Earned"];
       }
       bool secondContNeeded =
           (isBoxCatHeader && (box as CategoryHeader).weight != null);
+      TextEditingController controller = TextEditingController();
+      controller.text = grade;
+
+      TextStyle standard = TextStyle(
+          fontSize: 17,
+          fontWeight: FontWeight.w700,
+          color: editingMode ? getColorFrom(null) : getColorFrom(grade));
 
       body.add(Container(
+        key: Key(ind.toString()),
           padding: EdgeInsets.only(
               left: settings['Hierarchical Grades']['option']
                   ? (isBoxCatHeader ? (secondContNeeded ? 10 : 0) : (20))
@@ -165,22 +209,45 @@ class _AssignmentsViewerState extends BiometricBlur<AssignmentsViewer> {
                       constraints: BoxConstraints(minHeight: 60),
                       padding: EdgeInsets.only(right: 15),
                       alignment: Alignment.centerRight,
-                      child: Text(
-                        grade == null
-                            ? box.attributes.containsKey('Points Earned')
-                                ? box.attributes['Points Earned']
-                                : ""
-                            : grade,
-                        style: TextStyle(
-                            fontSize: 17,
-                            fontWeight: FontWeight.w700,
-                            color: getColorFrom(grade)),
+                      child: editingMode ? ConstrainedBox(constraints: BoxConstraints(maxWidth: 130),
+                          child: TextField(
+                        controller: controller,
+                        style: standard,
+                        textAlign: TextAlign.center,
+                        decoration: InputDecoration(
+                          contentPadding: const EdgeInsets.all(5),
+                            labelStyle: TextStyle(
+                                color:
+                                themeManager.getColor(TypeOfWidget.text)),
+                            enabledBorder: OutlineInputBorder(
+                                borderSide: BorderSide(
+                                    color: themeManager
+                                        .getColor(TypeOfWidget.text),
+                                    width: 2),
+                                borderRadius: BorderRadius.circular(16)),
+                            focusedBorder: OutlineInputBorder(
+                                borderSide: BorderSide(
+                                    color: themeManager
+                                        .getColor(TypeOfWidget.text),
+                                    width: 2),
+                                borderRadius: BorderRadius.circular(16))
+                        ),
+                        //TODO: Make sure you replace this with editing mode stuff
+                      )) : Text(
+//                        grade == null
+//                            ? box.attributes.containsKey('Points Earned')
+//                                ? box.attributes['Points Earned']
+//                                : ""
+//                            : grade,
+                      grade,
+                        style: standard,
                       ),
                     ),
                   ],
                 )),
             color: themeManager.getColor(TypeOfWidget.subBackground),
           )));
+      ind++;
     }
 
     return Scaffold(
@@ -206,7 +273,7 @@ class _AssignmentsViewerState extends BiometricBlur<AssignmentsViewer> {
               }else{
                 int currentwei = 0;
                 bool qualify = false;
-                for(AssignmentsGridBox a in assignmentsGridBoxes){
+                for(AssignmentsGridBox a in (editingMode ? tmpAssignments : assignmentsGridBoxes)){
                   if(a is CategoryHeader){
                     if(a.weight == null) {
                       if(currentwei > 1){
@@ -240,20 +307,25 @@ class _AssignmentsViewerState extends BiometricBlur<AssignmentsViewer> {
           padding: EdgeInsets.all(10),
           child: editingMode ? ReorderableList(
             onReorder: (Key item, Key newPosition) {
-              int draggingIndex = _indexOfKey(body, item);
+              int draggingIndex = indexOfKey(body, item);
               int newPositionIndex =
-              _indexOfKey(widget, newPosition);
+              indexOfKey(body, newPosition);
 
-              final draggedItem = accounts[draggingIndex];
-              setState(() {
-                debugPrint("Reordering $draggingIndex -> $newPositionIndex");
-                accounts.removeAt(draggingIndex);
-                accounts.insert(newPositionIndex, draggedItem);
-              });
-              return true;
+              final draggedItem = tmpAssignments[draggingIndex];
+              if(draggedItem is CategoryHeader && newPositionIndex <= lastInstOfBefCat) {
+                return false;
+              }else{
+                setState(() {
+                  debugPrint("Reordering $draggingIndex -> $newPositionIndex");
+                  tmpAssignments.removeAt(draggingIndex);
+                  tmpAssignments.insert(newPositionIndex, draggedItem);
+                });
+                return true;
+              }
             },
             onReorderDone: (Key item) {
-              final draggedItem = widget[_indexOfKey(widget, item)];
+              final draggedItem = body[indexOfKey(body, item)];
+              _recalculateTmp();
               debugPrint("Reordering finished for ${draggedItem.key}}");
             },
             child: CustomScrollView(slivers: [
@@ -265,9 +337,9 @@ class _AssignmentsViewerState extends BiometricBlur<AssignmentsViewer> {
                   sliver: SliverList(
                     delegate: SliverChildBuilderDelegate(
                           (BuildContext context, int index) {
-                        return widget.elementAt(index);
+                        return body.elementAt(index);
                       },
-                      childCount: widget.length,
+                      childCount: body.length,
                     ),
                   )),
             ]),
