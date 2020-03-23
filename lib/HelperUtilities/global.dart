@@ -3,15 +3,8 @@ import 'package:skyscrapeapi/data_types.dart';
 import '../Settings/theme_color_manager.dart';
 import 'package:flutter/material.dart';
 
-SkywardAPICore skywardAPI;
 String currentSessionIdentifier;
 String currentChild;
-List<Term> terms;
-List<GridBox> gradeBoxes;
-List<AssignmentsGridBox> assignmentsGridBoxes;
-List<AssignmentInfoBox> assignmentInfoBoxes;
-List<SchoolYear> historyGrades;
-List<Message> messages;
 bool developerModeEnabled = false;
 bool neiceban = true;
 ThemeManager themeManager = ThemeManager();

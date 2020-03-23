@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:math';
 
 import 'package:flutter/foundation.dart'
     show debugDefaultTargetPlatformOverride;
@@ -181,37 +182,45 @@ class MyHomePageState extends State<MyHomePage> {
   }
 
   _developerMode(String user, String pass) {
-    gradeBoxes = [
-      TeacherIDBox('Mr. Hayden', 'Biology AP', '6AM-6PM'),
-      GradeBox('1', Term('AC1', 'Acredited AC1'), '99', '12345'),
-      GradeBox('2', Term('AC2', 'Acredited AC2'), '98', '12345'),
-      GradeBox('3', Term('AC3', 'Acredited AC3'), '99', '12345'),
-      GradeBox('4', Term('AC4', 'Acredited AC4'), '98', '12345'),
-      GradeBox('5', Term('AC5', 'Acredited AC5'), '99', '12345'),
-      GradeBox('6', Term('WAN', 'Finale'), '98', '12345'),
-      TeacherIDBox('Mr. Crenoptious', 'Heat', '6AM-6PM'),
-      GradeBox('1', Term('AC1', 'Acredited AC1'), '105', '12345'),
-      GradeBox('2', Term('AC2', 'Acredited AC2'), '103', '12345'),
-      GradeBox('3', Term('AC3', 'Acredited AC3'), '9999', '12345'),
-      GradeBox('4', Term('AC4', 'Acredited AC4'), '43', '12345'),
-      GradeBox('5', Term('AC5', 'Acredited AC5'), '0', '12345'),
-      GradeBox('6', Term('WAN', 'Finale'), '98', '12345'),
-      TeacherIDBox('Mr. Jepolation', 'Cretonprechteja', '6AM-6PM'),
-      GradeBox('1', Term('AC1', 'Acredited AC1'), '1', '12345'),
-      GradeBox('2', Term('AC2', 'Acredited AC2'), '55', '12345'),
-      GradeBox('3', Term('AC3', 'Acredited AC3'), '36', '12345'),
-      GradeBox('4', Term('AC4', 'Acredited AC4'), '74', '12345'),
-      GradeBox('5', Term('AC5', 'Acredited AC5'), '88', '12345'),
-      GradeBox('6', Term('WAN', 'Finale'), '98', '12345'),
-    ];
-    terms = [
-      Term('AC1', 'Acredited AC1'),
-      Term('AC2', 'Acredited AC2'),
-      Term('AC3', 'Acredited AC3'),
-      Term('AC4', 'Acredited AC4'),
-      Term('AC5', 'Acredited AC5'),
+    Gradebook gradebook = Gradebook();
+    List<Term> terms = [
+      Term('AC1', 'Application AC1'),
+      Term('AC2', 'Application AC2'),
+      Term('AC3', 'Application AC3'),
+      Term('AC4', 'Application AC4'),
+      Term('AC5', 'Application AC5'),
       Term('WAN', 'Finale'),
     ];
+
+    Random rand = Random();
+    String studentID = '3099';
+    gradebook.classes = [
+      Class('Mr. Hayden', '6AM-6PM', 'Biology AP', grades: [
+        Grade('1', terms[0], rand.nextInt(101).toString(), studentID),
+        Grade('2', terms[1], rand.nextInt(101).toString(), studentID),
+        Grade('3', terms[2], rand.nextInt(101).toString(), studentID),
+        Grade('4', terms[3], rand.nextInt(101).toString(), studentID),
+        Grade('5', terms[4], rand.nextInt(101).toString(), studentID),
+        Grade('6', terms[5], rand.nextInt(101).toString(), studentID),
+      ]),
+      Class('Mr. Crenp', '6AM-6PM', 'Heat AP', grades: [
+        Grade('1', terms[0], rand.nextInt(101).toString(), studentID),
+        Grade('2', terms[1], rand.nextInt(101).toString(), studentID),
+        Grade('3', terms[2], rand.nextInt(101).toString(), studentID),
+        Grade('4', terms[3], rand.nextInt(101).toString(), studentID),
+        Grade('5', terms[4], rand.nextInt(101).toString(), studentID),
+        Grade('6', terms[5], rand.nextInt(101).toString(), studentID),
+      ]),
+      Class('Mrs. Applenack', '6AM-6PM', 'Chinese AP', grades: [
+        Grade('1', terms[0], rand.nextInt(101).toString(), studentID),
+        Grade('2', terms[1], rand.nextInt(101).toString(), studentID),
+        Grade('3', terms[2], rand.nextInt(101).toString(), studentID),
+        Grade('4', terms[3], rand.nextInt(101).toString(), studentID),
+        Grade('5', terms[4], rand.nextInt(101).toString(), studentID),
+        Grade('6', terms[5], rand.nextInt(101).toString(), studentID),
+      ]),
+    ];
+
     currentChild = user;
     currentSessionIdentifier = pass;
     developerModeEnabled = true;
@@ -242,70 +251,42 @@ class MyHomePageState extends State<MyHomePage> {
       isCancelled[0] = true;
     });
 
-    skywardAPI = SkywardAPICore(district.districtLink);
     try {
-      if (!(await skywardAPI.getSkywardAuthenticationCodes(user, pass))) {
-        Navigator.of(context).pop(dialog);
-        showDialog(
+      User person = await SkyCore.login(user, pass, district.districtLink);
+      _getAccounts();
+      if (!_isCredentialsSavedAlready(user)) {
+        await showDialog(
             context: context,
             builder: (_) {
-              return HuntyDialog(
-                  title: 'Uh-Oh',
-                  description:
-                      'Invalid Credentials or Internet Failure. Please check your username and password and your internet connection.',
-                  buttonText: 'Ok');
+              return HuntyDialogForConfirmation(
+                title: 'New Account',
+                description:
+                'New account detected, would you like to save this account?.',
+                runIfUserConfirms: () {
+                  setState(() {
+                    accounts.add(Account(user, user, pass, district));
+                    jsonSaver.saveListData(accounts);
+                  });
+                },
+                btnTextForCancel: "Cancel",
+                btnTextForConfirmation: 'Ok',
+              );
             });
-      } else {
-        _getAccounts();
-        if (!_isCredentialsSavedAlready(user)) {
-          await showDialog(
-              context: context,
-              builder: (_) {
-                return HuntyDialogForConfirmation(
-                  title: 'New Account',
-                  description:
-                      'New account detected, would you like to save this account?.',
-                  runIfUserConfirms: () {
-                    setState(() {
-                      accounts.add(Account(user, user, pass, district));
-                      jsonSaver.saveListData(accounts);
-                    });
-                  },
-                  btnTextForCancel: "Cancel",
-                  btnTextForConfirmation: 'Ok',
-                );
-              });
-        }
-        await getTermsAndGradeBook(
-            isCancelled, dialog, Account(null, user, pass, district));
       }
+      await getTermsAndGradeBook(
+          isCancelled, dialog, Account(null, user, pass, district));
     } catch (e) {
       Navigator.of(context).pop(dialog);
-      if (e.toString().contains('Invalid login or password')) {
-        showDialog(
-            context: context,
-            builder: (_) {
-              return HuntyDialog(
-                  title: 'Uh-Oh',
-                  description:
-                      'Invalid Credentials or Internet Failure. Please check your username and password and your internet connection.',
-                  buttonText: 'Ok');
-            });
-      } else
-        _underMaintence(context);
+      showDialog(
+          context: context,
+          builder: (_) {
+            return HuntyDialog(
+                title: 'Uh-Oh',
+                description:
+                e.toString() + ' Check your internet connection!',
+                buttonText: 'Ok');
+          });
     }
-  }
-
-  _underMaintence(BuildContext context) {
-    showDialog(
-        context: context,
-        builder: (bc) {
-          return HuntyDialog(
-              title: 'Oh-No',
-              description:
-                  'An error occured. Your district\'s skyward is probably in maintenance.',
-              buttonText: 'Ok');
-        });
   }
 
   bool _isCredentialsSavedAlready(String user) {
@@ -325,12 +306,9 @@ class MyHomePageState extends State<MyHomePage> {
       isCancelled[0] = true;
     });
 
-    skywardAPI = SkywardAPICore(district.districtLink);
     try {
-      if ((await skywardAPI.getSkywardAuthenticationCodes(
-          acc.user, acc.pass))) {
-        await getTermsAndGradeBook(isCancelled, dialog, acc);
-      }
+      User person = await SkyCore.login(acc.user, acc.pass, district.districtLink);
+      await getTermsAndGradeBook(isCancelled, dialog, acc);
     } catch (e) {
       Navigator.of(context).pop(dialog);
       if (e.toString().contains('Invalid login or password')) {
@@ -352,17 +330,24 @@ class MyHomePageState extends State<MyHomePage> {
               );
             });
       } else
-        _underMaintence(context);
+        Navigator.of(context).pop(dialog);
+        showDialog(
+          context: context,
+          builder: (_) {
+            return HuntyDialog(
+                title: 'Uh-Oh',
+                description:
+                e.toString() + ' Check your internet connection!',
+                buttonText: 'Ok');
+          });
     }
   }
 
   Future getTermsAndGradeBook(
-      List<bool> isCancelled, HuntyDialogLoading dialog, Account acc) async {
+      List<bool> isCancelled, HuntyDialogLoading dialog, User acc) async {
     try {
-      await skywardAPI.initNewAccount();
-      skywardAPI.switchUserIndex(1);
-      var termRes = await skywardAPI.getGradeBookTerms();
-      var gradebookRes = (await skywardAPI.getGradeBookGrades(termRes));
+      var termRes = await acc.getTerms();
+      var gradebookRes = await acc.getGradebook();
       terms = termRes;
       gradeBoxes = gradebookRes;
     } catch (e) {
