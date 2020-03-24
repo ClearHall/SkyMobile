@@ -88,16 +88,32 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       routes: {
         "/": (context) => MyHomePage(),
-        "/termviewer": (context) => TermViewerPage(),
+        "/termviewer": (context) =>
+            TermViewerPage(ModalRoute
+                .of(context)
+                .settings
+                .arguments),
         "/assignmentsviewer": (context) => AssignmentsViewer(ModalRoute.of(context).settings.arguments),
         "/assignmentsinfoviewer": (context) => AssignmentInfoViewer(ModalRoute.of(context).settings.arguments),
-        "/gpacalculatorschoolyear": (context) => GPACalculatorSchoolYear(),
+        "/gpacalculatorschoolyear": (context) =>
+            GPACalculatorSchoolYear(ModalRoute
+                .of(context)
+                .settings
+                .arguments),
         "/gpacalculatorclasses": (context) =>
             GPACalculatorClasses(ModalRoute.of(context).settings.arguments),
-        "/gpacalculatorsettings": (context) => GPACalculatorSettings(),
+        "/gpacalculatorsettings": (context) =>
+            GPACalculatorSettings(ModalRoute
+                .of(context)
+                .settings
+                .arguments),
         "/settings": (context) => SettingsViewer(),
         '/devconsole': (context) => DeveloperConsole(),
-        '/messages': (context) => MessageViewer(),
+        '/messages': (context) =>
+            MessageViewer(ModalRoute
+                .of(context)
+                .settings
+                .arguments),
         '/credits': (context) => Credits()
       },
     );
@@ -223,8 +239,8 @@ class MyHomePageState extends State<MyHomePage> {
 
     currentChild = user;
     currentSessionIdentifier = pass;
-    developerModeEnabled = true;
-    Navigator.pushNamed(context, '/termviewer');
+    Navigator.pushNamed(
+        context, '/termviewer', arguments: [gradebook, 'Tester Dev', true]);
   }
 
   Map<String, String> developerAccountList = {'albaba': 'woaialbaba'};
@@ -274,7 +290,7 @@ class MyHomePageState extends State<MyHomePage> {
             });
       }
       await getTermsAndGradeBook(
-          isCancelled, dialog, Account(null, user, pass, district));
+          isCancelled, dialog, Account(null, user, pass, district), person);
     } catch (e) {
       Navigator.of(context).pop(dialog);
       showDialog(
@@ -308,7 +324,7 @@ class MyHomePageState extends State<MyHomePage> {
 
     try {
       User person = await SkyCore.login(acc.user, acc.pass, district.districtLink);
-      await getTermsAndGradeBook(isCancelled, dialog, acc);
+      await getTermsAndGradeBook(isCancelled, dialog, acc, person);
     } catch (e) {
       Navigator.of(context).pop(dialog);
       if (e.toString().contains('Invalid login or password')) {
@@ -343,13 +359,11 @@ class MyHomePageState extends State<MyHomePage> {
     }
   }
 
-  Future getTermsAndGradeBook(
-      List<bool> isCancelled, HuntyDialogLoading dialog, User acc) async {
+  Future getTermsAndGradeBook(List<bool> isCancelled, HuntyDialogLoading dialog,
+      Account acc, User person) async {
+    var gradebookRes;
     try {
-      var termRes = await acc.getTerms();
-      var gradebookRes = await acc.getGradebook();
-      terms = termRes;
-      gradeBoxes = gradebookRes;
+      gradebookRes = await person.getGradebook();
     } catch (e) {
       isCancelled[0] = true;
       Navigator.of(context).pop(dialog);
@@ -365,12 +379,11 @@ class MyHomePageState extends State<MyHomePage> {
     }
     if (!(isCancelled.first)) {
       currentSessionIdentifier = acc.user;
-      Navigator.of(context, rootNavigator: true).popUntil((result) {
-        return result.settings.name == '/';
-      });
       prevSavedAccount.saveListData(
           {'user': acc.user, 'pass': acc.pass, 'link': district.districtLink});
-      Navigator.pushNamed(context, '/termviewer');
+      account = person;
+      Navigator.pushNamed(context, '/termviewer',
+          arguments: [gradebookRes, await person.getName(), false]);
     }
   }
 

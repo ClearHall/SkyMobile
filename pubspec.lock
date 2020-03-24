@@ -230,7 +230,7 @@ packages:
       name: skyscrapeapi
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "3.0.0+10"
+    version: "3.0.0+15"
   source_span:
     dependency: transitive
     description:
@@ -272,7 +272,7 @@ packages:
       name: test_api
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.2.11"
+    version: "0.2.15"
   typed_data:
     dependency: transitive
     description:

@@ -5,17 +5,24 @@ import 'package:skymobile/GPACalculator/school_year.dart';
 import 'package:skymobile/HelperUtilities/global.dart';
 import 'package:skymobile/Settings/settings_widget_generator.dart';
 import 'package:skymobile/Settings/theme_color_manager.dart';
+import 'package:skyscrapeapi/data_types.dart';
 import '../HelperUtilities/gpa_calculator_support_utils.dart';
 
 class GPACalculatorSettings extends StatefulWidget {
-  GPACalculatorSettings({Key key}) : super(key: key);
+  final List<SchoolYear> enabled;
+
+  GPACalculatorSettings(this.enabled, {Key key}) : super(key: key);
 
   @override
-  _GPACalculatorSettingsState createState() => _GPACalculatorSettingsState();
+  _GPACalculatorSettingsState createState() =>
+      _GPACalculatorSettingsState(enabled);
 }
 
 class _GPACalculatorSettingsState extends BiometricBlur<GPACalculatorSettings> {
+  List<SchoolYear> enabledSchoolYear;
   Map<String, TextEditingController> mapEditable = Map();
+
+  _GPACalculatorSettingsState(this.enabledSchoolYear);
 
   Row buildArrayOfSelectableTerms(List<String> stringList) {
     List<Widget> widgets = [];
@@ -90,7 +97,8 @@ class _GPACalculatorSettingsState extends BiometricBlur<GPACalculatorSettings> {
 
   @override
   Widget generateBody(BuildContext context) {
-    List<String> stringList = GPACalculatorSchoolYearState.getSelectableTermsString(GPACalculatorSchoolYearState.getEnabledHistGrades());
+    List<String> stringList = GPACalculatorSchoolYearState
+        .getSelectableTermsString(enabledSchoolYear);
     List<Widget> widgets = [
       Container(
           child: Text(
@@ -161,7 +169,7 @@ class _GPACalculatorSettingsState extends BiometricBlur<GPACalculatorSettings> {
         ),
         backgroundColor: Colors.black,
         body: Center(
-          child: Container(padding: EdgeInsets.only(left: 10, right: 10), child: ListView(children: widgets),)
+            child: Container(padding: EdgeInsets.only(left: 10, right: 10), child: ListView(children: widgets),)
         ));
   }
   //Widget _generateSettingsClickable(String setting, )

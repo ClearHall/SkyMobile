@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 
 String currentSessionIdentifier;
 String currentChild;
-bool developerModeEnabled = false;
+User account;
 bool neiceban = true;
 ThemeManager themeManager = ThemeManager();
 
@@ -73,11 +73,6 @@ Color getColorFrom(String grade) {
     return Color.fromARGB(255, (red * 255).floor(), (green * 255).floor(), 0);
   }
   return Color.fromARGB(255, 0, (0.8471 * 255).round(), (0.8039 * 255).round());
-}
-
-refreshGradebook() async{
-  terms = await skywardAPI.getGradeBookTerms();
-  gradeBoxes = await skywardAPI.getGradeBookGrades(terms);
 }
 
 int indexOfKey(List<Widget> data, Key key) {

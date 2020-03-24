@@ -7,15 +7,19 @@ import 'package:skyscrapeapi/data_types.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class MessageViewer extends StatefulWidget {
-  MessageViewer({Key key, this.title}) : super(key: key);
-  final String title;
+  List<Message> messages;
+
+  MessageViewer(this.messages, {Key key}) : super(key: key);
 
   @override
-  _MessageViewerState createState() => _MessageViewerState();
+  _MessageViewerState createState() => _MessageViewerState(messages);
 }
 
 class _MessageViewerState extends BiometricBlur<MessageViewer> {
+  List<Message> messages;
   Map<int, TapGestureRecognizer> recognizer = {};
+
+  _MessageViewerState(this.messages);
 
   @override
   void dispose() {
@@ -77,7 +81,7 @@ class _MessageViewerState extends BiometricBlur<MessageViewer> {
       }
 
       children.add(Container(
-          padding: EdgeInsets.only(top: 10, left: 20, right: 20),
+        padding: EdgeInsets.only(top: 10, left: 20, right: 20),
         child: Card(
           shape:
           RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
@@ -85,58 +89,58 @@ class _MessageViewerState extends BiometricBlur<MessageViewer> {
             children: <Widget>[
               message.header != null
                   ? Container(
-                      child: Align(
-                          alignment: Alignment.centerLeft,
-                          child: Text(
-                            message?.header ?? '',
-                            style: TextStyle(
-                                color: themeManager.getColor(TypeOfWidget.text),
-                                fontSize: 20),
-                          )),
-                      padding: EdgeInsets.only(top: 15, left: 20, right: 20),
-                    )
+                child: Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      message?.header ?? '',
+                      style: TextStyle(
+                          color: themeManager.getColor(TypeOfWidget.text),
+                          fontSize: 20),
+                    )),
+                padding: EdgeInsets.only(top: 15, left: 20, right: 20),
+              )
                   : Container(),
               message.title?.title != null
                   ? Container(
-                      child: Align(
-                          alignment: Alignment.centerLeft,
-                          child: Text(
-                            message?.title?.title ?? '',
-                            style: TextStyle(
-                                color: themeManager.getColor(TypeOfWidget.text),
-                                fontSize: 17),
-                          )),
-                      padding: EdgeInsets.only(top: 15, left: 20, right: 20),
-                    )
+                child: Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      message?.title?.title ?? '',
+                      style: TextStyle(
+                          color: themeManager.getColor(TypeOfWidget.text),
+                          fontSize: 17),
+                    )),
+                padding: EdgeInsets.only(top: 15, left: 20, right: 20),
+              )
                   : Container(),
               message.title?.attachment != null
                   ? Container(
-                      child: Align(
-                          alignment: Alignment.centerLeft,
-                          child: RichText(
-                            text: TextSpan(
-                                text: message?.title?.attachment?.text ?? '',
-                                style: TextStyle(
-                                    color: themeManager
-                                        .getColor(TypeOfWidget.button),
-                                    fontSize: 15),
-                                recognizer: tapForAttach),
-                          )),
-                      padding: EdgeInsets.only(top: 10, left: 20, right: 20),
-                    )
+                child: Align(
+                    alignment: Alignment.centerLeft,
+                    child: RichText(
+                      text: TextSpan(
+                          text: message?.title?.attachment?.text ?? '',
+                          style: TextStyle(
+                              color: themeManager
+                                  .getColor(TypeOfWidget.button),
+                              fontSize: 15),
+                          recognizer: tapForAttach),
+                    )),
+                padding: EdgeInsets.only(top: 10, left: 20, right: 20),
+              )
                   : Container(),
               message.date != null
                   ? Container(
-                      child: Align(
-                          alignment: Alignment.centerLeft,
-                          child: Text(
-                            message?.date ?? '',
-                            style: TextStyle(
-                                color: themeManager.getColor(TypeOfWidget.text),
-                                fontSize: 15),
-                          )),
-                      padding: EdgeInsets.only(top: 10, left: 20, right: 20),
-                    )
+                child: Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      message?.date ?? '',
+                      style: TextStyle(
+                          color: themeManager.getColor(TypeOfWidget.text),
+                          fontSize: 15),
+                    )),
+                padding: EdgeInsets.only(top: 10, left: 20, right: 20),
+              )
                   : Container(),
 //              Divider(
 //                color: themeManager.getColor(TypeOfWidget.text),

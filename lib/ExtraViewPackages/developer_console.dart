@@ -62,11 +62,11 @@ class _DeveloperConsoleState extends BiometricBlur<DeveloperConsole> {
   static _setObjInList(List listObj, int ind, String changeTo) {
     Object thing = listObj[ind];
     switch (thing.runtimeType) {
-      case LessInfoBox:
-        (thing as LessInfoBox).behavior = changeTo;
+      case Behavior:
+        (thing as Behavior).behavior = changeTo;
         break;
-      case GradeBox:
-        (thing as GradeBox).grade = changeTo;
+      case Grade:
+        (thing as Grade).grade = changeTo;
         break;
     }
   }
@@ -80,11 +80,12 @@ class _DeveloperConsoleState extends BiometricBlur<DeveloperConsole> {
       String command = split[0];
       var modifier;
       if (split.length > 1) {
-        if (split[1] == 'gradebook')
-          modifier = gradeBoxes;
-        else if (split[1] == 'terms')
-          modifier = terms;
-        else if (split[1] == 'envar') {
+//        if (split[1] == 'gradebook')
+//          modifier = gradeBoxes;
+//        else if (split[1] == 'terms')
+//          modifier = terms;
+//        else
+        if (split[1] == 'envar') {
           SkyVars.getVars();
           modifier = 'envar';
         }

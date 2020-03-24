@@ -46,7 +46,7 @@ double get40Scale(List<SchoolYear> enabledSchoolYears) {
     for (SchoolYear schoolYear in enabledSchoolYears) {
       if (schoolYear.terms.contains(Term(term, null))) {
         int indexOfTerm = schoolYear.terms.indexOf(Term(term, null));
-        for (Class classYear in schoolYear.classes) {
+        for (HistoricalClass classYear in schoolYear.classes) {
           int addOnPoints = extraGPASettings['Class Level Worth']['option'][
               classYear.classLevel != null
                   ? classYear.classLevel.toString().substring(11)
@@ -122,7 +122,7 @@ double get100GPA(List<SchoolYear> enabledSchoolYears) {
   double credits = 0;
   for (SchoolYear schoolYear in enabledSchoolYears) {
     if (schoolYear.isEnabled) {
-      for (Class classYear in schoolYear.classes) {
+      for (HistoricalClass classYear in schoolYear.classes) {
         int addOnPoints = extraGPASettings['Class Level Worth']['option'][
             classYear.classLevel != null
                 ? classYear.classLevel.toString().substring(11)
@@ -153,7 +153,8 @@ double get100GPA(List<SchoolYear> enabledSchoolYears) {
   return credits > 0 ? finalGrade / credits : null;
 }
 
-gpaCalculatorSettingsSaveForCurrentSession() async {
+gpaCalculatorSettingsSaveForCurrentSession(
+    List<SchoolYear> historyGrades) async {
   JSONSaver jsonSaver = JSONSaver(FilesAvailable.gpaCalculatorSettings);
   var retrievedFromStorage = await jsonSaver.readListData();
   if (retrievedFromStorage is Map) {
@@ -167,16 +168,28 @@ gpaCalculatorSettingsSaveForCurrentSession() async {
   }
 }
 
-gpaCalculatorSettingsReadForCurrentSession() async {
+gpaCalculatorSettingsReadForCurrentSession(
+    List<SchoolYear> historyGrades) async {
   JSONSaver jsonSaver = JSONSaver(FilesAvailable.gpaCalculatorSettings);
   var retrievedFromStorage = await jsonSaver.readListData();
   if (retrievedFromStorage is Map &&
       retrievedFromStorage
           .containsKey(currentSessionIdentifier + (currentChild ?? ''))) {
-    return List<SchoolYear>.from(
+    List<SchoolYear> oldYears = List<SchoolYear>.from(
         retrievedFromStorage[currentSessionIdentifier + (currentChild ?? '')]);
+    int ind = oldYears.length - 1;
+    for (int i = historyGrades.length - 1; i >= 0; i--) {
+      if (ind >= 0 &&
+          historyGrades[i].description == oldYears[ind].description) {
+        historyGrades[i] = oldYears[i];
+        ind--;
+      } else {
+        break;
+      }
+    }
+    return historyGrades;
   } else {
-    gpaCalculatorSettingsSaveForCurrentSession();
+    gpaCalculatorSettingsSaveForCurrentSession(historyGrades);
     return historyGrades;
   }
 }

@@ -10,14 +10,21 @@ import 'package:skymobile/HelperUtilities/global.dart';
 import '../HelperUtilities/gpa_calculator_support_utils.dart';
 
 class GPACalculatorSchoolYear extends StatefulWidget {
-  GPACalculatorSchoolYear();
+  final List args;
+
+  GPACalculatorSchoolYear(this.args);
   @override
   GPACalculatorSchoolYearState createState() =>
-      new GPACalculatorSchoolYearState();
+      new GPACalculatorSchoolYearState(args[0], args[1]);
 }
 
 class GPACalculatorSchoolYearState
     extends BiometricBlur<GPACalculatorSchoolYear> {
+  List<SchoolYear> historyGrades;
+  Gradebook gradebook;
+
+  GPACalculatorSchoolYearState(this.historyGrades, this.gradebook);
+
   @override
   void initState() {
     super.initState();
@@ -32,17 +39,21 @@ class GPACalculatorSchoolYearState
     SchoolYear first = SchoolYear();
     first.classes = [];
     first.description = 'Current Year';
-    first.terms = terms;
-    Class tmpClass;
-    for (GridBox gridBox in gradeBoxes) {
-      if (gridBox is TeacherIDBox) {
-        if (tmpClass != null) first.classes.add(tmpClass);
-        tmpClass = Class(gridBox.courseName);
-        tmpClass.grades = List.filled(terms.length, "\n");
-      } else if (gridBox is GradeBox) {
-        tmpClass.grades[terms.indexOf(gridBox.term)] = (gridBox.grade);
-      } else if (gridBox is LessInfoBox) {
-        tmpClass.grades[terms.indexOf(gridBox.term)] = (gridBox.behavior);
+    first.terms = gradebook.terms;
+    HistoricalClass tmpClass;
+    for (Class gridBox in gradebook.classes) {
+      if (tmpClass != null) first.classes.add(tmpClass);
+      tmpClass = HistoricalClass(gridBox.courseName);
+      tmpClass.grades = List.filled(gradebook.terms.length, "\n");
+
+      for (GradebookNode node in gridBox.grades) {
+        if (gridBox is Grade) {
+          tmpClass.grades[gradebook.terms.indexOf(node.term)] =
+              (node as Grade).grade;
+        } else if (gridBox is Behavior) {
+          tmpClass.grades[gradebook.terms.indexOf(node.term)] =
+              (node as Behavior).behavior;
+        }
       }
     }
     if (tmpClass != null) first.classes.add(tmpClass);
@@ -65,7 +76,7 @@ class GPACalculatorSchoolYearState
     }
   }
 
-  static List<SchoolYear> getEnabledHistGrades() {
+  List<SchoolYear> getEnabledHistGrades() {
     List<SchoolYear> fin = [];
     for (SchoolYear x in historyGrades) {
       if (x.isEnabled) fin.add(x);
@@ -109,18 +120,19 @@ class GPACalculatorSchoolYearState
                 showDialog(
                     context: context,
                     builder: (bC) => HuntyDialogForMoreText(
-                          title: 'Confused?',
-                          description:
-                              'The GPA Calculator contains many aspects. First, different districts use different TERMS to calculate your GPA. You should select the terms based on what your district uses. Note: Fort Bend ISD uses S1 and S2. Below the term selector, there is a school year selector. Choose which school years contain classes that count toward GPA. To modify the level of your classes in a school year, click the edit in each school year box. You may see your grades from that school year with the TERM Selector and you can also let SkyMobile autoselect levels for the classes. There is also a Deselect All button for convenience.\n4.0 Scale is based off of College Board scale.',
-                          buttonText: 'Got it!',
-                        ));
+                      title: 'Confused?',
+                      description:
+                      'The GPA Calculator contains many aspects. First, different districts use different TERMS to calculate your GPA. You should select the terms based on what your district uses. Note: Fort Bend ISD uses S1 and S2. Below the term selector, there is a school year selector. Choose which school years contain classes that count toward GPA. To modify the level of your classes in a school year, click the edit in each school year box. You may see your grades from that school year with the TERM Selector and you can also let SkyMobile autoselect levels for the classes. There is also a Deselect All button for convenience.\n4.0 Scale is based off of College Board scale.',
+                      buttonText: 'Got it!',
+                    ));
               },
             ),
             IconButton(
               icon: Icon(Icons.settings),
               color: themeManager.getColor(TypeOfWidget.text),
               onPressed: () {
-                Navigator.pushNamed(context, '/gpacalculatorsettings');
+                Navigator.pushNamed(context, '/gpacalculatorsettings',
+                    arguments: enabledSchoolYears);
               },
             )
           ],
@@ -240,7 +252,7 @@ class GPACalculatorSchoolYearState
                   child: Text(
                     'Add/Edit School Years',
                     style: TextStyle(
-                      fontWeight: FontWeight.w700,
+                        fontWeight: FontWeight.w700,
                         color: themeManager.getColor(TypeOfWidget.text),
                         fontSize: 20),
                   ),
@@ -250,8 +262,8 @@ class GPACalculatorSchoolYearState
                   padding: EdgeInsets.only(
                       top: 0, left: 20, right: 20, bottom: 10.0),
                   child: Container(
-                      //padding: EdgeInsets.all(10.0),
-                          child: buildArrayOfSchoolYears()),
+                    //padding: EdgeInsets.all(10.0),
+                      child: buildArrayOfSchoolYears()),
                 ),
               ],
             ),
@@ -302,7 +314,7 @@ class GPACalculatorSchoolYearState
                     ),
                   ),
                   trailing:
-                      Row(mainAxisSize: MainAxisSize.min, children: <Widget>[
+                  Row(mainAxisSize: MainAxisSize.min, children: <Widget>[
                     IconButton(
                       icon: Icon(
                           historyGrades[i].isEnabled
@@ -313,8 +325,9 @@ class GPACalculatorSchoolYearState
                         if (_checkIfShouldBeDisabled())
                           setState(() {
                             historyGrades[i].isEnabled =
-                                !historyGrades[i].isEnabled;
-                            gpaCalculatorSettingsSaveForCurrentSession();
+                            !historyGrades[i].isEnabled;
+                            gpaCalculatorSettingsSaveForCurrentSession(
+                                historyGrades);
                           });
                         else {
                           setState(() {
@@ -328,7 +341,7 @@ class GPACalculatorSchoolYearState
                           color: themeManager.getColor(null)),
                       onPressed: () {
                         Navigator.pushNamed(context, '/gpacalculatorclasses',
-                            arguments: historyGrades[i]);
+                            arguments: [historyGrades[i], historyGrades]);
                       },
                     ),
                   ])))));
@@ -355,12 +368,12 @@ class GPACalculatorSchoolYearState
   double getFinalGPA(List<double> averages) {
     int avgLen = averages.length;
     return averages.fold(0, (v, e) {
-          if (e == null)
-            avgLen--;
-          else
-            return v + e;
-          return v;
-        }) /
+      if (e == null)
+        avgLen--;
+      else
+        return v + e;
+      return v;
+    }) /
         avgLen;
   }
 
@@ -381,9 +394,9 @@ class GPACalculatorSchoolYearState
   Column buildBasedOnTwo(List<double> grades){
     List<Widget> widgets = [];
     for (int i = 0; i < grades.length; i += 2) {
-        widgets.add(Row(children: <Widget>[Flexible(child: _generateMiniCard(grades, i)),
-          (grades.length > i + 1) ? Flexible(child: _generateMiniCard(grades, i + 1)) : Container()
-        ]));
+      widgets.add(Row(children: <Widget>[Flexible(child: _generateMiniCard(grades, i)),
+        (grades.length > i + 1) ? Flexible(child: _generateMiniCard(grades, i + 1)) : Container()
+      ]));
     }
     return Column(
       mainAxisSize: MainAxisSize.min,
@@ -411,7 +424,7 @@ class GPACalculatorSchoolYearState
             color: colorOverride ?? themeManager.getColor(TypeOfWidget.text),
             fontSize: 20,
             fontWeight: bold ? FontWeight.w700 : FontWeight.normal),
-      textAlign: align,),
+        textAlign: align,),
       padding: EdgeInsets.only(left: 10, top: 10, right: 10, bottom: 10),
     );
   }

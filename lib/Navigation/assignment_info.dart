@@ -6,18 +6,19 @@ import 'package:skyscrapeapi/data_types.dart';
 import 'package:skymobile/HelperUtilities/global.dart';
 
 class AssignmentInfoViewer extends StatefulWidget {
-  final String courseName;
+  final List args;
 
-  AssignmentInfoViewer(this.courseName);
+  AssignmentInfoViewer(this.args);
   @override
   _AssignmentInfoViewerState createState() =>
-      new _AssignmentInfoViewerState(courseName);
+      new _AssignmentInfoViewerState(args[0], args[1]);
 }
 
 class _AssignmentInfoViewerState extends BiometricBlur<AssignmentInfoViewer> {
   String courseName;
+  List<AssignmentProperty> props;
 
-  _AssignmentInfoViewerState(this.courseName);
+  _AssignmentInfoViewerState(this.courseName, this.props);
 
   @override
   Widget generateBody(BuildContext context) {
@@ -26,8 +27,8 @@ class _AssignmentInfoViewerState extends BiometricBlur<AssignmentInfoViewer> {
         backgroundColor: themeManager.getColor(TypeOfWidget.background),
       );
     List<Widget> body = [];
-    for (AssignmentInfoBox box in assignmentInfoBoxes) {
-      String uiMessage = box.getUIMessage();
+    for (AssignmentProperty box in props) {
+      String uiMessage = box.toString();
       body.add(Card(
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(20.0),

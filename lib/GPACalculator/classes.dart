@@ -7,11 +7,12 @@ import 'package:skymobile/HelperUtilities/global.dart';
 import '../HelperUtilities/gpa_calculator_support_utils.dart';
 
 class GPACalculatorClasses extends StatefulWidget {
-  final SchoolYear schoolYear;
-  GPACalculatorClasses(this.schoolYear);
+  final List args;
+
+  GPACalculatorClasses(this.args);
   @override
   GPACalculatorClassesState createState() =>
-      new GPACalculatorClassesState(this.schoolYear);
+      new GPACalculatorClassesState(args[0], args[1]);
 }
 
 class GPACalculatorClassesState extends BiometricBlur<GPACalculatorClasses> {
@@ -22,8 +23,9 @@ class GPACalculatorClassesState extends BiometricBlur<GPACalculatorClasses> {
   final List<double> availableCredits = [];
   List<int> dropDownIndexesClassLevel;
   List<int> dropDownIndexesCredits;
+  List<SchoolYear> historyGrades;
 
-  GPACalculatorClassesState(this.schoolYear);
+  GPACalculatorClassesState(this.schoolYear, this.historyGrades);
 
   @override
   void initState() {
@@ -61,7 +63,7 @@ class GPACalculatorClassesState extends BiometricBlur<GPACalculatorClasses> {
       schoolYear.classes[i].credits =
           availableCredits[dropDownIndexesCredits[i]];
     }
-    gpaCalculatorSettingsSaveForCurrentSession();
+    gpaCalculatorSettingsSaveForCurrentSession(historyGrades);
   }
 
   @override
@@ -160,7 +162,7 @@ class GPACalculatorClassesState extends BiometricBlur<GPACalculatorClasses> {
                   ),
                   onTap: () {
                     for (int i = 0; i < schoolYear.classes.length; i++) {
-                      Class classYear = schoolYear.classes[i];
+                      HistoricalClass classYear = schoolYear.classes[i];
                       String courseName = classYear.name;
                       if (courseName.contains('PreA') ||
                           courseName.contains('Honor') ||
@@ -175,7 +177,7 @@ class GPACalculatorClassesState extends BiometricBlur<GPACalculatorClasses> {
                           availableClassLevels.indexOf(classYear.classLevel);
                     }
                     setState(() {
-                      gpaCalculatorSettingsSaveForCurrentSession();
+                      gpaCalculatorSettingsSaveForCurrentSession(historyGrades);
                     });
                   },
                 ),
@@ -205,7 +207,7 @@ class GPACalculatorClassesState extends BiometricBlur<GPACalculatorClasses> {
                         dropDownIndexesClassLevel[i] =
                             availableClassLevels.indexOf(schoolYear.classes[i].classLevel);
                       }
-                      gpaCalculatorSettingsSaveForCurrentSession();
+                      gpaCalculatorSettingsSaveForCurrentSession(historyGrades);
                     });
                   },
                 ),
@@ -225,7 +227,7 @@ class GPACalculatorClassesState extends BiometricBlur<GPACalculatorClasses> {
     List<Widget> fin = [];
 
     for (int i = 0; i < schoolYear.classes.length; i++) {
-      Class schoolClass = schoolYear.classes[i];
+      HistoricalClass schoolClass = schoolYear.classes[i];
       fin.add(Card(
         shape:
         RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),

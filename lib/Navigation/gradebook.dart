@@ -7,15 +7,25 @@ import 'package:skyscrapeapi/data_types.dart';
 import 'package:skymobile/HelperUtilities/global.dart';
 import 'package:skymobile/ExtraViewPackages/hunty_dialogs.dart';
 import 'package:skymobile/HelperUtilities/gpa_calculator_support_utils.dart';
+import 'package:skyscrapeapi/sky_core.dart';
 
 class TermViewerPage extends StatefulWidget {
-  TermViewerPage();
+  List args;
+
+  TermViewerPage(this.args);
+
   @override
-  _TermViewer createState() => new _TermViewer();
+  _TermViewer createState() => new _TermViewer(args[0], args[1], args[2]);
 }
 
 class _TermViewer extends BiometricBlur<TermViewerPage> {
   int currentTermIndex = 0;
+  List<Message> messages;
+  Gradebook gradebook;
+  String currUser;
+  bool developerModeEnabled = false;
+
+  _TermViewer(this.gradebook, this.currUser, this.developerModeEnabled);
 
   @override
   void initState() {
@@ -25,7 +35,12 @@ class _TermViewer extends BiometricBlur<TermViewerPage> {
   }
 
   _retrieveMessagesInTheBackground() async {
-    messages = await skywardAPI.getMessages();
+    messages = await account.getMessages();
+  }
+
+
+  refreshGradebook() async {
+    gradebook = await account.getGradebook(forceRefresh: true);
   }
 
   _goToGPACalculator() async {
@@ -39,9 +54,10 @@ class _TermViewer extends BiometricBlur<TermViewerPage> {
       isCancelled = true;
     });
 
+    var result;
+
     try {
-      var result = await skywardAPI.getHistory();
-      historyGrades = result;
+      result = await account.getHistory();
     } catch (e) {
       Navigator.of(context).pop(dialog);
       String errMsg =
@@ -56,17 +72,18 @@ class _TermViewer extends BiometricBlur<TermViewerPage> {
       isCancelled = true;
     }
 
-    if (!isCancelled) {
-      historyGrades = await gpaCalculatorSettingsReadForCurrentSession();
+    if (!isCancelled && result != null) {
+      result = await gpaCalculatorSettingsReadForCurrentSession(result);
       await getTermsToRead();
       Navigator.of(context, rootNavigator: true).popUntil((result) {
         return result.settings.name == '/termviewer';
       });
-      Navigator.pushNamed(context, '/gpacalculatorschoolyear');
+      Navigator.pushNamed(
+          context, '/gpacalculatorschoolyear', arguments: [result, gradebook]);
     }
   }
 
-  _goToAssignmentsViewer(GradeBox gradeBox, String courseName) async {
+  _goToAssignmentsViewer(Grade gradeBox, String courseName) async {
     bool isCancelled = false;
     var dialog = HuntyDialogLoading('Cancel', () {
       isCancelled = true;
@@ -77,9 +94,10 @@ class _TermViewer extends BiometricBlur<TermViewerPage> {
       isCancelled = true;
     });
 
+    var result;
+
     try {
-      var result = await skywardAPI.getAssignmentsFromGradeBox(gradeBox);
-      assignmentsGridBoxes = result;
+      result = await account.getAssignmentsFrom(gradeBox);
     } catch (e, s) {
       Navigator.of(context).pop(dialog);
       String errMsg =
@@ -96,27 +114,29 @@ class _TermViewer extends BiometricBlur<TermViewerPage> {
       isCancelled = true;
     }
 
-    if (!isCancelled) {
+    if (!isCancelled && result != null) {
       Navigator.of(context, rootNavigator: true).popUntil((result) {
         return result.settings.name == '/termviewer';
       });
-      Navigator.pushNamed(context, '/assignmentsviewer', arguments: courseName);
+      Navigator.pushNamed(context, '/assignmentsviewer',
+          arguments: [courseName, result, gradebook]);
     }
   }
 
   _setIntTerm() {
     Term currentTerm;
-    for (int i = 0; i < gradeBoxes.length; i++) {
-      if (gradeBoxes[i] is GradeBox) {
-        currentTerm = (gradeBoxes[i] as GradeBox).term;
+    for (Class klassenzimmer in gradebook.classes)
+      for (int i = 0; i < klassenzimmer.grades.length; i++) {
+        if (klassenzimmer.grades[i] is Grade) {
+          currentTerm = (klassenzimmer.grades[i] as Grade).term;
+        }
       }
-    }
-    currentTermIndex = terms.indexOf(currentTerm);
+    currentTermIndex = gradebook.terms.indexOf(currentTerm);
     if (currentTermIndex < 0) currentTermIndex = 0;
   }
 
   _submitAndChangeChild(int ind) async {
-    skywardAPI.switchUserIndex(ind);
+    account.switchUserIndex(ind);
 
     var dialog1 = HuntyDialogLoading('Cancel', () {},
         title: 'Loading', description: ('Getting your grades..'));
@@ -128,12 +148,10 @@ class _TermViewer extends BiometricBlur<TermViewerPage> {
         builder: (context) => dialog1);
 
     try {
-      var termRes = await skywardAPI.getGradeBookTerms();
-      var gradebookRes = (await skywardAPI.getGradeBookGrades(termRes));
+      Gradebook neu = await account.getGradebook(forceRefresh: true);
 
       setState(() {
-        terms = termRes;
-        gradeBoxes = gradebookRes;
+        gradebook = neu;
 
         Navigator.of(context, rootNavigator: true).popUntil((result) {
           return result.settings.name == '/termviewer';
@@ -171,13 +189,16 @@ class _TermViewer extends BiometricBlur<TermViewerPage> {
 
   @override
   Widget generateBody(BuildContext context) {
+    List<String> childNames = account.getChildrenNames();
     if(!developerModeEnabled)
-      currentChild = skywardAPI.retrieveAccountIfParent()?.dataID;
+      currentChild = account
+          .retrieveAccountIfParent()
+          ?.dataID;
     final FixedExtentScrollController scrollController =
-        FixedExtentScrollController(initialItem: currentTermIndex);
+    FixedExtentScrollController(initialItem: currentTermIndex);
 
     List<Widget> cupPickerWid = [];
-    for (Term term in terms) {
+    for (Term term in gradebook.terms) {
       cupPickerWid.add(Container(
         child: Text('${term.termCode} / ${term.termName}',
             textAlign: TextAlign.center,
@@ -188,103 +209,89 @@ class _TermViewer extends BiometricBlur<TermViewerPage> {
 
     List<Widget> body = [];
 
-    for (int i = 0; i < gradeBoxes.length; i++) {
-      if (gradeBoxes[i] is TeacherIDBox) {
-        int indexOfTermGrade = -1;
-        for (int j = i + 1; j < gradeBoxes.length; j++) {
-          if (gradeBoxes[j] is GradeTextBox &&
-              (gradeBoxes[j] as GradeTextBox).term == terms[currentTermIndex]) {
-            indexOfTermGrade = j;
-            break;
-          }
-          if (gradeBoxes[j] is TeacherIDBox) break;
-        }
-        TeacherIDBox teacherIDBox = gradeBoxes[i] as TeacherIDBox;
-        GradeTextBox gradeBox;
-        if (indexOfTermGrade != -1) {
-          gradeBox = gradeBoxes[indexOfTermGrade] as GradeTextBox;
-        }
+    for (Class klass in gradebook.classes) {
+      GradebookNode gradeBox = klass.retrieveNodeByTerm(
+          gradebook.terms[currentTermIndex]);
 
-        String grade = gradeBox != null
-            ? (gradeBox is GradeBox)
-                ? gradeBox.grade
-                : (gradeBox as LessInfoBox).behavior
-            : '';
+      String grade = gradeBox != null
+          ? (gradeBox is Grade)
+          ? gradeBox.grade
+          : (gradeBox as Behavior).behavior
+          : '';
 
-        body.add(Card(
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-          child: InkWell(
-              borderRadius: BorderRadius.circular(20),
-              onTap: () {
-                if (gradeBox != null && gradeBox is GradeBox)
-                  _goToAssignmentsViewer(gradeBox, teacherIDBox.courseName);
-              },
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  Container(
-                    alignment: Alignment.centerLeft,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        Container(
-                          constraints: BoxConstraints(
-                              maxWidth:
-                                  MediaQuery.of(context).size.width / 6 * 4),
-                          padding: EdgeInsets.only(
-                              top: 15, left: 20, right: 20, bottom: 0),
-                          alignment: Alignment.centerLeft,
-                          child: Text(
-                            teacherIDBox.courseName,
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                            style: TextStyle(
-                                color: themeManager.getColor(TypeOfWidget.text),
-                                fontSize: 20,
-                                fontWeight: FontWeight.w700),
-                            textAlign: TextAlign.start,
-                          ),
+      body.add(Card(
+        shape:
+        RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        child: InkWell(
+            borderRadius: BorderRadius.circular(20),
+            onTap: () {
+              if (gradeBox != null && gradeBox is Grade)
+                _goToAssignmentsViewer(gradeBox, klass.courseName);
+            },
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                Container(
+                  alignment: Alignment.centerLeft,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Container(
+                        constraints: BoxConstraints(
+                            maxWidth:
+                            MediaQuery.of(context).size.width / 6 * 4),
+                        padding: EdgeInsets.only(
+                            top: 15, left: 20, right: 20, bottom: 0),
+                        alignment: Alignment.centerLeft,
+                        child: Text(
+                          klass.courseName,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(
+                              color: themeManager.getColor(TypeOfWidget.text),
+                              fontSize: 20,
+                              fontWeight: FontWeight.w700),
+                          textAlign: TextAlign.start,
                         ),
-                        Container(
+                      ),
+                      Container(
+                        padding: EdgeInsets.only(
+                            top: 5, left: 20, right: 20, bottom: 0),
+                        alignment: Alignment.centerLeft,
+                        child: Text(klass.teacherName,
+                            style: TextStyle(
+                                color: themeManager.getColor(null),
+                                fontSize: 15),
+                            textAlign: TextAlign.start),
+                      ),
+                      Container(
                           padding: EdgeInsets.only(
-                              top: 5, left: 20, right: 20, bottom: 0),
+                              top: 5, left: 20, right: 20, bottom: 15),
                           alignment: Alignment.centerLeft,
-                          child: Text(teacherIDBox.teacherName,
+                          child: Text(klass.timePeriod,
                               style: TextStyle(
                                   color: themeManager.getColor(null),
                                   fontSize: 15),
-                              textAlign: TextAlign.start),
-                        ),
-                        Container(
-                            padding: EdgeInsets.only(
-                                top: 5, left: 20, right: 20, bottom: 15),
-                            alignment: Alignment.centerLeft,
-                            child: Text(teacherIDBox.timePeriod,
-                                style: TextStyle(
-                                    color: themeManager.getColor(null),
-                                    fontSize: 15),
-                                textAlign: TextAlign.start))
-                      ],
-                    ),
+                              textAlign: TextAlign.start))
+                    ],
                   ),
-                  Container(
-                    constraints: BoxConstraints(minHeight: 60),
-                    padding: EdgeInsets.only(right: 20),
-                    alignment: Alignment.centerRight,
-                    child: Text(
-                      grade,
-                      style: TextStyle(
-                          fontSize: 25,
-                          fontWeight: FontWeight.w700,
-                          color: getColorFrom(grade)),
-                    ),
+                ),
+                Container(
+                  constraints: BoxConstraints(minHeight: 60),
+                  padding: EdgeInsets.only(right: 20),
+                  alignment: Alignment.centerRight,
+                  child: Text(
+                    grade,
+                    style: TextStyle(
+                        fontSize: 25,
+                        fontWeight: FontWeight.w700,
+                        color: getColorFrom(grade)),
                   ),
-                ],
-              )),
-          color: themeManager.getColor(TypeOfWidget.subBackground),
-        ));
-      }
+                ),
+              ],
+            )),
+        color: themeManager.getColor(TypeOfWidget.subBackground),
+      ));
     }
 
     List<Widget> drawerWidgets = [
@@ -292,7 +299,8 @@ class _TermViewer extends BiometricBlur<TermViewerPage> {
         child: FittedBox(
           fit: BoxFit.fitHeight,
           child: Text(
-            developerModeEnabled ? currentChild : skywardAPI.currentUser.replaceAll(" ", "\n"),
+            developerModeEnabled ? currentChild : currUser.replaceAll(
+                " ", "\n"),
             style: TextStyle(
               color: themeManager.getColor(TypeOfWidget.text),
             ),
@@ -328,24 +336,24 @@ class _TermViewer extends BiometricBlur<TermViewerPage> {
           _goToGPACalculator();
         },
       ),
-      (developerModeEnabled ? false : skywardAPI.children != null)
+      (developerModeEnabled ? false : childNames != null)
           ? ListTile(
-              leading: Container(padding: EdgeInsets.only(left: 10), child: Icon(
-                expanded ? Icons.arrow_drop_down : Icons.arrow_drop_up,
-                color: themeManager.getColor(TypeOfWidget.text),
-              )),
-              title: Text(
-                'Change Child',
-                style: TextStyle(
-                    color: themeManager.getColor(TypeOfWidget.text),
-                    fontSize: 25),
-              ),
-              onTap: () {
-                setState(() {
-                  expanded = !expanded;
-                });
-              },
-            )
+        leading: Container(padding: EdgeInsets.only(left: 10), child: Icon(
+          expanded ? Icons.arrow_drop_down : Icons.arrow_drop_up,
+          color: themeManager.getColor(TypeOfWidget.text),
+        )),
+        title: Text(
+          'Change Child',
+          style: TextStyle(
+              color: themeManager.getColor(TypeOfWidget.text),
+              fontSize: 25),
+        ),
+        onTap: () {
+          setState(() {
+            expanded = !expanded;
+          });
+        },
+      )
           : Container(),
       ListTile(
         leading: Container(padding: EdgeInsets.only(left: 10), child: Icon(
@@ -363,10 +371,10 @@ class _TermViewer extends BiometricBlur<TermViewerPage> {
                 builder: (b) => HuntyDialog(
                     title: 'Uh-Oh',
                     description:
-                        ('Messages hasn\'t finished loading yet. Please wait'),
+                    ('Messages hasn\'t finished loading yet. Please wait'),
                     buttonText: 'Ok'));
           } else {
-            Navigator.pushNamed(context, '/messages');
+            Navigator.pushNamed(context, '/messages', arguments: messages);
           }
         },
       ),
@@ -410,8 +418,6 @@ class _TermViewer extends BiometricBlur<TermViewerPage> {
         ),
         onTap: () {
           messages = null;
-          gradeBoxes = null;
-          terms = null;
           developerModeEnabled = false;
           Navigator.popUntil(context, (pred) {
             return pred.settings.name == '/';
@@ -420,17 +426,12 @@ class _TermViewer extends BiometricBlur<TermViewerPage> {
       ),
     ];
 
-    List children = [];
-    if (!developerModeEnabled && skywardAPI.children != null && skywardAPI.children.isNotEmpty) {
-      children = List.from(skywardAPI.children);
-      children.removeAt(0);
-    }
     for (int i = 0; i < drawerWidgets.length; i++) {
       if (drawerWidgets[i] is ListTile &&
           expanded &&
           ((drawerWidgets[i] as ListTile).title as Text).data ==
               'Change Child') {
-        for (int j = 0; j < children.length; j++) {
+        for (int j = 0; j < childNames.length; j++) {
           drawerWidgets.insert(
               i + 1,
               ListTile(
@@ -438,13 +439,13 @@ class _TermViewer extends BiometricBlur<TermViewerPage> {
                   SizedBox(
                     width: 20,
                   ),
-                Container(padding: EdgeInsets.only(left: 10), child: Icon(
+                  Container(padding: EdgeInsets.only(left: 10), child: Icon(
                     Icons.person,
                     color: themeManager.getColor(TypeOfWidget.text),
                   )),
                 ]),
                 title: Text(
-                  children[j].name,
+                  childNames[j],
                   style: TextStyle(
                       color: themeManager.getColor(TypeOfWidget.text),
                       fontSize: 25),
@@ -585,48 +586,50 @@ class _TermViewer extends BiometricBlur<TermViewerPage> {
           child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: <Widget>[
-            Container(
-              child: InkWell(
-                child: Card(
-                  color: themeManager.getColor(TypeOfWidget.text),
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(30)),
-                  child: Container(
-                    child: Text(
-                      'Term: ${terms[currentTermIndex].termCode} / ${terms[currentTermIndex].termName}',
-                      style:
+                Container(
+                  child: InkWell(
+                    child: Card(
+                      color: themeManager.getColor(TypeOfWidget.text),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(30)),
+                      child: Container(
+                        child: Text(
+                          'Term: ${gradebook.terms[currentTermIndex]
+                              .termCode} / ${gradebook.terms[currentTermIndex]
+                              .termName}',
+                          style:
                           TextStyle(fontSize: 18, fontWeight: FontWeight.w700),
-                      textAlign: TextAlign.center,
-                    ),
-                    padding:
+                          textAlign: TextAlign.center,
+                        ),
+                        padding:
                         EdgeInsets.only(top: 20, bottom: 20, left: 0, right: 0),
+                      ),
+                    ),
+                    onTap: () {
+                      showModalBottomSheet(
+                          context: context,
+                          builder: (BuildContext context) => CupertinoPicker(
+                              scrollController: scrollController,
+                              backgroundColor: Colors.black,
+                              children: cupPickerWid,
+                              itemExtent: 50,
+                              onSelectedItemChanged: (int changeTo) {
+                                setState(() {
+                                  currentTermIndex = changeTo;
+                                });
+                              }));
+                    },
                   ),
-                ),
-                onTap: () {
-                  showModalBottomSheet(
-                      context: context,
-                      builder: (BuildContext context) => CupertinoPicker(
-                          scrollController: scrollController,
-                          backgroundColor: Colors.black,
-                          children: cupPickerWid,
-                          itemExtent: 50,
-                          onSelectedItemChanged: (int changeTo) {
-                            setState(() {
-                              currentTermIndex = changeTo;
-                            });
-                          }));
-                },
-              ),
-              padding:
+                  padding:
                   EdgeInsets.only(top: 10, left: 20, right: 20, bottom: 10),
-            ),
-            Expanded(
-              child: ListView(
-                padding: EdgeInsets.only(left: 15, right: 15, bottom: 10),
-                children: body,
-              ),
-            )
-          ])),
+                ),
+                Expanded(
+                  child: ListView(
+                    padding: EdgeInsets.only(left: 15, right: 15, bottom: 10),
+                    children: body,
+                  ),
+                )
+              ])),
     );
   }
 }
