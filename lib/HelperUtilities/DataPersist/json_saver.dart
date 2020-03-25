@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:path_provider/path_provider.dart';
+import 'package:skymobile/Settings/theme_color_manager.dart';
 import 'dart:io';
 import '../account_types.dart';
 import 'package:skyscrapeapi/data_types.dart';
@@ -60,7 +61,10 @@ class JSONSaver {
           });
         } else if (fileName == FilesAvailable.previousDistrict) {
           return SkywardDistrict.fromJson(retrievedJSONCoded);
-        } else
+        } else if (fileName == FilesAvailable.settings) {
+          retrievedJSONCoded['Custom Theme']['option'] = ColorTheme.fromJson(retrievedJSONCoded['Custom Theme']['option']);
+          mapOfTargetedObject = retrievedJSONCoded;
+        }else
           mapOfTargetedObject = retrievedJSONCoded;
         return mapOfTargetedObject;
       }

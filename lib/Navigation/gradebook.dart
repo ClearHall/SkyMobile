@@ -319,7 +319,7 @@ class _TermViewer extends BiometricBlur<TermViewerPage> {
               color: themeManager.getColor(TypeOfWidget.text), fontSize: 25),
         ),
         onTap: () {
-          Navigator.pushNamed(context, '/settings');
+          Navigator.pushNamed(context, '/settings').then((value) => setState((){}));
         },
       ),
       ListTile(

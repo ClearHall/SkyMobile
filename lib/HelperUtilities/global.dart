@@ -12,10 +12,12 @@ ThemeManager themeManager = ThemeManager();
 Map<String, dynamic> settings = Map.fromIterables([
   'Biometric Authentication',
   'Theme',
+  'Custom Theme',
   'Dark Mode',
   'Re-Authenticate With Biometrics',
   'Automatically Re-Load Last Saved Session',
   'Default to Account Chooser',
+  'Hidden Empty Assignment Properties',
   'Hierarchical Grades'
 ], [
   Map.fromIterables([
@@ -29,13 +31,15 @@ Map<String, dynamic> settings = Map.fromIterables([
     'description',
     'option'
   ], [
-    'Change the color scheme used for the app.',
+    '',
     Map.fromIterables(
         ThemeManager.colorNameToThemes.values,
         List.generate(ThemeManager.colorNameToThemes.length, (i) {
           return false;
         }))
   ]),
+  Map.fromIterables(['description', 'option'],
+      ['Change the color scheme used for the app.', ColorTheme.unset()]),
   Map.fromIterables(['description', 'option'],
       ['Change between light mode and dark mode.', true]),
   Map.fromIterables([
@@ -54,6 +58,8 @@ Map<String, dynamic> settings = Map.fromIterables([
   ]),
   Map.fromIterables(['description', 'option'],
       ['Show account retriever as default instead of login screen.', false]),
+  Map.fromIterables(['description', 'option'],
+      ['Hides assignment property if the description is empty.', true]),
   Map.fromIterables(['description', 'option'],
       ['Displays assignment grades as a hiearchy.', true]),
 ]);

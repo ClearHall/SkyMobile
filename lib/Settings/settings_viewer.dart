@@ -17,10 +17,13 @@ void saveSettingsData() {
   JSONSaver jsonSaver = JSONSaver(FilesAvailable.settings);
   jsonSaver.saveListData(settings);
   int i = settings['Theme']['option'].values.toList().indexOf(true);
-  themeManager.currentTheme = ThemeManager.colorNameToThemes.keys.toList()[
+  if(i > -1)
+    themeManager.currentTheme = ThemeManager.colorNameToThemes.keys.toList()[
       ThemeManager.colorNameToThemes.values
           .toList()
           .indexOf(settings['Theme']['option'].keys.toList()[i])];
+  else
+    themeManager.currentTheme = settings['Custom Theme']['option'];
 }
 
 class SettingsViewer extends StatefulWidget {
@@ -60,6 +63,29 @@ class _SettingsViewerState extends BiometricBlur<SettingsViewer> {
     }
   }
 
+  void colorChange(Color c, bool prim){
+    if(c != null) {
+      Color mat = Color(c.hashCode);
+
+      if(prim)
+        themeManager.currentTheme.primary = mat;
+      else
+        themeManager.currentTheme.secondary = mat;
+
+      setState(() {
+        settings['Theme']['option'] =
+          Map.fromIterables(
+              ThemeManager.colorNameToThemes.values,
+              List.generate(ThemeManager.colorNameToThemes.length, (i) {
+                return false;
+              }));
+      settings['Custom Theme']['option'] =
+          themeManager.currentTheme;
+      saveSettingsData();
+      });
+    }
+  }
+
   @override
   Widget generateBody(BuildContext context) {
     List<Widget> settingsWidgets = [];
@@ -70,9 +96,13 @@ class _SettingsViewerState extends BiometricBlur<SettingsViewer> {
                 k, settings[k],
                 maxAmountSelectable: 1, run: () {
           setState(() {
+            if(k == 'Theme')
+              settings['Custom Theme']['option'] = ColorTheme.unset();
             saveSettingsData();
           });
         }));
+      else if(settings[k]['option'] is ColorTheme)
+        settingsWidgets.add(SettingsWidgetGenerator.generateColorSelectableSetting(k, settings[k], context, colorChange));
       else
         settingsWidgets.add(
           SettingsWidgetGenerator.generateSingleSettingsWidget(k, settings[k],

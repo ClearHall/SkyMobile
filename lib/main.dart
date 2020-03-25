@@ -59,11 +59,15 @@ void main() async {
           settings[retrieved.keys.toList()[i]]['description'];
     }
     settings.addAll(retrieved);
+    bool found = false;
     (settings['Theme']['option']).forEach((k, v) {
+      found = found || v;
       if (v == true)
         runApp(MyApp(ThemeManager.colorNameToThemes.keys.toList()[
             ThemeManager.colorNameToThemes.values.toList().indexOf(k)]));
     });
+    if(!found)
+      runApp(MyApp(settings['Custom Theme']['option']));
   } else {
     settings['Theme']['option']
         [ThemeManager.colorNameToThemes[themeManager.currentTheme]] = true;
@@ -82,7 +86,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'SkyMobile',
       theme: ThemeData(
-        primarySwatch: themeManager.getColor(TypeOfWidget.text),
+        primarySwatch: Colors.orange,
       ),
       initialRoute: "/",
       debugShowCheckedModeBanner: false,
@@ -240,7 +244,7 @@ class MyHomePageState extends State<MyHomePage> {
     currentChild = user;
     currentSessionIdentifier = pass;
     Navigator.pushNamed(
-        context, '/termviewer', arguments: [gradebook, 'Tester Dev', true]);
+        context, '/termviewer', arguments: [gradebook, 'Tester Dev', true]).then((value) => setState((){}));
   }
 
   Map<String, String> developerAccountList = {'albaba': 'woaialbaba'};
@@ -383,7 +387,7 @@ class MyHomePageState extends State<MyHomePage> {
           {'user': acc.user, 'pass': acc.pass, 'link': district.districtLink});
       account = person;
       Navigator.pushNamed(context, '/termviewer',
-          arguments: [gradebookRes, await person.getName(), false]);
+          arguments: [gradebookRes, await person.getName(), false]).then((value) => setState((){}));
     }
   }
 
@@ -528,7 +532,7 @@ class MyHomePageState extends State<MyHomePage> {
           color: themeManager.getColor(null),
         ),
         onPressed: () {
-          Navigator.of(context).pushNamed('/settings');
+          Navigator.of(context).pushNamed('/settings').then((value) => setState((){}));
         },
       ),
     ]);

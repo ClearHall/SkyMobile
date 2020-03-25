@@ -9,44 +9,33 @@ class ThemeManager {
     ColorTheme(Colors.orange, Colors.blue),
     //ColorTheme(Colors.teal, Colors.brown)
   ];
+
   static Map<ColorTheme, String> colorNameToThemes =
       Map.fromIterables(defaultThemes, [
     'Purpulish Green',
     'Purple Shadows',
     'Golden Shimmer',
     'Dark Orange',
-    //'Albon\'s Sea'
   ]);
   ColorTheme currentTheme =
       defaultThemes[3]; //ColorTheme(Colors.orange, Colors.blue);
-  List<ColorTheme> userDefined = [];
 
-  addTheme(Color p, Color s) {
-    userDefined.add(ColorTheme(p, s));
-  }
-
-  shouldUseAlbonsTheme() {
-    return defaultThemes.indexOf(currentTheme) == 4;
-  }
+//  addTheme(Color p, Color s) {
+//    userDefined.add(ColorTheme(p, s));
+//  }
 
   Color getColor(TypeOfWidget x) {
     switch (x) {
       case TypeOfWidget.background:
         return settings['Dark Mode']['option'] ? Colors.black : Colors.white;
       case TypeOfWidget.subBackground:
-        return shouldUseAlbonsTheme()
-            ? currentTheme.primary.shade900
-            : (settings['Dark Mode']['option'] ? Colors.white10 : Colors.white);
+        return (settings['Dark Mode']['option'] ? Colors.white10 : Colors.white);
       case TypeOfWidget.text:
-        return shouldUseAlbonsTheme() ? Colors.white : currentTheme.primary;
+        return currentTheme.primary;
       case TypeOfWidget.button:
-        return shouldUseAlbonsTheme()
-            ? currentTheme.secondary.shade200
-            : currentTheme.secondary;
+        return currentTheme.secondary;
       case TypeOfWidget.subSubBackground:
-        return shouldUseAlbonsTheme()
-            ? currentTheme.secondary.shade400
-            : (settings['Dark Mode']['option'] ? Colors.white10 : Colors.white);
+        return (settings['Dark Mode']['option'] ? Colors.white10 : Colors.white);
       default:
         return settings['Dark Mode']['option'] ? Colors.white : Colors.black;
     }
@@ -56,7 +45,50 @@ class ThemeManager {
 enum TypeOfWidget { button, text, background, subBackground, subSubBackground }
 
 class ColorTheme {
-  MaterialColor primary, secondary;
+  Color primary, secondary;
 
+  ColorTheme.unset();
   ColorTheme(this.primary, this.secondary);
+
+  ColorTheme.fromJson(Map<String, dynamic> json){
+    primary = colorFromHash(json['primary']);
+    secondary = colorFromHash(json['secondary']);
+  }
+
+  static Color colorFromHash(int hash){
+    if(hash == null) return null;
+    Color c = Color(hash);
+    return c;
+//    return MaterialColor(c.hashCode, {
+//      50: Color.fromRGBO(
+//          c.red, c.green, c.blue, .1),
+//      100: Color.fromRGBO(
+//          c.red, c.green, c.blue, .2),
+//      200: Color.fromRGBO(
+//          c.red, c.green, c.blue, .3),
+//      300: Color.fromRGBO(
+//          c.red, c.green, c.blue, .4),
+//      400: Color.fromRGBO(
+//          c.red, c.green, c.blue, .5),
+//      500: Color.fromRGBO(
+//          c.red, c.green, c.blue, .6),
+//      600: Color.fromRGBO(
+//          c.red, c.green, c.blue, .7),
+//      700: Color.fromRGBO(
+//          c.red, c.green, c.blue, .8),
+//      800: Color.fromRGBO(
+//          c.red, c.green, c.blue, .9),
+//      900: Color.fromRGBO(
+//          c.red, c.green, c.blue, 1),
+//    });
+  }
+
+  Map<String, dynamic> toJson() => {
+    'primary': primary.hashCode,
+    'secondary': secondary.hashCode,
+  };
+
+  bool unset(){
+    return primary == null && secondary == null;
+  }
 }
