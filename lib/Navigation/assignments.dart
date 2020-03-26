@@ -256,7 +256,7 @@ class _AssignmentsViewerState extends BiometricBlur<AssignmentsViewer> {
                         builder: (c) => HuntyDialog(
                             title: 'Sorry',
                             description:
-                                'Mock assignments for terms with assignments from multiple terms is still in development!',
+                                'Mock assignments currently does not work on semesters, please try in a term!',
                             buttonText: 'Got it!'));
                   } else {
                     showDialog(
