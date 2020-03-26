@@ -97,7 +97,7 @@ class _AssignmentsViewerState extends BiometricBlur<AssignmentsViewer> {
         key.first.attributes['Score(%)'] = '';
       else {
         key.first.attributes['Score(%)'] =
-            (localTmp / localNum).toStringAsFixed(3);
+            (localTmp / localNum).toStringAsFixed(2);
         tmp += (localTmp / localNum) * (weight / 100.0);
         tmpweight += weight / 100.0;
       }
@@ -194,9 +194,10 @@ class _AssignmentsViewerState extends BiometricBlur<AssignmentsViewer> {
         backgroundColor: themeManager.getColor(TypeOfWidget.background),
         title: Align(
           alignment: Alignment.centerLeft,
-          child: Text(
+          child: FittedBox(child:
+          Text(
               editingMode
-                  ? 'Final: ${finalAverage.toStringAsFixed(3)}'
+                  ? 'Final: ${finalAverage.toStringAsFixed(2)}'
                   : neiceban
                       ? '内测版'
                       : (courseName != null ? courseName : 'Assignments'),
@@ -204,7 +205,7 @@ class _AssignmentsViewerState extends BiometricBlur<AssignmentsViewer> {
               style: TextStyle(
                   color: themeManager.getColor(TypeOfWidget.text),
                   fontSize: 30,
-                  fontWeight: FontWeight.w700)),
+                  fontWeight: FontWeight.w700))),
         ),
         actions: <Widget>[
           editingMode
