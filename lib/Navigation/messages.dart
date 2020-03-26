@@ -7,7 +7,7 @@ import 'package:skyscrapeapi/data_types.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class MessageViewer extends StatefulWidget {
-  List<Message> messages;
+  final List<Message> messages;
 
   MessageViewer(this.messages, {Key key}) : super(key: key);
 

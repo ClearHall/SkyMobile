@@ -17,13 +17,13 @@ void saveSettingsData() {
   JSONSaver jsonSaver = JSONSaver(FilesAvailable.settings);
   jsonSaver.saveListData(settings);
   int i = settings['Theme']['option'].values.toList().indexOf(true);
-  if(i > -1)
+  if(i > -1) {
     themeManager.currentTheme = ThemeManager.colorNameToThemes.keys.toList()[
-      ThemeManager.colorNameToThemes.values
-          .toList()
-          .indexOf(settings['Theme']['option'].keys.toList()[i])];
-  else
-    themeManager.currentTheme = settings['Custom Theme']['option'];
+    ThemeManager.colorNameToThemes.values
+        .toList()
+        .indexOf(settings['Theme']['option'].keys.toList()[i])];
+    settings['Custom Theme']['option'] = ColorTheme.unset();
+  }
 }
 
 class SettingsViewer extends StatefulWidget {
@@ -96,8 +96,6 @@ class _SettingsViewerState extends BiometricBlur<SettingsViewer> {
                 k, settings[k],
                 maxAmountSelectable: 1, run: () {
           setState(() {
-            if(k == 'Theme')
-              settings['Custom Theme']['option'] = ColorTheme.unset();
             saveSettingsData();
           });
         }));

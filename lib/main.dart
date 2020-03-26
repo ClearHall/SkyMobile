@@ -84,6 +84,12 @@ class MyApp extends StatelessWidget {
     themeManager.currentTheme = themeSelected;
 
     return MaterialApp(
+      builder: (context, child) {
+        return ScrollConfiguration(
+          behavior: RemoveScrollGlow(),
+          child: child,
+        );
+      },
       title: 'SkyMobile',
       theme: ThemeData(
         primarySwatch: Colors.orange,
@@ -997,5 +1003,13 @@ class MyHomePageState extends State<MyHomePage> {
             child: listView,
           ),
         )));
+  }
+}
+
+class RemoveScrollGlow extends ScrollBehavior {
+  @override
+  Widget buildViewportChrome(
+      BuildContext context, Widget child, AxisDirection axisDirection) {
+    return child;
   }
 }

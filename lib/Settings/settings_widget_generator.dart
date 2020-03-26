@@ -223,6 +223,7 @@ class SettingsWidgetGenerator {
 
   static Widget generateColorSelectableSetting(
       String setting, Map attributes, BuildContext context, Function color) {
+    print(attributes['option'].primary);
     return Container(
       child: Column(
         children: <Widget>[
@@ -369,6 +370,8 @@ class SettingsWidgetGenerator {
                         options[options.keys.toList()[i]] = false;
                     }
                   }
+                  if(!newVal)
+                    if(!options.keys.toList().contains(true)) options[x] = true;
                   run();
                 },
               ))));

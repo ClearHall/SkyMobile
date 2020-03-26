@@ -18,11 +18,7 @@ class ThemeManager {
     'Dark Orange',
   ]);
   ColorTheme currentTheme =
-      defaultThemes[3]; //ColorTheme(Colors.orange, Colors.blue);
-
-//  addTheme(Color p, Color s) {
-//    userDefined.add(ColorTheme(p, s));
-//  }
+      defaultThemes[3];
 
   Color getColor(TypeOfWidget x) {
     switch (x) {
@@ -59,33 +55,11 @@ class ColorTheme {
     if(hash == null) return null;
     Color c = Color(hash);
     return c;
-//    return MaterialColor(c.hashCode, {
-//      50: Color.fromRGBO(
-//          c.red, c.green, c.blue, .1),
-//      100: Color.fromRGBO(
-//          c.red, c.green, c.blue, .2),
-//      200: Color.fromRGBO(
-//          c.red, c.green, c.blue, .3),
-//      300: Color.fromRGBO(
-//          c.red, c.green, c.blue, .4),
-//      400: Color.fromRGBO(
-//          c.red, c.green, c.blue, .5),
-//      500: Color.fromRGBO(
-//          c.red, c.green, c.blue, .6),
-//      600: Color.fromRGBO(
-//          c.red, c.green, c.blue, .7),
-//      700: Color.fromRGBO(
-//          c.red, c.green, c.blue, .8),
-//      800: Color.fromRGBO(
-//          c.red, c.green, c.blue, .9),
-//      900: Color.fromRGBO(
-//          c.red, c.green, c.blue, 1),
-//    });
   }
 
   Map<String, dynamic> toJson() => {
-    'primary': primary.hashCode,
-    'secondary': secondary.hashCode,
+    'primary': primary?.hashCode,
+    'secondary': secondary?.hashCode,
   };
 
   bool unset(){

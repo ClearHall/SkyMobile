@@ -111,7 +111,7 @@ class HuntyDialogLoading extends HuntyDialog {
         style: TextStyle(fontSize: 16.0, color: themeManager.getColor(null)),
       ),
       SizedBox(height: 24.0),
-      CircularProgressIndicator(),
+      CircularProgressIndicator(valueColor: new AlwaysStoppedAnimation<Color>(themeManager.getColor(TypeOfWidget.text))),
       SizedBox(height: 40.0),
       restrictCancel
           ? SizedBox(height: 20,)

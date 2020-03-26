@@ -7,10 +7,9 @@ import 'package:skyscrapeapi/data_types.dart';
 import 'package:skymobile/HelperUtilities/global.dart';
 import 'package:skymobile/ExtraViewPackages/hunty_dialogs.dart';
 import 'package:skymobile/HelperUtilities/gpa_calculator_support_utils.dart';
-import 'package:skyscrapeapi/sky_core.dart';
 
 class TermViewerPage extends StatefulWidget {
-  List args;
+  final List args;
 
   TermViewerPage(this.args);
 

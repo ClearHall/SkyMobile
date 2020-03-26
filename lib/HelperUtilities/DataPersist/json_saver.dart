@@ -34,6 +34,10 @@ class JSONSaver {
   readListData() async {
     try {
       final File file = await getFile();
+      if(!file.existsSync()) {
+        print(file.path + ' does not exist!');
+        return null;
+      }
       String contents = await file.readAsString();
       var retrievedJSONCoded = jsonDecode(contents);
 
