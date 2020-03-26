@@ -1,10 +1,10 @@
 name: skymobile
 description: SkyMobile
 
-version: 4.0.0+46
+version: 4.0.0+47
 
 environment:
-  sdk: ">=2.2.0 <3.0.0"
+  sdk: ">=2.3.0 <3.0.0"
 
 dependencies:
   flutter:

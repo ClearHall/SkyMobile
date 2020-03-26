@@ -33,6 +33,7 @@ class _TermViewer extends BiometricBlur<TermViewerPage> {
     _retrieveMessagesInTheBackground();
   }
 
+  // Please do not await for me!
   _retrieveMessagesInTheBackground() async {
     messages = await account.getMessages();
   }
@@ -119,6 +120,46 @@ class _TermViewer extends BiometricBlur<TermViewerPage> {
       });
       Navigator.pushNamed(context, '/assignmentsviewer',
           arguments: [courseName, result, gradebook]);
+    }
+  }
+
+  _goToStudentInfo() async {
+    bool isCancelled = false;
+    var dialog = HuntyDialogLoading('Cancel', () {
+      isCancelled = true;
+    }, title: 'Loading', description: ('Getting your info..'));
+
+    showDialog(context: context, builder: (BuildContext context) => dialog)
+        .then((val) {
+      isCancelled = true;
+    });
+
+    var result;
+
+    try {
+      result = await account.getStudentProfile();
+    } catch (e, s) {
+      Navigator.of(context).pop(dialog);
+      String errMsg =
+          'An error occured, please contact the developer: ${e.toString()}';
+
+      print(s);
+
+      showDialog(
+          context: context,
+          builder: (buildContext) {
+            return HuntyDialog(
+                title: 'Uh Oh', description: errMsg, buttonText: 'Ok');
+          });
+      isCancelled = true;
+    }
+
+    if (!isCancelled && result != null) {
+      Navigator.of(context, rootNavigator: true).popUntil((result) {
+        return result.settings.name == '/termviewer';
+      });
+      Navigator.pushNamed(context, '/studentinfo',
+          arguments: [result]);
     }
   }
 
@@ -335,6 +376,20 @@ class _TermViewer extends BiometricBlur<TermViewerPage> {
           _goToGPACalculator();
         },
       ),
+      ListTile(
+        leading: Container(padding: EdgeInsets.only(left: 10), child: Icon(
+          Icons.person,
+          color: themeManager.getColor(TypeOfWidget.text),
+        )),
+        title: Text(
+          'My Info',
+          style: TextStyle(
+              color: themeManager.getColor(TypeOfWidget.text), fontSize: 25),
+        ),
+        onTap: () {
+          _goToStudentInfo();
+          },
+      ),
       (developerModeEnabled ? false : childNames != null)
           ? ListTile(
         leading: Container(padding: EdgeInsets.only(left: 10), child: Icon(
@@ -377,20 +432,20 @@ class _TermViewer extends BiometricBlur<TermViewerPage> {
           }
         },
       ),
-      ListTile(
-        leading: Container(padding: EdgeInsets.only(left: 10), child: Icon(
-          Icons.access_time,
-          color: themeManager.getColor(TypeOfWidget.text),
-        )),
-        title: Text(
-          'SkyLine',
-          style: TextStyle(
-              color: themeManager.getColor(TypeOfWidget.text), fontSize: 25),
-        ),
-        onTap: () {
-          showDialog(context: context, builder: (context) => HuntyDialog(title: "SkyLine Integration", description: "Unfortunately, SkyLine is still in it's beta phases, we cannot connect you to SkyLine yet." , buttonText: "Ok"));
-        },
-      ),
+//      ListTile(
+//        leading: Container(padding: EdgeInsets.only(left: 10), child: Icon(
+//          Icons.access_time,
+//          color: themeManager.getColor(TypeOfWidget.text),
+//        )),
+//        title: Text(
+//          'SkyLine',
+//          style: TextStyle(
+//              color: themeManager.getColor(TypeOfWidget.text), fontSize: 25),
+//        ),
+//        onTap: () {
+//          showDialog(context: context, builder: (context) => HuntyDialog(title: "SkyLine Integration", description: "Unfortunately, SkyLine is still in it's beta phases, we cannot connect you to SkyLine yet." , buttonText: "Ok"));
+//        },
+//      ),
       ListTile(
         leading: Container(padding: EdgeInsets.only(left: 10), child: Icon(
           Icons.info,
@@ -423,7 +478,6 @@ class _TermViewer extends BiometricBlur<TermViewerPage> {
           });
         },
       ),
-      //TODO: ADD STUDENT INFO!
     ];
 
     for (int i = 0; i < drawerWidgets.length; i++) {
@@ -489,97 +543,6 @@ class _TermViewer extends BiometricBlur<TermViewerPage> {
           ),
           SizedBox(width: 10,)
         ],
-//          IconButton(
-//            icon: Icon(
-//              Icons.arrow_back,
-//              color: themeManager.getColor(TypeOfWidget.text),
-//            ),
-//            onPressed: () {
-//              Navigator.pop(context);
-//            },
-//          ),
-//          IconButton(
-//            icon: Icon(
-//              Icons.settings,
-//              color: themeManager.getColor(TypeOfWidget.text),
-//            ),
-//            onPressed: () {
-//              Navigator.pushNamed(context, '/settings');
-//            },
-//          ),
-//          IconButton(
-//            icon: Icon(
-//              Icons.assessment,
-//              color: themeManager.getColor(TypeOfWidget.text),
-//            ),
-//            onPressed: () {
-//              _goToGPACalculator();
-//            },
-//          ),
-//          skywardAPI.children != null
-//              ? IconButton(
-//                  icon: Icon(
-//                    Icons.person,
-//                    color: themeManager.getColor(TypeOfWidget.text),
-//                  ),
-//                  onPressed: () {
-//                    _showChildrenChangeDialog();
-//                  },
-//                )
-//              : Container(),
-//          Theme(
-//              data: Theme.of(context).copyWith(
-//                cardColor: Colors.black,
-//              ),
-//              child: PopupMenuButton(
-//                icon: Icon(
-//                  Icons.more_vert,
-//                  color: themeManager.getColor(TypeOfWidget.text),
-//                ),
-//                onSelected: (String selected) {
-//                  switch (selected) {
-//                    case 'settings':
-//                      Navigator.pushNamed(context, '/settings');
-//                      break;
-//                    case 'gpaCalc':
-//                      {
-//                        _goToGPACalculator('TEST');
-//                      }
-//                      break;
-//                    case 'devBash':
-//                      showDialog(
-//                          context: context,
-//                          builder: (bC) {
-//                            return HuntyDialogDebugCredentials(
-//                                hint: 'Credentials',
-//                                title: 'Debug Console',
-//                                description: 'Developers Only',
-//                                buttonText: 'Submit');
-//                          });
-//                  }
-//                },
-//                itemBuilder: (_) => <PopupMenuItem<String>>[
-//                  PopupMenuItem<String>(
-//                      child: const Text(
-//                        'Settings',
-//                        style: TextStyle(color: Colors.white),
-//                      ),
-//                      value: 'settings'),
-//                  PopupMenuItem<String>(
-//                      child: const Text(
-//                        'GPA Calculator',
-//                        style: TextStyle(color: Colors.white),
-//                      ),
-//                      value: 'gpaCalc'),
-////                    PopupMenuItem<String>(
-////                        child: const Text(
-////                          'Developer Command',
-////                          style: TextStyle(color: Colors.white),
-////                        ),
-////                        value: 'devBash'),
-//                ],
-//              ))
-//        ],
       ),
       backgroundColor: themeManager.getColor(TypeOfWidget.background),
       body: Center(

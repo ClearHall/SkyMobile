@@ -24,7 +24,7 @@ class SkyVars {
 
   static getVars() async {
     var retriev = await skyVarsJsonSaver.readListData();
-    if (!(retriev is int)) {
+    if (!(retriev is int) && retriev != null) {
       skyVars = Map.from(retriev);
     } else {
       saveVars();

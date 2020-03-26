@@ -8,6 +8,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_reorderable_list/flutter_reorderable_list.dart';
 import 'package:local_auth/local_auth.dart';
 import 'package:skymobile/ExtraViewPackages/credits.dart';
+import 'package:skymobile/Navigation/student_info.dart';
 import 'package:skymobile/SupportWidgets/biometric_blur_view.dart';
 import 'package:skymobile/SupportWidgets/custom_overscroll_behavior.dart';
 import 'package:skymobile/HelperUtilities/DataPersist/manage_sky_vars.dart';
@@ -66,8 +67,7 @@ void main() async {
         runApp(MyApp(ThemeManager.colorNameToThemes.keys.toList()[
             ThemeManager.colorNameToThemes.values.toList().indexOf(k)]));
     });
-    if(!found)
-      runApp(MyApp(settings['Custom Theme']['option']));
+    if (!found) runApp(MyApp(settings['Custom Theme']['option']));
   } else {
     settings['Theme']['option']
         [ThemeManager.colorNameToThemes[themeManager.currentTheme]] = true;
@@ -99,32 +99,23 @@ class MyApp extends StatelessWidget {
       routes: {
         "/": (context) => MyHomePage(),
         "/termviewer": (context) =>
-            TermViewerPage(ModalRoute
-                .of(context)
-                .settings
-                .arguments),
-        "/assignmentsviewer": (context) => AssignmentsViewer(ModalRoute.of(context).settings.arguments),
-        "/assignmentsinfoviewer": (context) => AssignmentInfoViewer(ModalRoute.of(context).settings.arguments),
+            TermViewerPage(ModalRoute.of(context).settings.arguments),
+        "/assignmentsviewer": (context) =>
+            AssignmentsViewer(ModalRoute.of(context).settings.arguments),
+        "/assignmentsinfoviewer": (context) =>
+            AssignmentInfoViewer(ModalRoute.of(context).settings.arguments),
         "/gpacalculatorschoolyear": (context) =>
-            GPACalculatorSchoolYear(ModalRoute
-                .of(context)
-                .settings
-                .arguments),
+            GPACalculatorSchoolYear(ModalRoute.of(context).settings.arguments),
         "/gpacalculatorclasses": (context) =>
             GPACalculatorClasses(ModalRoute.of(context).settings.arguments),
         "/gpacalculatorsettings": (context) =>
-            GPACalculatorSettings(ModalRoute
-                .of(context)
-                .settings
-                .arguments),
+            GPACalculatorSettings(ModalRoute.of(context).settings.arguments),
         "/settings": (context) => SettingsViewer(),
         '/devconsole': (context) => DeveloperConsole(),
         '/messages': (context) =>
-            MessageViewer(ModalRoute
-                .of(context)
-                .settings
-                .arguments),
-        '/credits': (context) => Credits()
+            MessageViewer(ModalRoute.of(context).settings.arguments),
+        '/credits': (context) => Credits(),
+        '/studentinfo': (context) => StudentInfoPage(ModalRoute.of(context).settings.arguments)
       },
     );
   }
@@ -187,7 +178,7 @@ class MyHomePageState extends State<MyHomePage> {
       var retrieved = await prevSavedAccount.readListData();
       if (retrieved.runtimeType != 0) {
         district = SkywardDistrict('No Name', retrieved['link']);
-        _getGradeTerms(retrieved['user'], retrieved['pass']);
+        _login(Account(null, retrieved['user'], retrieved['pass'], district));
       }
     }
   }
@@ -249,18 +240,18 @@ class MyHomePageState extends State<MyHomePage> {
 
     currentChild = user;
     currentSessionIdentifier = pass;
-    Navigator.pushNamed(
-        context, '/termviewer', arguments: [gradebook, 'Tester Dev', true]).then((value) => setState((){}));
+    Navigator.pushNamed(context, '/termviewer',
+            arguments: [gradebook, 'Tester Dev', true])
+        .then((value) => setState(() {}));
   }
 
   Map<String, String> developerAccountList = {'albaba': 'woaialbaba'};
 
-  _getGradeTerms(String user, String pass) async {
+  _login(Account acc) async {
     bool found = false;
-    //如果输入的账号是DEVELOPER的，那进入开发人员模式
     developerAccountList.forEach((k, v) {
-      if (user == k && pass == v) {
-        _developerMode(user, pass);
+      if (acc.user == k && acc.pass == v) {
+        _developerMode(acc.user, acc.pass);
         found = true;
       }
     });
@@ -278,19 +269,22 @@ class MyHomePageState extends State<MyHomePage> {
     });
 
     try {
-      User person = await SkyCore.login(user, pass, district.districtLink);
-      _getAccounts();
-      if (!_isCredentialsSavedAlready(user)) {
+      User person =
+          await SkyCore.login(acc.user, acc.pass, acc.district.districtLink);
+
+      if (!isInAccountChooserStatus && !_isCredentialsSavedAlready(acc.user)) {
+        _getAccounts();
         await showDialog(
             context: context,
             builder: (_) {
               return HuntyDialogForConfirmation(
                 title: 'New Account',
                 description:
-                'New account detected, would you like to save this account?.',
+                    'New account detected, would you like to save this account?.',
                 runIfUserConfirms: () {
                   setState(() {
-                    accounts.add(Account(user, user, pass, district));
+                    acc.nick = acc.user;
+                    accounts.add(acc);
                     jsonSaver.saveListData(accounts);
                   });
                 },
@@ -299,45 +293,39 @@ class MyHomePageState extends State<MyHomePage> {
               );
             });
       }
-      await getTermsAndGradeBook(
-          isCancelled, dialog, Account(null, user, pass, district), person);
+
+      var gradebookRes;
+      try {
+        gradebookRes = await person.getGradebook();
+      } catch (e) {
+        isCancelled[0] = true;
+        Navigator.of(context).pop(dialog);
+        await showDialog(
+            context: context,
+            builder: (_) {
+              return HuntyDialog(
+                  title: 'Oh No!',
+                  description:
+                      'An error occured and we could not get your grades. Please report this to a developer! An error occured while parsing your grades.',
+                  buttonText: 'Ok');
+            });
+      }
+      if (!(isCancelled.first)) {
+        currentSessionIdentifier = acc.user;
+        prevSavedAccount.saveListData({
+          'user': acc.user,
+          'pass': acc.pass,
+          'link': district.districtLink
+        });
+        account = person;
+        Navigator.pushNamed(context, '/termviewer',
+                arguments: [gradebookRes, await person.getName(), false])
+            .then((value) => setState(() {}));
+      }
     } catch (e) {
       Navigator.of(context).pop(dialog);
-      showDialog(
-          context: context,
-          builder: (_) {
-            return HuntyDialog(
-                title: 'Uh-Oh',
-                description:
-                e.toString() + ' Check your internet connection!',
-                buttonText: 'Ok');
-          });
-    }
-  }
-
-  bool _isCredentialsSavedAlready(String user) {
-    for (Account acc in accounts) {
-      if (acc.district == district && acc.user == user) return true;
-    }
-    return false;
-  }
-
-  void _getGradeTermsFromAccount(Account acc) async {
-    List<bool> isCancelled = [false];
-    var dialog = HuntyDialogLoading('Cancel', () {
-      isCancelled[0] = true;
-    }, title: 'Loading', description: ('Getting your grades..'));
-
-    showDialog(context: context, builder: (context) => dialog).then((val) {
-      isCancelled[0] = true;
-    });
-
-    try {
-      User person = await SkyCore.login(acc.user, acc.pass, district.districtLink);
-      await getTermsAndGradeBook(isCancelled, dialog, acc, person);
-    } catch (e) {
-      Navigator.of(context).pop(dialog);
-      if (e.toString().contains('Invalid login or password')) {
+      if (isInAccountChooserStatus &&
+          e.toString().contains('Invalid login or password')) {
         showDialog(
             context: context,
             builder: (_) {
@@ -355,46 +343,25 @@ class MyHomePageState extends State<MyHomePage> {
                 btnTextForConfirmation: 'Ok',
               );
             });
-      } else
-        Navigator.of(context).pop(dialog);
+      } else {
         showDialog(
-          context: context,
-          builder: (_) {
-            return HuntyDialog(
-                title: 'Uh-Oh',
-                description:
-                e.toString() + ' Check your internet connection!',
-                buttonText: 'Ok');
-          });
+            context: context,
+            builder: (_) {
+              return HuntyDialog(
+                  title: 'Uh-Oh',
+                  description: e.toString() +
+                      ' Check your internet connection!',
+                  buttonText: 'Ok');
+            });
+      }
     }
   }
 
-  Future getTermsAndGradeBook(List<bool> isCancelled, HuntyDialogLoading dialog,
-      Account acc, User person) async {
-    var gradebookRes;
-    try {
-      gradebookRes = await person.getGradebook();
-    } catch (e) {
-      isCancelled[0] = true;
-      Navigator.of(context).pop(dialog);
-      await showDialog(
-          context: context,
-          builder: (_) {
-            return HuntyDialog(
-                title: 'Oh No!',
-                description:
-                    'An error occured and we could not get your grades. Please report this to a developer! An error occured while parsing your grades.',
-                buttonText: 'Ok');
-          });
+  bool _isCredentialsSavedAlready(String user) {
+    for (Account acc in accounts) {
+      if (acc.district == district && acc.user == user) return true;
     }
-    if (!(isCancelled.first)) {
-      currentSessionIdentifier = acc.user;
-      prevSavedAccount.saveListData(
-          {'user': acc.user, 'pass': acc.pass, 'link': district.districtLink});
-      account = person;
-      Navigator.pushNamed(context, '/termviewer',
-          arguments: [gradebookRes, await person.getName(), false]).then((value) => setState((){}));
-    }
+    return false;
   }
 
   _showDialog() async {
@@ -518,8 +485,9 @@ class MyHomePageState extends State<MyHomePage> {
               context: context,
               builder: (c) => HuntyDialogForMoreText(
                   title: 'Information',
-                  description:
-                    isInAccountChooserStatus ? 'Long press to reorder accounts!' : 'SkyMobile login page has a simple and intuitive design. The search button on the top indicates the district searcher. Use it to search and select different districts. The settings icon brings you to settings and the info dialog shows this dialog. Login like you would normally and press Choose Accounts to access your saved accounts.',
+                  description: isInAccountChooserStatus
+                      ? 'Long press to reorder accounts!'
+                      : 'SkyMobile login page has a simple and intuitive design. The search button on the top indicates the district searcher. Use it to search and select different districts. The settings icon brings you to settings and the info dialog shows this dialog. Login like you would normally and press Choose Accounts to access your saved accounts.',
                   buttonText: 'Ok!'));
         },
       ),
@@ -538,7 +506,9 @@ class MyHomePageState extends State<MyHomePage> {
           color: themeManager.getColor(null),
         ),
         onPressed: () {
-          Navigator.of(context).pushNamed('/settings').then((value) => setState((){}));
+          Navigator.of(context)
+              .pushNamed('/settings')
+              .then((value) => setState(() {}));
         },
       ),
     ]);
@@ -552,47 +522,45 @@ class MyHomePageState extends State<MyHomePage> {
               '${acc.user}${acc.district != null ? acc.district.districtName : acc.district}${acc.pass.hashCode}'),
           childBuilder: (BuildContext context, ReorderableItemState state) =>
               DelayedReorderableListener(
-                child: Opacity(
-                  opacity: state == ReorderableItemState.placeholder ? 0.0 : 1.0,
-                  child: Container(
-                      padding: EdgeInsets.only(
-                          top: 10, left: 20, right: 20, bottom: 10),
-                      child: ConstrainedBox(
-                        constraints: BoxConstraints(maxHeight: 65),
-                        child: Material(
-                          color: Colors.transparent,
-                          child: InkWell(
-                              splashColor: themeManager.getColor(
-                                  TypeOfWidget.button),
-                              borderRadius: BorderRadius.circular(16),
-                              onTap: !(accounts.length > 0 &&
+            child: Opacity(
+              opacity: state == ReorderableItemState.placeholder ? 0.0 : 1.0,
+              child: Container(
+                  padding:
+                      EdgeInsets.only(top: 10, left: 20, right: 20, bottom: 10),
+                  child: ConstrainedBox(
+                    constraints: BoxConstraints(maxHeight: 65),
+                    child: Material(
+                      color: Colors.transparent,
+                      child: InkWell(
+                          splashColor:
+                              themeManager.getColor(TypeOfWidget.button),
+                          borderRadius: BorderRadius.circular(16),
+                          onTap: !(accounts.length > 0 &&
                                   accounts.first.district == null)
-                                  ? () {
-                                focus.unfocus();
-                                _shouldAuthenticateAndContinue(
-                                    acc, _getGradeTermsFromAccount);
-                              }
-                                  : () => {},
-                              child: Container(
-                                alignment: Alignment.center,
-                                decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(16.0),
-                                    border: Border.all(
-                                        color: themeManager.getColor(
-                                            TypeOfWidget.text),
-                                        width: 2)),
-                                child: accounts.length > 0 &&
+                              ? () {
+                                  focus.unfocus();
+                                  _shouldAuthenticateAndContinue(acc, _login);
+                                }
+                              : () => {},
+                          child: Container(
+                            alignment: Alignment.center,
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(16.0),
+                                border: Border.all(
+                                    color: themeManager
+                                        .getColor(TypeOfWidget.text),
+                                    width: 2)),
+                            child: accounts.length > 0 &&
                                     accounts.first.district == null
-                                    ? ListTile(
+                                ? ListTile(
                                     title: Text(
-                                      acc.nick,
-                                      style: new TextStyle(
-                                          fontSize: 20.0,
-                                          color:
-                                          themeManager.getColor(
-                                              TypeOfWidget.text)),
-                                    ))
-                                    : ListTile(
+                                    acc.nick,
+                                    style: new TextStyle(
+                                        fontSize: 20.0,
+                                        color: themeManager
+                                            .getColor(TypeOfWidget.text)),
+                                  ))
+                                : ListTile(
                                     title: Text(
                                       acc.nick,
                                       style: new TextStyle(
@@ -606,74 +574,80 @@ class MyHomePageState extends State<MyHomePage> {
                                         IconButton(
                                             icon: Icon(
                                               Icons.delete_forever,
-                                              color: themeManager.getColor(null),
+                                              color:
+                                                  themeManager.getColor(null),
                                             ),
                                             onPressed: () {
-                                              _shouldAuthenticateAndContinue(acc,
-                                                      (acc) {
-                                                    showDialog(
-                                                        context: context,
-                                                        builder: (
-                                                            BuildContext context) =>
-                                                            HuntyDialogForConfirmation(
-                                                                title: 'Account Deletion',
-                                                                description:
+                                              _shouldAuthenticateAndContinue(
+                                                  acc, (acc) {
+                                                showDialog(
+                                                    context: context,
+                                                    builder: (BuildContext
+                                                            context) =>
+                                                        HuntyDialogForConfirmation(
+                                                            title:
+                                                                'Account Deletion',
+                                                            description:
                                                                 'Are you sure you want to remove this account from your device?',
-                                                                runIfUserConfirms: () {
-                                                                  setState(() {
-                                                                    accounts
-                                                                        .remove(
-                                                                        acc);
-                                                                    jsonSaver
-                                                                        .saveListData(
+                                                            runIfUserConfirms:
+                                                                () {
+                                                              setState(() {
+                                                                accounts.remove(
+                                                                    acc);
+                                                                jsonSaver
+                                                                    .saveListData(
                                                                         accounts);
-                                                                  });
-                                                                },
-                                                                btnTextForConfirmation:
+                                                              });
+                                                            },
+                                                            btnTextForConfirmation:
                                                                 'Yes',
-                                                                btnTextForCancel: 'No'));
-                                                  });
+                                                            btnTextForCancel:
+                                                                'No'));
+                                              });
                                             }),
                                         IconButton(
                                           icon: Icon(Icons.edit),
                                           color: themeManager.getColor(null),
                                           onPressed: () {
                                             _shouldAuthenticateAndContinue(acc,
-                                                    (acc) {
-                                                  TextEditingController accountEditor =
+                                                (acc) {
+                                              TextEditingController
+                                                  accountEditor =
                                                   TextEditingController();
-                                                  showDialog(
-                                                      context: context,
-                                                      builder: (
-                                                          BuildContext context) =>
-                                                          HuntyDialogWithText(
-                                                              hint: 'Edit Account',
-                                                              textController:
+                                              showDialog(
+                                                  context: context,
+                                                  builder: (BuildContext
+                                                          context) =>
+                                                      HuntyDialogWithText(
+                                                          hint: 'Edit Account',
+                                                          textController:
                                                               accountEditor,
-                                                              okPressed: () {
-                                                                setState(() {
-                                                                  acc.nick =
-                                                                      accountEditor
-                                                                          .text;
-                                                                  jsonSaver
-                                                                      .saveListData(
+                                                          okPressed: () {
+                                                            setState(() {
+                                                              acc.nick =
+                                                                  accountEditor
+                                                                      .text;
+                                                              jsonSaver
+                                                                  .saveListData(
                                                                       accounts);
-                                                                });
-                                                              },
-                                                              title: 'Edit Account Name',
-                                                              description:
+                                                            });
+                                                          },
+                                                          title:
+                                                              'Edit Account Name',
+                                                          description:
                                                               'Type in a new account name to be displayed. This does not affect logging in and logging out.',
-                                                              buttonText: 'Submit'));
-                                                });
+                                                          buttonText:
+                                                              'Submit'));
+                                            });
                                           },
                                         )
                                       ],
                                     )),
-                              )),
-                        ),
-                      )),
-                ),
-              ),
+                          )),
+                    ),
+                  )),
+            ),
+          ),
         ));
       }
       listView = ListView(shrinkWrap: true, children: <Widget>[
@@ -708,44 +682,47 @@ class MyHomePageState extends State<MyHomePage> {
                     // widget.length > 5 ?
                     ConstrainedBox(
                         constraints: const BoxConstraints(maxHeight: 300),
-                          child: Padding(
-                            padding: EdgeInsets.only(bottom: 20, top: 20),
-                            child: ReorderableList(
-                              onReorder: (Key item, Key newPosition) {
-                                int draggingIndex = indexOfKey(widget, item);
-                                int newPositionIndex =
-                                    indexOfKey(widget, newPosition);
+                        child: Padding(
+                          padding: EdgeInsets.only(bottom: 20, top: 20),
+                          child: ReorderableList(
+                            onReorder: (Key item, Key newPosition) {
+                              int draggingIndex = indexOfKey(widget, item);
+                              int newPositionIndex =
+                                  indexOfKey(widget, newPosition);
 
-                                final draggedItem = accounts[draggingIndex];
-                                setState(() {
-                                  debugPrint("Reordering $draggingIndex -> $newPositionIndex");
-                                  accounts.removeAt(draggingIndex);
-                                  accounts.insert(newPositionIndex, draggedItem);
-                                });
-                                return true;
-                              },
-                              onReorderDone: (Key item) {
-                                final draggedItem = widget[indexOfKey(widget, item)];
-                                debugPrint("Reordering finished for ${draggedItem.key}}");
-                              },
-                              child: CustomScrollView(slivers: [
-                                SliverPadding(
-                                    padding: EdgeInsets.only(
-                                        bottom: MediaQuery.of(context)
-                                            .padding
-                                            .bottom),
-                                    sliver: SliverList(
-                                      delegate: SliverChildBuilderDelegate(
-                                        (BuildContext context, int index) {
-                                              return widget.elementAt(index);
-                                        },
-                                        childCount: widget.length,
-                                      ),
-                                    )),
-                              ]),
+                              final draggedItem = accounts[draggingIndex];
+                              setState(() {
+                                debugPrint(
+                                    "Reordering $draggingIndex -> $newPositionIndex");
+                                accounts.removeAt(draggingIndex);
+                                accounts.insert(newPositionIndex, draggedItem);
+                              });
+                              return true;
+                            },
+                            onReorderDone: (Key item) {
+                              final draggedItem =
+                                  widget[indexOfKey(widget, item)];
+                              debugPrint(
+                                  "Reordering finished for ${draggedItem.key}}");
+                            },
+                            child: CustomScrollView(slivers: [
+                              SliverPadding(
+                                  padding: EdgeInsets.only(
+                                      bottom: MediaQuery.of(context)
+                                          .padding
+                                          .bottom),
+                                  sliver: SliverList(
+                                    delegate: SliverChildBuilderDelegate(
+                                      (BuildContext context, int index) {
+                                        return widget.elementAt(index);
+                                      },
+                                      childCount: widget.length,
+                                    ),
+                                  )),
+                            ]),
                             //)
-                        ),
-                          )),
+                          ),
+                        )),
 //                        : Container(
 //                            padding: EdgeInsets.only(bottom: 20, top: 20),
 //                            child: ReorderableListView(
@@ -905,8 +882,9 @@ class MyHomePageState extends State<MyHomePage> {
                             borderRadius: BorderRadius.circular(16),
                             onTap: () => {
                                   focus.unfocus(),
-                                  _getGradeTerms(_controllerUsername.text,
-                                      _controllerPassword.text)
+                                  _login(
+                                      Account(null, _controllerUsername.text,
+                                          _controllerPassword.text, district))
                                 },
                             child: Container(
                               alignment: Alignment.center,
@@ -926,34 +904,6 @@ class MyHomePageState extends State<MyHomePage> {
                               ),
                             )),
                       )),
-//                  new Container(
-//                      padding: EdgeInsets.only(
-//                          top: 0, left: 30, right: 30, bottom: 20),
-//                      child: Material(
-//                        color: Colors.transparent,
-//                        child: InkWell(
-//                            splashColor:
-//                                themeManager.getColor(TypeOfWidget.button),
-//                            borderRadius: BorderRadius.circular(16),
-//                            onTap: () => {_showDialog()},
-//                            child: Container(
-//                              alignment: Alignment.center,
-//                              padding: EdgeInsets.all(10),
-//                              decoration: BoxDecoration(
-//                                  borderRadius: BorderRadius.circular(16.0),
-//                                  border: Border.all(
-//                                      color: themeManager
-//                                          .getColor(TypeOfWidget.button),
-//                                      width: 2)),
-//                              child: new Text(
-//                                'Search District',
-//                                style: new TextStyle(
-//                                    fontSize: 20.0,
-//                                    color: themeManager
-//                                        .getColor(TypeOfWidget.button)),
-//                              ),
-//                            )),
-//                      )),
                   new Container(
                       padding: EdgeInsets.only(
                           top: 0, left: 30, right: 30, bottom: 25),
