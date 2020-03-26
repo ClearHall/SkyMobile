@@ -66,7 +66,7 @@ Map<String, dynamic> settings = Map.fromIterables([
 List<String> termIdentifiersCountingTowardGPA = ['S1', 'S2'];
 
 Color getColorFrom(String grade) {
-  if (grade != null && grade != '' && double.tryParse(grade) != null) {
+  if (grade != 'NaN' && grade != 'Infinity' && grade != null && grade != '' && double.tryParse(grade) != null) {
     double green = (double.parse(grade) * 2.55 / 255);
 
     if (green > 1.0) green = 1.0;

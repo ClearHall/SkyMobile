@@ -68,35 +68,42 @@ class _AssignmentsViewerState extends BiometricBlur<AssignmentsViewer> {
 
   _recalculateTmp() {
     double tmp = 0;
+    double tmpweight = 0;
 
     tmpAssignments.assignments.forEach((key, value) {
       double weight;
       double localTmp = 0;
       int localNum = 0;
-      if(tmpAssignments.attributes.containsKey(key.first.name + 'Weight')){
-        weight = double.parse(tmpAssignments.attributes[key.first.name + 'Weight']);
-      }else{
-        if(key.first.weight.split(',').length == 2){
-          weight = double.parse(key.first.weight.split('adjusted to ')[1].replaceFirst('%', ''));
-        }else{
-          weight = double.parse(key.first.weight.split('weighted at ')[1].replaceFirst('%', ''));
-        }
+      if (tmpAssignments.attributes.containsKey(key.first.name + 'Weight')) {
+        weight =
+            double.parse(tmpAssignments.attributes[key.first.name + 'Weight']);
+      } else {
+        weight = double.parse(
+            key.first.weight.split('weighted at ')[1].replaceFirst('%', ''));
       }
-      for(Assignment a in value){
+      for (Assignment a in value) {
         String grade = a.attributes.containsKey('Score(%)')
             ? a.attributes['Score(%)']
             : a.getDecimal();
         double att = double.tryParse(grade);
-        if(att != null){
+        if (att != null) {
           localNum++;
           localTmp += att;
+        }else{
+          a.attributes['Score(%)'] = '';
         }
       }
-      key.first.attributes['Score(%)'] = (localTmp / localNum).toStringAsFixed(3);
-      tmp += (localTmp / localNum) * (weight / 100);
+      if (localNum < 1)
+        key.first.attributes['Score(%)'] = '';
+      else {
+        key.first.attributes['Score(%)'] =
+            (localTmp / localNum).toStringAsFixed(3);
+        tmp += (localTmp / localNum) * (weight / 100.0);
+        tmpweight += weight / 100.0;
+      }
     });
 
-    finalAverage = tmp;
+    finalAverage = tmp / tmpweight;
   }
 
   _enterEditingMode() {
@@ -110,7 +117,7 @@ class _AssignmentsViewerState extends BiometricBlur<AssignmentsViewer> {
     int index = 0;
     AssignmentNode node;
     tmpAssignments.assignments.forEach((cat, assign) {
-      if(node != null) return;
+      if (node != null) return;
       for (CategoryHeader head in cat) {
         if (index == ind) {
           node = head;
@@ -134,7 +141,7 @@ class _AssignmentsViewerState extends BiometricBlur<AssignmentsViewer> {
     AssignmentNode b;
     bool shouldStop = false;
     tmpAssignments.assignments.forEach((cat, assign) {
-      if(shouldStop) return;
+      if (shouldStop) return;
       List<AssignmentNode> full = List.from(cat);
       full.addAll(assign);
       for (int i = 0; i < full.length; i++) {
@@ -154,12 +161,13 @@ class _AssignmentsViewerState extends BiometricBlur<AssignmentsViewer> {
         ind++;
       }
     });
-    if(!shouldStop){
+    if (!shouldStop) {
       tmpAssignments.assignments.values.last.add(a);
     }
     return b;
   }
 
+  int tmpAssignID = 0;
   @override
   Widget generateBody(BuildContext context) {
 //    List<CategoryHeader> t = List();
@@ -187,11 +195,11 @@ class _AssignmentsViewerState extends BiometricBlur<AssignmentsViewer> {
         title: Align(
           alignment: Alignment.centerLeft,
           child: Text(
-            editingMode ?
-                'Final: ${finalAverage.toStringAsFixed(3)}' :
-              neiceban
-                  ? '内测版'
-                  : (courseName != null ? courseName : 'Assignments'),
+              editingMode
+                  ? 'Final: ${finalAverage.toStringAsFixed(3)}'
+                  : neiceban
+                      ? '内测版'
+                      : (courseName != null ? courseName : 'Assignments'),
               textAlign: TextAlign.center,
               style: TextStyle(
                   color: themeManager.getColor(TypeOfWidget.text),
@@ -199,6 +207,15 @@ class _AssignmentsViewerState extends BiometricBlur<AssignmentsViewer> {
                   fontWeight: FontWeight.w700)),
         ),
         actions: <Widget>[
+          editingMode
+              ? IconButton(icon: Icon(Icons.add), onPressed: () {
+                setState(() {
+                  tmpAssignments.assignments.values.first.add(CustomAssignment(tmpAssignID));
+                  tmpAssignID++;
+                  _recalculateTmp();
+                });
+          })
+              : Container(),
           IconButton(
               icon: Icon(Icons.edit),
               onPressed: () {
@@ -242,6 +259,13 @@ class _AssignmentsViewerState extends BiometricBlur<AssignmentsViewer> {
                                 'Mock assignments for terms with assignments from multiple terms is still in development!',
                             buttonText: 'Got it!'));
                   } else {
+                    showDialog(
+                        context: context,
+                        builder: (c) => HuntyDialog(
+                            title: 'Reminder!',
+                            description:
+                                'Double tap on an assignment to remove it!',
+                            buttonText: 'Got it!'));
                     setState(() {
                       _enterEditingMode();
                     });
@@ -314,19 +338,22 @@ class _AssignmentsViewerState extends BiometricBlur<AssignmentsViewer> {
       List<Widget> body, BuildContext context, AssignmentNode box, int ind) {
     //if (box is Assignment) print(gradebook.getAssignmentTerm(box));
     bool isBoxCatHeader = box is CategoryHeader;
-    String key = isBoxCatHeader ? box.name + box.hashCode.toString() : (box as Assignment).assignmentID;
+    String key = isBoxCatHeader
+        ? box.name + box.hashCode.toString()
+        : (box as Assignment).assignmentID;
     String grade = box.attributes.containsKey('Score(%)')
         ? box.attributes['Score(%)']
         : box.getDecimal();
-    if (!editingMode && ((grade != null && grade.trim().isEmpty) || grade == null) &&
-        box.attributes.containsKey("Points Earned")) {
+    if (!editingMode &&
+        (((grade != null && grade.trim().isEmpty) || grade == null) &&
+        box.attributes.containsKey("Points Earned"))) {
       grade = box.attributes["Points Earned"];
     }
     bool secondContNeeded =
         (isBoxCatHeader && (box as CategoryHeader).weight != null);
 
     TextEditingController controller = controllers[key];
-    if(controller == null) {
+    if (controller == null) {
       controller = TextEditingController();
       controller.text = grade;
       controllers[key] = controller;
@@ -342,9 +369,7 @@ class _AssignmentsViewerState extends BiometricBlur<AssignmentsViewer> {
     Widget a = Container(
         padding: EdgeInsets.only(
             left: settings['Hierarchical Grades']['option']
-                ? (isBoxCatHeader
-                ? (secondContNeeded ? 10 : 0)
-                : (20))
+                ? (isBoxCatHeader ? (secondContNeeded ? 10 : 0) : (20))
                 : 0),
         child: Card(
           shape: RoundedRectangleBorder(
@@ -352,81 +377,104 @@ class _AssignmentsViewerState extends BiometricBlur<AssignmentsViewer> {
           ),
           child: InkWell(
               borderRadius: BorderRadius.circular(20.0),
-              onTap: !editingMode ? () {
-                if (box != null && box is Assignment)
-                  _goToAssignmentInfo(box);
-              } : null,
+              onTap: !editingMode
+                  ? () {
+                      if (box != null && box is Assignment)
+                        _goToAssignmentInfo(box);
+                    }
+                  : () {},
+              onDoubleTap: editingMode
+                  ? () {
+                      setState(() {
+                        tmpAssignments.assignments.forEach((key, value) {
+                          value.remove(box);
+                        });
+                      });
+                    }
+                  : null,
               child: Row(
-                mainAxisAlignment:
-                MainAxisAlignment.spaceBetween,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
                   Container(
                     alignment: Alignment.centerLeft,
                     child: Column(
-                      crossAxisAlignment:
-                      CrossAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
                         Container(
                           constraints: BoxConstraints(
-                              maxWidth: MediaQuery.of(context)
-                                  .size
-                                  .width /
-                                  6 *
-                                  3.5),
+                              maxWidth:
+                                  MediaQuery.of(context).size.width / 6 * 3.5),
                           padding: EdgeInsets.only(
                               top: 15,
                               left: 15,
                               right: 10,
-                              bottom:
-                              secondContNeeded ? 0 : 15),
+                              bottom: secondContNeeded ? 0 : 15),
                           alignment: Alignment.centerLeft,
-                          child: Text(
+                          child: (box is CustomAssignment && editingMode) ? ConstrainedBox(
+                              constraints:
+                              BoxConstraints(maxWidth: 200, maxHeight: 40),
+                              child: TextField(
+                                controller: box.namecontroller,
+                                style: standard,
+                                textAlign: TextAlign.center,
+                                decoration: InputDecoration(
+                                    contentPadding: const EdgeInsets.all(5),
+                                    labelStyle: TextStyle(
+                                        color: themeManager
+                                            .getColor(TypeOfWidget.text)),
+                                    enabledBorder: OutlineInputBorder(
+                                        borderSide: BorderSide(
+                                            color: themeManager
+                                                .getColor(TypeOfWidget.text),
+                                            width: 2),
+                                        borderRadius: BorderRadius.circular(16)),
+                                    focusedBorder: OutlineInputBorder(
+                                        borderSide: BorderSide(
+                                            color: themeManager
+                                                .getColor(TypeOfWidget.text),
+                                            width: 2),
+                                        borderRadius: BorderRadius.circular(16))),
+                                onChanged: (String a) {
+                                  setState(() {
+                                    box.name = a;
+                                  });
+                                },
+                              )) : Text(
                             box.name,
                             maxLines: 2,
                             overflow: TextOverflow.ellipsis,
                             style: TextStyle(
                                 color: isBoxCatHeader
                                     ? secondContNeeded
-                                    ? themeManager.getColor(
-                                    TypeOfWidget.text)
-                                    : themeManager.getColor(
-                                    TypeOfWidget.button)
-                                    : themeManager
-                                    .getColor(null),
-                                fontSize:
-                                isBoxCatHeader ? 20 : 15),
+                                        ? themeManager
+                                            .getColor(TypeOfWidget.text)
+                                        : themeManager
+                                            .getColor(TypeOfWidget.button)
+                                    : themeManager.getColor(null),
+                                fontSize: isBoxCatHeader ? 20 : 15),
                             textAlign: TextAlign.start,
                           ),
                         ),
                         secondContNeeded
                             ? Container(
-                          constraints: BoxConstraints(
-                              maxWidth:
-                              MediaQuery.of(context)
-                                  .size
-                                  .width /
-                                  6 *
-                                  4.3),
-                          padding: EdgeInsets.only(
-                              top: 5,
-                              left: 15,
-                              right: 10,
-                              bottom: 15),
-                          alignment: Alignment.centerLeft,
-                          child: Text(
-                              (box as CategoryHeader)
-                                  .weight,
-                              style: TextStyle(
-                                  color: themeManager
-                                      .getColor(
-                                      TypeOfWidget
-                                          .text),
-                                  fontSize: 15),
-                              textAlign: TextAlign.start),
-                        )
+                                constraints: BoxConstraints(
+                                    maxWidth:
+                                        MediaQuery.of(context).size.width /
+                                            6 *
+                                            4.3),
+                                padding: EdgeInsets.only(
+                                    top: 5, left: 15, right: 10, bottom: 15),
+                                alignment: Alignment.centerLeft,
+                                child: Text((box as CategoryHeader).weight,
+                                    style: TextStyle(
+                                        color: themeManager
+                                            .getColor(TypeOfWidget.text),
+                                        fontSize: 15),
+                                    textAlign: TextAlign.start),
+                              )
                             : Container(
-                          height: 0,
-                        ),
+                                height: 0,
+                              ),
                       ],
                     ),
                   ),
@@ -436,57 +484,65 @@ class _AssignmentsViewerState extends BiometricBlur<AssignmentsViewer> {
                     alignment: Alignment.centerRight,
                     child: (editingMode && box is Assignment)
                         ? ConstrainedBox(
-                        constraints: BoxConstraints(
-                            maxWidth: 80, maxHeight: 40),
-                        child: TextField(
-                          keyboardType: TextInputType.number,
-                          controller: controller,
-                          style: standard,
-                          textAlign: TextAlign.center,
-                          decoration: InputDecoration(
-                              contentPadding:
-                              const EdgeInsets.all(5),
-                              labelStyle: TextStyle(
-                                  color: themeManager.getColor(
-                                      TypeOfWidget.text)),
-                              enabledBorder: OutlineInputBorder(
-                                  borderSide: BorderSide(
+                            constraints:
+                                BoxConstraints(maxWidth: 80, maxHeight: 40),
+                            child: TextField(
+                              keyboardType: TextInputType.number,
+                              controller: controller,
+                              style: standard,
+                              textAlign: TextAlign.center,
+                              decoration: InputDecoration(
+                                  contentPadding: const EdgeInsets.all(5),
+                                  labelStyle: TextStyle(
                                       color: themeManager
-                                          .getColor(TypeOfWidget
-                                          .text),
-                                      width: 2),
-                                  borderRadius:
-                                  BorderRadius.circular(
-                                      16)),
-                              focusedBorder: OutlineInputBorder(
-                                  borderSide: BorderSide(
-                                      color: themeManager.getColor(TypeOfWidget.text),
-                                      width: 2),
-                                  borderRadius: BorderRadius.circular(16))),
-                          onChanged: (String a){
-                            setState(() {
-                              box.attributes['Score(%)'] = a;
-                              _recalculateTmp();
-                            });
-                          },
-                        ))
+                                          .getColor(TypeOfWidget.text)),
+                                  enabledBorder: OutlineInputBorder(
+                                      borderSide: BorderSide(
+                                          color: themeManager
+                                              .getColor(TypeOfWidget.text),
+                                          width: 2),
+                                      borderRadius: BorderRadius.circular(16)),
+                                  focusedBorder: OutlineInputBorder(
+                                      borderSide: BorderSide(
+                                          color: themeManager
+                                              .getColor(TypeOfWidget.text),
+                                          width: 2),
+                                      borderRadius: BorderRadius.circular(16))),
+                              onChanged: (String a) {
+                                setState(() {
+                                  box.attributes['Score(%)'] = a;
+                                  _recalculateTmp();
+                                });
+                              },
+                            ))
                         : Text(
-                      grade ?? '',
-                      style: standard,
-                    ),
+                            grade ?? '',
+                            style: standard,
+                          ),
                   ),
                 ],
               )),
-          color:
-          themeManager.getColor(TypeOfWidget.subBackground),
+          color: themeManager.getColor(TypeOfWidget.subBackground),
         ));
-    body.add(editingMode ? ReorderableItem(
-        key: Key(key),
-        childBuilder: (BuildContext context, ReorderableItemState state) =>
-            DelayedReorderableListener(
-                child: Opacity(
-                    opacity:
-                        state == ReorderableItemState.placeholder ? 0.0 : 1.0,
-                    child: a))) : a);
+    body.add(editingMode
+        ? ReorderableItem(
+            key: Key(key),
+            childBuilder: (BuildContext context, ReorderableItemState state) =>
+                DelayedReorderableListener(
+                    child: Opacity(
+                        opacity: state == ReorderableItemState.placeholder
+                            ? 0.0
+                            : 1.0,
+                        child: a)))
+        : a);
+  }
+}
+
+class CustomAssignment extends Assignment {
+  TextEditingController namecontroller = TextEditingController();
+
+  CustomAssignment(int ind)
+      : super('0', 'CustomAssign$ind', '0', 'Assignment', {'Score(%)': '100.00'}) {
+    namecontroller.text = 'Assignment';
   }
 }
