@@ -1,4 +1,5 @@
 import 'package:skymobile/HelperUtilities/DataPersist/json_saver.dart';
+import 'package:skymobile/HelperUtilities/global.dart';
 
 class SkyVars {
   static JSONSaver skyVarsJsonSaver =
@@ -8,14 +9,16 @@ class SkyVars {
     'version': '2',
     'permdev': 'false',
     'iconchangesupport' : 'false',
-    'developeraccounts' : 'false'
+    'developeraccounts' : 'false',
+    'neiceban' : 'false'
   };
 
   static Map<String, String> skyVars = {
     'version': '2',
     'permdev': 'false',
     'iconchangesupport' : 'false',
-    'developeraccounts' : 'false'
+    'developeraccounts' : 'false',
+    'neiceban' : 'false'
   };
 
   static saveVars() async {
@@ -32,6 +35,7 @@ class SkyVars {
   }
 
   static bool modifyVar(String a, dynamic b) {
+    neiceban = skyVars['neiceban'] == 'true';
     if (skyVars.containsKey(a)) {
       skyVars[a] = b.toString();
       saveVars();

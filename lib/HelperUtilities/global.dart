@@ -2,6 +2,8 @@ import 'package:skyscrapeapi/sky_core.dart';
 import '../Settings/theme_color_manager.dart';
 import 'package:flutter/material.dart';
 
+import 'DataPersist/manage_sky_vars.dart';
+
 String currentSessionIdentifier;
 String currentChild;
 User account;
