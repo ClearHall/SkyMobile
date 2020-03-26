@@ -389,6 +389,7 @@ class _AssignmentsViewerState extends BiometricBlur<AssignmentsViewer> {
                         tmpAssignments.assignments.forEach((key, value) {
                           value.remove(box);
                         });
+                        _recalculateTmp();
                       });
                     }
                   : null,
