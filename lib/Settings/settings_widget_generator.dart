@@ -35,7 +35,8 @@ class SettingsWidgetGenerator {
   static Widget generateSingleSettingsWidget(String settings, Map attributes,
       {Function run,
       bool requiresBiometricsToDisable = false,
-      Function(PlatformException) runIfBiometricsFailed}) {
+        Function(PlatformException) runIfBiometricsFailed,
+        bool force}) {
     return Container(
       child: Column(
         children: <Widget>[
@@ -56,11 +57,13 @@ class SettingsWidgetGenerator {
                     padding: EdgeInsets.all(10),
                   ),
                   trailing: Switch(
-                    value: attributes['option'] ?? false,
-                    onChanged: (changedTo) {
+                    value: force == null
+                        ? (attributes['option'] ?? false)
+                        : force,
+                    onChanged: force == null ? (changedTo) {
                       runChangeTo(changedTo, requiresBiometricsToDisable,
                           attributes, run, runIfBiometricsFailed);
-                    },
+                    } : null,
                     activeColor: themeManager.getColor(TypeOfWidget.text),
                   ),
                 ),
@@ -223,7 +226,6 @@ class SettingsWidgetGenerator {
 
   static Widget generateColorSelectableSetting(
       String setting, Map attributes, BuildContext context, Function color) {
-    print(attributes['option'].primary);
     return Container(
       child: Column(
         children: <Widget>[

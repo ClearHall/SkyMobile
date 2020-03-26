@@ -2,18 +2,21 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:skymobile/SupportWidgets/biometric_blur_view.dart';
-import 'package:skymobile/SupportWidgets/constant_visibile_scrollbar.dart';
 import 'package:skymobile/ExtraViewPackages/hunty_dialogs.dart';
-import 'package:skymobile/SupportWidgets/custom_overscroll_behavior.dart';
 import 'package:skymobile/HelperUtilities/DataPersist/json_saver.dart';
 import 'package:skymobile/HelperUtilities/DataPersist/manage_sky_vars.dart';
-import 'package:skymobile/Settings/settings_widget_generator.dart';
-import 'package:skymobile/main.dart';
-import 'theme_color_manager.dart';
 import 'package:skymobile/HelperUtilities/global.dart';
+import 'package:skymobile/Settings/settings_widget_generator.dart';
+import 'package:skymobile/SupportWidgets/biometric_blur_view.dart';
+import 'package:skymobile/SupportWidgets/constant_visibile_scrollbar.dart';
+import 'package:skymobile/SupportWidgets/custom_overscroll_behavior.dart';
+import 'package:skymobile/main.dart';
+
+import 'theme_color_manager.dart';
 
 void saveSettingsData() {
+  if (!settings['Biometric Authentication']['option'])
+    settings['Re-Authenticate With Biometrics']['option'] = false;
   JSONSaver jsonSaver = JSONSaver(FilesAvailable.settings);
   jsonSaver.saveListData(settings);
   int i = settings['Theme']['option'].values.toList().indexOf(true);
@@ -132,7 +135,11 @@ class _SettingsViewerState extends BiometricBlur<SettingsViewer> {
                     });
                   }
                 }
-              }),
+              },
+              force: (k == 'Re-Authenticate With Biometrics' &&
+                  !settings['Biometric Authentication']['option'])
+                  ? false
+                  : null),
         );
     }
 

@@ -8,27 +8,28 @@ import 'package:flutter/services.dart';
 import 'package:flutter_reorderable_list/flutter_reorderable_list.dart';
 import 'package:local_auth/local_auth.dart';
 import 'package:skymobile/ExtraViewPackages/credits.dart';
-import 'package:skymobile/Navigation/student_info.dart';
-import 'package:skymobile/SupportWidgets/biometric_blur_view.dart';
-import 'package:skymobile/SupportWidgets/custom_overscroll_behavior.dart';
+import 'package:skymobile/ExtraViewPackages/developer_console.dart';
+import 'package:skymobile/GPACalculator/classes.dart';
+import 'package:skymobile/GPACalculator/school_year.dart';
+import 'package:skymobile/GPACalculator/settings.dart';
+import 'package:skymobile/HelperUtilities/DataPersist/json_saver.dart';
 import 'package:skymobile/HelperUtilities/DataPersist/manage_sky_vars.dart';
-import 'package:skymobile/Navigation/messages.dart';
-import 'package:skymobile/Settings/theme_color_manager.dart';
-import 'package:skyscrapeapi/sky_core.dart';
+import 'package:skymobile/HelperUtilities/account_types.dart';
 import 'package:skymobile/Navigation//gradebook.dart';
-import 'ExtraViewPackages/hunty_dialogs.dart';
-import 'HelperUtilities/global.dart';
 import 'package:skymobile/Navigation/assignment_info.dart';
 import 'package:skymobile/Navigation/assignments.dart';
-import 'package:skyscrapeapi/district_searcher.dart';
-import 'package:skyscrapeapi/data_types.dart';
-import 'package:skymobile/HelperUtilities/account_types.dart';
-import 'package:skymobile/HelperUtilities/DataPersist/json_saver.dart';
-import 'package:skymobile/GPACalculator/school_year.dart';
-import 'package:skymobile/GPACalculator/classes.dart';
-import 'package:skymobile/GPACalculator/settings.dart';
+import 'package:skymobile/Navigation/messages.dart';
+import 'package:skymobile/Navigation/student_info.dart';
 import 'package:skymobile/Settings/settings_viewer.dart';
-import 'package:skymobile/ExtraViewPackages/developer_console.dart';
+import 'package:skymobile/Settings/theme_color_manager.dart';
+import 'package:skymobile/SupportWidgets/biometric_blur_view.dart';
+import 'package:skymobile/SupportWidgets/custom_overscroll_behavior.dart';
+import 'package:skyscrapeapi/data_types.dart';
+import 'package:skyscrapeapi/district_searcher.dart';
+import 'package:skyscrapeapi/sky_core.dart';
+
+import 'ExtraViewPackages/hunty_dialogs.dart';
+import 'HelperUtilities/global.dart';
 
 void _setTargetPlatformForDesktop() {
   TargetPlatform targetPlatform;
@@ -115,7 +116,11 @@ class MyApp extends StatelessWidget {
         '/messages': (context) =>
             MessageViewer(ModalRoute.of(context).settings.arguments),
         '/credits': (context) => Credits(),
-        '/studentinfo': (context) => StudentInfoPage(ModalRoute.of(context).settings.arguments)
+        '/studentinfo': (context) =>
+            StudentInfoPage(ModalRoute
+                .of(context)
+                .settings
+                .arguments)
       },
     );
   }
@@ -294,22 +299,7 @@ class MyHomePageState extends State<MyHomePage> {
             });
       }
 
-      var gradebookRes;
-      try {
-        gradebookRes = await person.getGradebook();
-      } catch (e) {
-        isCancelled[0] = true;
-        Navigator.of(context).pop(dialog);
-        await showDialog(
-            context: context,
-            builder: (_) {
-              return HuntyDialog(
-                  title: 'Oh No!',
-                  description:
-                      'An error occured and we could not get your grades. Please report this to a developer! An error occured while parsing your grades.',
-                  buttonText: 'Ok');
-            });
-      }
+      var gradebookRes = await person.getGradebook();
       if (!(isCancelled.first)) {
         currentSessionIdentifier = acc.user;
         prevSavedAccount.saveListData({
@@ -320,10 +310,14 @@ class MyHomePageState extends State<MyHomePage> {
         account = person;
         Navigator.pushNamed(context, '/termviewer',
                 arguments: [gradebookRes, await person.getName(), false])
-            .then((value) => setState(() {}));
+            .then((value) =>
+            setState(() {
+              Navigator.of(context)
+                  .popUntil((route) => route.settings.name == '/');
+            }));
       }
     } catch (e) {
-      Navigator.of(context).pop(dialog);
+      Navigator.of(context).popUntil((route) => route.settings.name == '/');
       if (isInAccountChooserStatus &&
           e.toString().contains('Invalid login or password')) {
         showDialog(
@@ -349,8 +343,8 @@ class MyHomePageState extends State<MyHomePage> {
             builder: (_) {
               return HuntyDialog(
                   title: 'Uh-Oh',
-                  description: e.toString() +
-                      ' Check your internet connection!',
+                  description:
+                  e.toString() + ' Check your internet connection!',
                   buttonText: 'Ok');
             });
       }
@@ -882,9 +876,8 @@ class MyHomePageState extends State<MyHomePage> {
                             borderRadius: BorderRadius.circular(16),
                             onTap: () => {
                                   focus.unfocus(),
-                                  _login(
-                                      Account(null, _controllerUsername.text,
-                                          _controllerPassword.text, district))
+                              _login(Account(null, _controllerUsername.text,
+                                  _controllerPassword.text, district))
                                 },
                             child: Container(
                               alignment: Alignment.center,
