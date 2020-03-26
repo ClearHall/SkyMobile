@@ -265,7 +265,7 @@ class _AssignmentsViewerState extends BiometricBlur<AssignmentsViewer> {
                         builder: (c) => HuntyDialog(
                             title: 'Reminder!',
                             description:
-                                'Double tap on an assignment to remove it!',
+                                'Double tap on an assignment to remove it! Press and hold to move an assignment around.',
                             buttonText: 'Got it!'));
                     setState(() {
                       _enterEditingMode();
