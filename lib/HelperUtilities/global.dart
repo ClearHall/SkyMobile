@@ -6,7 +6,7 @@ import '../Settings/theme_color_manager.dart';
 String currentSessionIdentifier;
 String currentChild;
 User account;
-bool neiceban = true;
+bool neiceban = false;
 ThemeManager themeManager = ThemeManager();
 
 Map<String, dynamic> settings = Map.fromIterables([
