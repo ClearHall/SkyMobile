@@ -276,6 +276,8 @@ class MyHomePageState extends State<MyHomePage> {
     try {
       User person =
           await SkyCore.login(acc.user, acc.pass, acc.district.districtLink);
+      var gradebookRes = await person.getGradebook();
+      String meinName = await person.getName();
 
       if (!isInAccountChooserStatus && !_isCredentialsSavedAlready(acc.user)) {
         _getAccounts();
@@ -288,7 +290,7 @@ class MyHomePageState extends State<MyHomePage> {
                     'New account detected, would you like to save this account?.',
                 runIfUserConfirms: () {
                   setState(() {
-                    acc.nick = acc.user;
+                    acc.nick = meinName ?? acc.user;
                     accounts.add(acc);
                     jsonSaver.saveListData(accounts);
                   });
@@ -299,7 +301,6 @@ class MyHomePageState extends State<MyHomePage> {
             });
       }
 
-      var gradebookRes = await person.getGradebook();
       if (!(isCancelled.first)) {
         currentSessionIdentifier = acc.user;
         prevSavedAccount.saveListData({
@@ -309,7 +310,7 @@ class MyHomePageState extends State<MyHomePage> {
         });
         account = person;
         Navigator.pushNamed(context, '/termviewer',
-                arguments: [gradebookRes, await person.getName(), false])
+            arguments: [gradebookRes, meinName, false])
             .then((value) =>
             setState(() {
               Navigator.of(context)

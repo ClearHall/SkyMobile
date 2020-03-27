@@ -10,7 +10,7 @@ dependencies:
   flutter:
     sdk: flutter
 
-  skyscrapeapi: ^3.0.0+19
+  skyscrapeapi: ^3.0.0+22
   flutter_colorpicker: ^0.3.2
   url_launcher: ^5.2.5
   path_provider: ^1.2.0
