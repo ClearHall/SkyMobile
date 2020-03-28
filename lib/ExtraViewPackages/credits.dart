@@ -53,6 +53,14 @@ class _CreditsState extends BiometricBlur<Credits> {
             Align(
               alignment: Alignment.center,
               child: Text(
+                '\nDamian Lall\n',
+                style:
+                TextStyle(fontSize: 20, color: themeManager.getColor(null)),
+              ),
+            ),
+            Align(
+              alignment: Alignment.center,
+              child: Text(
                 'Graphic Designer',
                 style:
                 TextStyle(fontSize: 30, color: themeManager.getColor(null), fontWeight: FontWeight.bold),
