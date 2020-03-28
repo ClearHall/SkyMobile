@@ -37,7 +37,7 @@ class _CreditsState extends BiometricBlur<Credits> {
             Align(
               alignment: Alignment.center,
               child: Text(
-                'Main Developer',
+                'Main Developers',
                 style:
                     TextStyle(fontSize: 30, color: themeManager.getColor(null), fontWeight: FontWeight.bold),
               ),
@@ -45,7 +45,7 @@ class _CreditsState extends BiometricBlur<Credits> {
             Align(
               alignment: Alignment.center,
               child: Text(
-                '\nHunter Han\n',
+                '\nHunter Han',
                 style:
                 TextStyle(fontSize: 20, color: themeManager.getColor(null)),
               ),
