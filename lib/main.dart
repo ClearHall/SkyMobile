@@ -164,12 +164,16 @@ class MyHomePageState extends State<MyHomePage> {
     SkyVars.saveVars();
   }
 
+  Future<List> _getValAcc() async {
+    var unconverted = jsonSaver.readListData();
+    var tmp1 = await unconverted;
+    return tmp1 is List ? tmp1 : null;
+  }
+
   _getAccounts() async {
     if (await jsonSaver.doesFileExist()) {
-      var unconverted = await jsonSaver.readListData();
-      if (unconverted != 0 && unconverted != null) {
-        accounts = unconverted.cast<Account>().toList();
-      }
+      List tmp2 = await _getValAcc();
+      accounts = tmp2.cast<Account>();
     } else {
       await jsonSaver.saveListData([]);
     }
