@@ -138,11 +138,12 @@ class MyHomePageState extends State<MyHomePage> {
   JSONSaver jsonSaver = JSONSaver(FilesAvailable.accounts);
   static SkywardDistrict district = SkywardDistrict('FORT BEND ISD',
       'https://skyward-fbprod.iscorp.com/scripts/wsisa.dll/WService=wsedufortbendtx/seplog01.w');
+  static List<Account> accounts = [];
   final _auth = LocalAuthentication();
   JSONSaver prevSavedAccount = JSONSaver(FilesAvailable.previouslySavedAccount);
   static int timesPressedSwitch = 0;
 
-  void initState() {
+  initState() {
     super.initState();
     _getPreviouslySavedDistrict();
     _getAccounts();
@@ -161,6 +162,21 @@ class MyHomePageState extends State<MyHomePage> {
       }
     }
     SkyVars.saveVars();
+  }
+
+  _getAccounts() async {
+    if (await jsonSaver.doesFileExist()) {
+      var unconverted = await jsonSaver.readListData();
+      if (unconverted != 0 && unconverted != null) {
+        accounts = unconverted.cast<Account>().toList();
+      }
+    } else {
+      await jsonSaver.saveListData([]);
+    }
+    if (accounts.length == 0) {
+      accounts.add(Account('You have no saved accounts', null, null, null));
+    }
+    setState(() {});
   }
 
   _shouldShowWelcomeDialog() async {
@@ -280,7 +296,6 @@ class MyHomePageState extends State<MyHomePage> {
       String meinName = await person.getName();
 
       if (!isInAccountChooserStatus && !_isCredentialsSavedAlready(acc.user)) {
-        _getAccounts();
         await showDialog(
             context: context,
             builder: (_) {
@@ -380,7 +395,6 @@ class MyHomePageState extends State<MyHomePage> {
   TextEditingController _controllerPassword = TextEditingController();
   bool isInAccountChooserStatus =
       settings['Default to Account Chooser']['option'];
-  List<Account> accounts = [];
 
   //NOTE: USING THIS IS VERY BUGGY!!!!!
 //  void _debugUseGenerateFakeAccounts(int numOfFakeAccounts) {
@@ -390,19 +404,6 @@ class MyHomePageState extends State<MyHomePage> {
 //          SkywardDistrict('lol', 'ddd')));
 //    }
 //  }
-
-  _getAccounts() async {
-    if (await jsonSaver.doesFileExist()) {
-      var unconverted = (await jsonSaver.readListData());
-      if (unconverted is List) accounts = List<Account>.from(unconverted);
-    } else {
-      await jsonSaver.saveListData([]);
-    }
-    if (accounts.length == 0) {
-      accounts.add(Account('You have no saved accounts', null, null, null));
-    }
-    setState(() {});
-  }
 
   void _removeDebugAccounts() {
     for (int i = accounts.length - 1; i >= 0; i--) {

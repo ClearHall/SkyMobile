@@ -1,9 +1,11 @@
 import 'dart:convert';
+import 'dart:io';
+
 import 'package:path_provider/path_provider.dart';
 import 'package:skymobile/Settings/theme_color_manager.dart';
-import 'dart:io';
-import '../account_types.dart';
 import 'package:skyscrapeapi/data_types.dart';
+
+import '../account_types.dart';
 
 class JSONSaver {
   FilesAvailable fileName;
@@ -31,7 +33,7 @@ class JSONSaver {
     return file.writeAsString(jsonEncode(savingList));
   }
 
-  readListData() async {
+  Future<dynamic> readListData() async {
     try {
       final File file = await getFile();
       if(!file.existsSync()) {

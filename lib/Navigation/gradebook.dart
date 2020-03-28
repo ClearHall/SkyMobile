@@ -1,12 +1,14 @@
 import 'dart:ui';
-import 'package:flutter/material.dart';
+
 import 'package:flutter/cupertino.dart';
-import 'package:skymobile/SupportWidgets/biometric_blur_view.dart';
-import 'package:skymobile/Settings/theme_color_manager.dart';
-import 'package:skyscrapeapi/data_types.dart';
-import 'package:skymobile/HelperUtilities/global.dart';
+import 'package:flutter/material.dart';
+import 'package:simple_animations/simple_animations.dart';
 import 'package:skymobile/ExtraViewPackages/hunty_dialogs.dart';
+import 'package:skymobile/HelperUtilities/global.dart';
 import 'package:skymobile/HelperUtilities/gpa_calculator_support_utils.dart';
+import 'package:skymobile/Settings/theme_color_manager.dart';
+import 'package:skymobile/SupportWidgets/biometric_blur_view.dart';
+import 'package:skyscrapeapi/data_types.dart';
 
 class TermViewerPage extends StatefulWidget {
   final List args;
@@ -23,6 +25,21 @@ class _TermViewer extends BiometricBlur<TermViewerPage> {
   Gradebook gradebook;
   String currUser;
   bool developerModeEnabled = false;
+
+  final tween = MultiTrackTween([
+    Track("color1").add(Duration(seconds: 2),
+        ColorTween(begin: Colors.red, end: Colors.yellow)).add(
+        Duration(seconds: 2),
+        ColorTween(begin: Colors.yellow, end: Colors.blue)).add(
+        Duration(seconds: 2),
+        ColorTween(begin: Colors.blue, end: Colors.purple)),
+    Track("color2").add(Duration(seconds: 2),
+        ColorTween(begin: Colors.orange, end: Colors.green)).add(
+        Duration(seconds: 2),
+        ColorTween(begin: Colors.green, end: Colors.indigo)).add(
+        Duration(seconds: 2),
+        ColorTween(begin: Colors.indigo, end: Colors.deepPurple))
+  ]);
 
   _TermViewer(this.gradebook, this.currUser, this.developerModeEnabled);
 
@@ -320,14 +337,31 @@ class _TermViewer extends BiometricBlur<TermViewerPage> {
                   constraints: BoxConstraints(minHeight: 60),
                   padding: EdgeInsets.only(right: 20),
                   alignment: Alignment.centerRight,
-                  child: Text(
-                    grade,
-                    style: TextStyle(
-                        fontSize: 25,
-                        fontWeight: FontWeight.w700,
-                        color: getColorFrom(grade)),
-                  ),
-                ),
+                    child: grade == '100' ? ControlledAnimation(
+                      playback: Playback.MIRROR,
+                      tween: tween,
+                      duration: tween.duration,
+                      builder: (context, anim) {
+                        final LinearGradient linearGradient = LinearGradient(
+                            colors: [
+                              anim['color1'],
+                              anim['color2']
+                            ]);
+                        return ShaderMask(shaderCallback: (bounds) =>
+                            linearGradient.createShader(
+                                Rect.fromLTWH(
+                                    0, 0, bounds.width, bounds.height)),
+                            child: Text(grade, style: TextStyle(
+                                fontSize: 25,
+                                fontWeight: FontWeight.w700,
+                                color: Colors.white
+                            ),));
+                      },
+                    ) : Text(grade, style: TextStyle(
+                      fontSize: 25,
+                      fontWeight: FontWeight.w700,
+                      color: getColorFrom(grade),
+                    ),))
               ],
             )),
         color: themeManager.getColor(TypeOfWidget.subBackground),
