@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:skymobile/HelperUtilities/global.dart';
 import 'package:skymobile/Settings/theme_color_manager.dart';
 import 'package:skymobile/SupportWidgets/biometric_blur_view.dart';
+import 'package:skymobile/main.dart';
 import 'package:skyscrapeapi/data_types.dart';
 
 class StudentInfoPage extends StatefulWidget {
@@ -97,7 +98,8 @@ class _StudentInfo extends BiometricBlur<StudentInfoPage> {
                       constraints:
                           BoxConstraints(maxWidth: 100, maxHeight: 150),
                       child: Image.network(
-                        info.studentAttributes['Student Image Href Link'],
+                        info.studentAttributes['Student Image Href Link']
+                            .substring(MyHomePageState.skywardURLPrefix.length),
                       ))
                   : Container(),
               InfoBox('My Info', stuin, topPad: 10,),

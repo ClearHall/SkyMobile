@@ -1,17 +1,19 @@
+import 'package:flutter/foundation.dart'
+    show debugDefaultTargetPlatformOverride, kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:skymobile/Settings/theme_color_manager.dart';
-import 'package:skyscrapeapi/district_searcher.dart';
 import 'package:skyscrapeapi/data_types.dart';
-import '../main.dart';
+import 'package:skyscrapeapi/district_searcher.dart';
+
 import '../HelperUtilities/global.dart';
+import '../main.dart';
 
 class HuntyDialog extends StatelessWidget {
   final String title, description, buttonText;
 
-  HuntyDialog(
-      {@required this.title,
-      @required this.description,
-      @required this.buttonText});
+  HuntyDialog({@required this.title,
+    @required this.description,
+    @required this.buttonText});
 
   @override
   Widget build(BuildContext context) {
@@ -55,11 +57,11 @@ class HuntyDialog extends StatelessWidget {
   }
 
   customDialogContent(BuildContext context) {
-    return Stack(
+    Widget steck = Stack(
       children: <Widget>[
         Container(
           padding:
-              EdgeInsets.only(top: 16.0 + 66, bottom: 16, left: 15, right: 16),
+          EdgeInsets.only(top: 16.0 + 66, bottom: 16, left: 15, right: 16),
           margin: EdgeInsets.only(top: 66),
           decoration: new BoxDecoration(
             border: Border.all(color: themeManager.getColor(TypeOfWidget.text)),
@@ -81,6 +83,10 @@ class HuntyDialog extends StatelessWidget {
         )
       ],
     );
+    return kIsWeb || debugDefaultTargetPlatformOverride != null
+        ? ConstrainedBox(
+      constraints: BoxConstraints(maxWidth: 400), child: steck,)
+        : steck;
   }
 }
 
@@ -89,6 +95,7 @@ class HuntyDialogLoading extends HuntyDialog {
   final String cancelText;
   final Function runWhenCancelled;
   bool restrictCancel = false;
+
   HuntyDialogLoading(this.cancelText, this.runWhenCancelled,
       {@required title, @required description})
       : super(title: title, description: description, buttonText: null);
@@ -116,18 +123,18 @@ class HuntyDialogLoading extends HuntyDialog {
       restrictCancel
           ? SizedBox(height: 20,)
           : Align(
-              alignment: Alignment.bottomRight,
-              child: FlatButton(
-                onPressed: () {
-                  Navigator.of(context).pop();
-                  runWhenCancelled();
-                },
-                child: Text(
-                  cancelText,
-                  style: TextStyle(color: Colors.red),
-                ),
-              ),
-            ),
+        alignment: Alignment.bottomRight,
+        child: FlatButton(
+          onPressed: () {
+            Navigator.of(context).pop();
+            runWhenCancelled();
+          },
+          child: Text(
+            cancelText,
+            style: TextStyle(color: Colors.red),
+          ),
+        ),
+      ),
     ];
   }
 }
@@ -143,14 +150,12 @@ class HuntyDistrictSearcherWidget extends StatefulWidget {
           title: title, description: description, buttonText: buttonText);
 }
 
-class _HuntyDistrictSearcherWidgetState
-    extends State<HuntyDistrictSearcherWidget> {
+class _HuntyDistrictSearcherWidgetState extends State<HuntyDistrictSearcherWidget> {
   final String title, description, buttonText;
 
-  _HuntyDistrictSearcherWidgetState(
-      {@required this.title,
-      @required this.description,
-      @required this.buttonText});
+  _HuntyDistrictSearcherWidgetState({@required this.title,
+    @required this.description,
+    @required this.buttonText});
 
   @override
   Widget build(BuildContext context) {
@@ -251,8 +256,8 @@ class _HuntyDistrictSearcherWidgetState
       districtCards.length == 0
           ? Container()
           : SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: new Row(children: districtCards)),
+          scrollDirection: Axis.horizontal,
+          child: new Row(children: districtCards)),
       Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: <Widget>[
         Align(
             alignment: Alignment.bottomLeft,
@@ -292,8 +297,8 @@ class _HuntyDistrictSearcherWidgetState
       );
     } else {
       districtsFromSearchQuery =
-          await SkywardDistrictSearcher.searchForDistrictLinkFromState(
-              dropDownVal, textController.text.trim());
+      await SkywardDistrictSearcher.searchForDistrictLinkFromState(
+          dropDownVal, textController.text.trim());
       messages = null;
     }
     setState(() {});
@@ -334,17 +339,16 @@ class HuntyDialogForConfirmation extends HuntyDialog {
   final String btnTextForCancel;
   final Function runIfUserCancels;
 
-  HuntyDialogForConfirmation(
-      {@required title,
-      @required description,
-      @required this.runIfUserConfirms,
-      @required this.btnTextForConfirmation,
-      @required this.btnTextForCancel,
-      this.runIfUserCancels})
+  HuntyDialogForConfirmation({@required title,
+    @required description,
+    @required this.runIfUserConfirms,
+    @required this.btnTextForConfirmation,
+    @required this.btnTextForCancel,
+    this.runIfUserCancels})
       : super(
-            title: title,
-            description: description,
-            buttonText: 'buttonText error not needed');
+      title: title,
+      description: description,
+      buttonText: 'buttonText error not needed');
 
   @override
   createDialogBoxContents(BuildContext context) {
@@ -398,8 +402,7 @@ class HuntyDialogForConfirmation extends HuntyDialog {
 }
 
 class HuntyDialogForMoreText extends HuntyDialog {
-  HuntyDialogForMoreText(
-      {@required title, @required description, @required buttonText})
+  HuntyDialogForMoreText({@required title, @required description, @required buttonText})
       : super(title: title, description: description, buttonText: buttonText);
 
   @override
@@ -427,7 +430,7 @@ class HuntyDialogForMoreText extends HuntyDialog {
           },
           child: Text(buttonText,
               style:
-                  TextStyle(color: themeManager.getColor(TypeOfWidget.button))),
+              TextStyle(color: themeManager.getColor(TypeOfWidget.button))),
         ),
       ),
     ];
@@ -439,13 +442,12 @@ class HuntyDialogWithText extends HuntyDialog {
   final TextEditingController textController;
   final Function okPressed;
 
-  HuntyDialogWithText(
-      {@required this.hint,
-      @required this.textController,
-      @required this.okPressed,
-      @required title,
-      @required description,
-      @required buttonText})
+  HuntyDialogWithText({@required this.hint,
+    @required this.textController,
+    @required this.okPressed,
+    @required title,
+    @required description,
+    @required buttonText})
       : super(title: title, description: description, buttonText: buttonText);
 
   @override
@@ -512,13 +514,12 @@ class HuntyDialogOfList extends HuntyDialog {
   int indexOfValueChosen = 0;
   final List listOfValues;
 
-  HuntyDialogOfList(
-      {@required this.hint,
-      @required this.okPressed,
-      @required this.listOfValues,
-      @required title,
-      @required description,
-      @required buttonText})
+  HuntyDialogOfList({@required this.hint,
+    @required this.okPressed,
+    @required this.listOfValues,
+    @required title,
+    @required description,
+    @required buttonText})
       : super(title: title, description: description, buttonText: buttonText);
 
   @override
@@ -527,25 +528,25 @@ class HuntyDialogOfList extends HuntyDialog {
     for (int i = 0; i < listOfValues.length; i++) {
       widgetList.add(Container(
           child: Card(
-        child: InkWell(
-          onTap: () {
-            indexOfValueChosen = i;
-            Navigator.of(context).pop();
-            if (okPressed != null) okPressed();
-          },
-          child: Container(
-            padding: EdgeInsets.all(10),
-            child: Text(
-              listOfValues[i].toString().toString(),
-              style: TextStyle(
-                  color: themeManager.getColor(TypeOfWidget.text),
-                  fontSize: 15),
+            child: InkWell(
+              onTap: () {
+                indexOfValueChosen = i;
+                Navigator.of(context).pop();
+                if (okPressed != null) okPressed();
+              },
+              child: Container(
+                padding: EdgeInsets.all(10),
+                child: Text(
+                  listOfValues[i].toString().toString(),
+                  style: TextStyle(
+                      color: themeManager.getColor(TypeOfWidget.text),
+                      fontSize: 15),
+                ),
+              ),
+              splashColor: themeManager.getColor(TypeOfWidget.text),
             ),
-          ),
-          splashColor: themeManager.getColor(TypeOfWidget.text),
-        ),
-        color: themeManager.getColor(TypeOfWidget.subBackground),
-      )));
+            color: themeManager.getColor(TypeOfWidget.subBackground),
+          )));
     }
 
     return <Widget>[

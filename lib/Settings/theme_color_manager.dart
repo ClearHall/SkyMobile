@@ -27,9 +27,9 @@ class ThemeManager {
       case TypeOfWidget.subBackground:
         return (settings['Dark Mode']['option'] ? Colors.white10 : Colors.white);
       case TypeOfWidget.text:
-        return currentTheme.primary;
+        return currentTheme.primary.withOpacity(1.0);
       case TypeOfWidget.button:
-        return currentTheme.secondary;
+        return currentTheme.secondary.withOpacity(1.0);
       case TypeOfWidget.subSubBackground:
         return (settings['Dark Mode']['option'] ? Colors.white10 : Colors.white);
       default:

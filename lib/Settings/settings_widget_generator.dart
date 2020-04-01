@@ -291,7 +291,9 @@ class SettingsWidgetGenerator {
       return;
     }
     Color couler =
-        i == 0 ? attributes['option'].primary : attributes['option'].secondary;
+    i == 0
+        ? attributes['option'].primary?.withOpacity(1.0)
+        : attributes['option'].secondary?.withOpacity(1.0);
     showDialog(
         context: context,
         builder: (bcontext) {

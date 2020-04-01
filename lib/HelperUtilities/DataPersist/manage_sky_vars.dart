@@ -8,21 +8,25 @@ class SkyVars {
   static final Map<String, String> skyVarsDefault = {
     'version': '2',
     'permdev': 'false',
-    'iconchangesupport' : 'false',
-    'developeraccounts' : 'false',
-    'neiceban' : 'false'
+    'iconchangesupport': 'false',
+    'developeraccounts': 'false',
+    'neiceban': 'false'
   };
 
   static Map<String, String> skyVars = {
     'version': '2',
     'permdev': 'false',
-    'iconchangesupport' : 'false',
-    'developeraccounts' : 'false',
-    'neiceban' : 'false'
+    'iconchangesupport': 'false',
+    'developeraccounts': 'false',
+    'neiceban': 'false'
   };
 
   static saveVars() async {
-    await skyVarsJsonSaver.saveListData(skyVars);
+    try {
+      await skyVarsJsonSaver.saveListData(skyVars);
+    } catch (e) {
+      print(e);
+    }
   }
 
   static getVars() async {

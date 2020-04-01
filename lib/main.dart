@@ -2,7 +2,7 @@ import 'dart:io';
 import 'dart:math';
 
 import 'package:flutter/foundation.dart'
-    show debugDefaultTargetPlatformOverride;
+    show debugDefaultTargetPlatformOverride, kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_reorderable_list/flutter_reorderable_list.dart';
@@ -45,30 +45,36 @@ void _setTargetPlatformForDesktop() {
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  _setTargetPlatformForDesktop();
-  JSONSaver jsonSaver = JSONSaver(FilesAvailable.settings);
-  var a = await jsonSaver.readListData();
-  if (a is Map) {
-    Map<String, dynamic> retrieved = a;
-    if (retrieved.length != settings.length) {
-      Map<String, dynamic> tmp = Map();
-      tmp.addAll(settings);
-      tmp.addAll(retrieved);
-      retrieved = tmp;
+  if (!kIsWeb) {
+    _setTargetPlatformForDesktop();
+    JSONSaver jsonSaver = JSONSaver(FilesAvailable.settings);
+    var a = await jsonSaver.readListData();
+    if (a is Map) {
+      Map<String, dynamic> retrieved = a;
+      if (retrieved.length != settings.length) {
+        Map<String, dynamic> tmp = Map();
+        tmp.addAll(settings);
+        tmp.addAll(retrieved);
+        retrieved = tmp;
+      }
+      for (int i = 0; i < retrieved.length; i++) {
+        retrieved[retrieved.keys.toList()[i]]['description'] =
+        settings[retrieved.keys.toList()[i]]['description'];
+      }
+      settings.addAll(retrieved);
+      bool found = false;
+      (settings['Theme']['option']).forEach((k, v) {
+        found = found || v;
+        if (v == true)
+          runApp(MyApp(ThemeManager.colorNameToThemes.keys.toList()[
+          ThemeManager.colorNameToThemes.values.toList().indexOf(k)]));
+      });
+      if (!found) runApp(MyApp(settings['Custom Theme']['option']));
+    } else {
+      settings['Theme']['option']
+      [ThemeManager.colorNameToThemes[themeManager.currentTheme]] = true;
+      runApp(MyApp(themeManager.currentTheme));
     }
-    for (int i = 0; i < retrieved.length; i++) {
-      retrieved[retrieved.keys.toList()[i]]['description'] =
-          settings[retrieved.keys.toList()[i]]['description'];
-    }
-    settings.addAll(retrieved);
-    bool found = false;
-    (settings['Theme']['option']).forEach((k, v) {
-      found = found || v;
-      if (v == true)
-        runApp(MyApp(ThemeManager.colorNameToThemes.keys.toList()[
-            ThemeManager.colorNameToThemes.values.toList().indexOf(k)]));
-    });
-    if (!found) runApp(MyApp(settings['Custom Theme']['option']));
   } else {
     settings['Theme']['option']
         [ThemeManager.colorNameToThemes[themeManager.currentTheme]] = true;
@@ -135,6 +141,8 @@ class MyHomePage extends StatefulWidget {
 }
 
 class MyHomePageState extends State<MyHomePage> {
+  static final String skywardURLPrefix =
+  kIsWeb ? 'https://cors-anywhere.herokuapp.com/' : '';
   JSONSaver jsonSaver = JSONSaver(FilesAvailable.accounts);
   static SkywardDistrict district = SkywardDistrict('FORT BEND ISD',
       'https://skyward-fbprod.iscorp.com/scripts/wsisa.dll/WService=wsedufortbendtx/seplog01.w');
@@ -158,7 +166,7 @@ class MyHomePageState extends State<MyHomePage> {
       if (!SkyVars.skyVars
           .containsKey(SkyVars.skyVarsDefault.keys.toList()[i])) {
         SkyVars.skyVars[SkyVars.skyVarsDefault.keys.toList()[i]] =
-            SkyVars.skyVarsDefault.values.toList()[i];
+        SkyVars.skyVarsDefault.values.toList()[i];
       }
     }
     SkyVars.saveVars();
@@ -180,6 +188,15 @@ class MyHomePageState extends State<MyHomePage> {
     if (accounts.length == 0) {
       accounts.add(Account('You have no saved accounts', null, null, null));
     }
+    if (kIsWeb)
+      showDialog(
+          context: context,
+          builder: (c) =>
+              HuntyDialog(
+                  title: 'Account Saving',
+                  description:
+                  'It looks like you are using SkyMobile demo. Account saving will be local.',
+                  buttonText: 'Ok!'));
     setState(() {});
   }
 
@@ -192,9 +209,13 @@ class MyHomePageState extends State<MyHomePage> {
           builder: (c) => HuntyDialogForMoreText(
               title: 'Welcome!',
               description:
-                  'Welcome to SkyMobile! To start off, login like you would login on regular Skyward, but make sure you have selected the correct district and inputted the corrct credentials. The search icon on the top is to search and select districts. If you have anymore questions you can press the information icon.',
+              'Welcome to SkyMobile! To start off, login like you would login on regular Skyward, but make sure you have selected the correct district and inputted the corrct credentials. The search icon on the top is to search and select districts. If you have anymore questions you can press the information icon.',
               buttonText: 'Ok!'));
-      jsonSaver.saveListData([false]);
+      try {
+        jsonSaver.saveListData([false]);
+      } catch (e) {
+        print(e);
+      }
     }
   }
 
@@ -266,7 +287,7 @@ class MyHomePageState extends State<MyHomePage> {
     currentChild = user;
     currentSessionIdentifier = pass;
     Navigator.pushNamed(context, '/termviewer',
-            arguments: [gradebook, 'Tester Dev', true])
+        arguments: [gradebook, 'Tester Dev', true])
         .then((value) => setState(() {}));
   }
 
@@ -286,7 +307,12 @@ class MyHomePageState extends State<MyHomePage> {
     List<bool> isCancelled = [false];
     var dialog = HuntyDialogLoading('Cancel', () {
       isCancelled[0] = true;
-    }, title: 'Loading', description: ('Getting your grades..'));
+    },
+        title: 'Loading',
+        description: ('Getting your grades..' +
+            (kIsWeb
+                ? '\nThis will take longer because you are using the web demo!'
+                : '')));
 
     showDialog(context: context, builder: (BuildContext context) => dialog)
         .then((val) {
@@ -294,8 +320,8 @@ class MyHomePageState extends State<MyHomePage> {
     });
 
     try {
-      User person =
-          await SkyCore.login(acc.user, acc.pass, acc.district.districtLink);
+      User person = await SkyCore.login(
+          acc.user, acc.pass, skywardURLPrefix + acc.district.districtLink);
       var gradebookRes = await person.getGradebook();
       String meinName = await person.getName();
 
@@ -306,7 +332,7 @@ class MyHomePageState extends State<MyHomePage> {
               return HuntyDialogForConfirmation(
                 title: 'New Account',
                 description:
-                    'New account detected, would you like to save this account?.',
+                'New account detected, would you like to save this account?.',
                 runIfUserConfirms: () {
                   setState(() {
                     acc.nick = meinName ?? acc.user;
@@ -346,7 +372,7 @@ class MyHomePageState extends State<MyHomePage> {
               return HuntyDialogForConfirmation(
                 title: 'Uh-Oh',
                 description:
-                    'Invalid Credentials or Internet Failure. Would you like to remove this account?.',
+                'Invalid Credentials or Internet Failure. Would you like to remove this account?.',
                 runIfUserConfirms: () {
                   setState(() {
                     accounts.remove(acc);
@@ -386,7 +412,7 @@ class MyHomePageState extends State<MyHomePage> {
           return HuntyDistrictSearcherWidget(
               title: 'District Searcher',
               description:
-                  "Select your state and enter your district's name. (Ex: Fort Bend ISD)",
+              "Select your state and enter your district's name. (Ex: Fort Bend ISD)",
               buttonText: 'OK');
         })).then((val) {
       setState(() {});
@@ -398,7 +424,7 @@ class MyHomePageState extends State<MyHomePage> {
   TextEditingController _controllerUsername = TextEditingController();
   TextEditingController _controllerPassword = TextEditingController();
   bool isInAccountChooserStatus =
-      settings['Default to Account Chooser']['option'];
+  settings['Default to Account Chooser']['option'];
 
   //NOTE: USING THIS IS VERY BUGGY!!!!!
 //  void _debugUseGenerateFakeAccounts(int numOfFakeAccounts) {
@@ -522,45 +548,45 @@ class MyHomePageState extends State<MyHomePage> {
               '${acc.user}${acc.district != null ? acc.district.districtName : acc.district}${acc.pass.hashCode}'),
           childBuilder: (BuildContext context, ReorderableItemState state) =>
               DelayedReorderableListener(
-            child: Opacity(
-              opacity: state == ReorderableItemState.placeholder ? 0.0 : 1.0,
-              child: Container(
-                  padding:
+                child: Opacity(
+                  opacity: state == ReorderableItemState.placeholder ? 0.0 : 1.0,
+                  child: Container(
+                      padding:
                       EdgeInsets.only(top: 10, left: 20, right: 20, bottom: 10),
-                  child: ConstrainedBox(
-                    constraints: BoxConstraints(maxHeight: 65),
-                    child: Material(
-                      color: Colors.transparent,
-                      child: InkWell(
-                          splashColor:
+                      child: ConstrainedBox(
+                        constraints: BoxConstraints(maxHeight: 65),
+                        child: Material(
+                          color: Colors.transparent,
+                          child: InkWell(
+                              splashColor:
                               themeManager.getColor(TypeOfWidget.button),
-                          borderRadius: BorderRadius.circular(16),
-                          onTap: !(accounts.length > 0 &&
+                              borderRadius: BorderRadius.circular(16),
+                              onTap: !(accounts.length > 0 &&
                                   accounts.first.district == null)
-                              ? () {
-                                  focus.unfocus();
-                                  _shouldAuthenticateAndContinue(acc, _login);
-                                }
-                              : () => {},
-                          child: Container(
-                            alignment: Alignment.center,
-                            decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(16.0),
-                                border: Border.all(
-                                    color: themeManager
-                                        .getColor(TypeOfWidget.text),
-                                    width: 2)),
-                            child: accounts.length > 0 &&
-                                    accounts.first.district == null
-                                ? ListTile(
-                                    title: Text(
-                                    acc.nick,
-                                    style: new TextStyle(
-                                        fontSize: 20.0,
+                                  ? () {
+                                focus.unfocus();
+                                _shouldAuthenticateAndContinue(acc, _login);
+                              }
+                                  : () => {},
+                              child: Container(
+                                alignment: Alignment.center,
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(16.0),
+                                    border: Border.all(
                                         color: themeManager
-                                            .getColor(TypeOfWidget.text)),
-                                  ))
-                                : ListTile(
+                                            .getColor(TypeOfWidget.text),
+                                        width: 2)),
+                                child: accounts.length > 0 &&
+                                    accounts.first.district == null
+                                    ? ListTile(
+                                    title: Text(
+                                      acc.nick,
+                                      style: new TextStyle(
+                                          fontSize: 20.0,
+                                          color: themeManager
+                                              .getColor(TypeOfWidget.text)),
+                                    ))
+                                    : ListTile(
                                     title: Text(
                                       acc.nick,
                                       style: new TextStyle(
@@ -575,7 +601,7 @@ class MyHomePageState extends State<MyHomePage> {
                                             icon: Icon(
                                               Icons.delete_forever,
                                               color:
-                                                  themeManager.getColor(null),
+                                              themeManager.getColor(null),
                                             ),
                                             onPressed: () {
                                               _shouldAuthenticateAndContinue(
@@ -583,12 +609,12 @@ class MyHomePageState extends State<MyHomePage> {
                                                 showDialog(
                                                     context: context,
                                                     builder: (BuildContext
-                                                            context) =>
+                                                    context) =>
                                                         HuntyDialogForConfirmation(
                                                             title:
-                                                                'Account Deletion',
+                                                            'Account Deletion',
                                                             description:
-                                                                'Are you sure you want to remove this account from your device?',
+                                                            'Are you sure you want to remove this account from your device?',
                                                             runIfUserConfirms:
                                                                 () {
                                                               setState(() {
@@ -596,13 +622,13 @@ class MyHomePageState extends State<MyHomePage> {
                                                                     acc);
                                                                 jsonSaver
                                                                     .saveListData(
-                                                                        accounts);
+                                                                    accounts);
                                                               });
                                                             },
                                                             btnTextForConfirmation:
-                                                                'Yes',
+                                                            'Yes',
                                                             btnTextForCancel:
-                                                                'No'));
+                                                            'No'));
                                               });
                                             }),
                                         IconButton(
@@ -610,44 +636,44 @@ class MyHomePageState extends State<MyHomePage> {
                                           color: themeManager.getColor(null),
                                           onPressed: () {
                                             _shouldAuthenticateAndContinue(acc,
-                                                (acc) {
-                                              TextEditingController
+                                                    (acc) {
+                                                  TextEditingController
                                                   accountEditor =
                                                   TextEditingController();
-                                              showDialog(
-                                                  context: context,
-                                                  builder: (BuildContext
-                                                          context) =>
-                                                      HuntyDialogWithText(
-                                                          hint: 'Edit Account',
-                                                          textController:
+                                                  showDialog(
+                                                      context: context,
+                                                      builder: (BuildContext
+                                                      context) =>
+                                                          HuntyDialogWithText(
+                                                              hint: 'Edit Account',
+                                                              textController:
                                                               accountEditor,
-                                                          okPressed: () {
-                                                            setState(() {
-                                                              acc.nick =
-                                                                  accountEditor
-                                                                      .text;
-                                                              jsonSaver
-                                                                  .saveListData(
+                                                              okPressed: () {
+                                                                setState(() {
+                                                                  acc.nick =
+                                                                      accountEditor
+                                                                          .text;
+                                                                  jsonSaver
+                                                                      .saveListData(
                                                                       accounts);
-                                                            });
-                                                          },
-                                                          title:
+                                                                });
+                                                              },
+                                                              title:
                                                               'Edit Account Name',
-                                                          description:
+                                                              description:
                                                               'Type in a new account name to be displayed. This does not affect logging in and logging out.',
-                                                          buttonText:
+                                                              buttonText:
                                                               'Submit'));
-                                            });
+                                                });
                                           },
                                         )
                                       ],
                                     )),
-                          )),
-                    ),
-                  )),
-            ),
-          ),
+                              )),
+                        ),
+                      )),
+                ),
+              ),
         ));
       }
       listView = ListView(shrinkWrap: true, children: <Widget>[
@@ -688,7 +714,7 @@ class MyHomePageState extends State<MyHomePage> {
                             onReorder: (Key item, Key newPosition) {
                               int draggingIndex = indexOfKey(widget, item);
                               int newPositionIndex =
-                                  indexOfKey(widget, newPosition);
+                              indexOfKey(widget, newPosition);
 
                               final draggedItem = accounts[draggingIndex];
                               setState(() {
@@ -701,7 +727,7 @@ class MyHomePageState extends State<MyHomePage> {
                             },
                             onReorderDone: (Key item) {
                               final draggedItem =
-                                  widget[indexOfKey(widget, item)];
+                              widget[indexOfKey(widget, item)];
                               debugPrint(
                                   "Reordering finished for ${draggedItem.key}}");
                             },
@@ -713,7 +739,7 @@ class MyHomePageState extends State<MyHomePage> {
                                           .bottom),
                                   sliver: SliverList(
                                     delegate: SliverChildBuilderDelegate(
-                                      (BuildContext context, int index) {
+                                          (BuildContext context, int index) {
                                         return widget.elementAt(index);
                                       },
                                       childCount: widget.length,
@@ -738,14 +764,14 @@ class MyHomePageState extends State<MyHomePage> {
                           color: Colors.transparent,
                           child: InkWell(
                               splashColor:
-                                  themeManager.getColor(TypeOfWidget.text),
+                              themeManager.getColor(TypeOfWidget.text),
                               borderRadius: BorderRadius.circular(16),
                               onTap: () => {
-                                    setState(() {
-                                      isInAccountChooserStatus =
-                                          !isInAccountChooserStatus;
-                                    })
-                                  },
+                                setState(() {
+                                  isInAccountChooserStatus =
+                                  !isInAccountChooserStatus;
+                                })
+                              },
                               child: Container(
                                 alignment: Alignment.center,
                                 padding: EdgeInsets.all(10),
@@ -951,18 +977,22 @@ class MyHomePageState extends State<MyHomePage> {
                     ])))
           ]);
     }
+    Widget wid = Container(
+      padding: EdgeInsets.all(10),
+      alignment: Alignment.center,
+      child: ScrollConfiguration(
+        behavior: CustomOverscroll(),
+        child: listView,
+      ),
+    );
 
     return Scaffold(
         backgroundColor: themeManager.getColor(TypeOfWidget.background),
         body: Center(
-            child: Container(
-          padding: EdgeInsets.all(10),
-          alignment: Alignment.center,
-          child: ScrollConfiguration(
-            behavior: CustomOverscroll(),
-            child: listView,
-          ),
-        )));
+            child: kIsWeb || debugDefaultTargetPlatformOverride != null
+                ? ConstrainedBox(
+              constraints: BoxConstraints(maxWidth: 650), child: wid,)
+                : wid));
   }
 }
 

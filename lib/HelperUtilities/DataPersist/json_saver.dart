@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:path_provider/path_provider.dart';
 import 'package:skymobile/Settings/theme_color_manager.dart';
 import 'package:skyscrapeapi/data_types.dart';
@@ -12,31 +13,43 @@ class JSONSaver {
 
   JSONSaver(this.fileName);
 
-  getLocalDirectoryPath() async {
-    final dir = await getApplicationDocumentsDirectory();
+  _getLocalDirectoryPath() async {
+    if (!kIsWeb) {
+      final dir = await getApplicationDocumentsDirectory();
 
-    return dir.path;
+      return dir.path;
+    } else {
+      throw JSONSaverException('WEB NOT SUPPORTED!');
+    }
   }
 
-  getFile() async {
-    final path = await getLocalDirectoryPath();
+  _getFile() async {
+    final path = await _getLocalDirectoryPath();
     return File('$path/${fileName.toString()}.skymobileDat');
   }
 
   doesFileExist() async {
-    final path = await getLocalDirectoryPath();
-    return await File('$path/${fileName.toString()}.skymobileDat').exists();
+    try {
+      return await (await _getFile()).exists();
+    } catch (e) {
+      print(e);
+      return false;
+    }
   }
 
   saveListData(dynamic savingList) async {
-    final File file = await getFile();
-    return file.writeAsString(jsonEncode(savingList));
+    try {
+      final File file = await _getFile();
+      return file.writeAsString(jsonEncode(savingList));
+    } catch (e) {
+      print(e);
+    }
   }
 
   Future<dynamic> readListData() async {
     try {
-      final File file = await getFile();
-      if(!file.existsSync()) {
+      final File file = await _getFile();
+      if (!file.existsSync()) {
         print(file.path + ' does not exist!');
         return null;
       }
@@ -68,9 +81,10 @@ class JSONSaver {
         } else if (fileName == FilesAvailable.previousDistrict) {
           return SkywardDistrict.fromJson(retrievedJSONCoded);
         } else if (fileName == FilesAvailable.settings) {
-          retrievedJSONCoded['Custom Theme']['option'] = ColorTheme.fromJson(retrievedJSONCoded['Custom Theme']['option']);
+          retrievedJSONCoded['Custom Theme']['option'] =
+              ColorTheme.fromJson(retrievedJSONCoded['Custom Theme']['option']);
           mapOfTargetedObject = retrievedJSONCoded;
-        }else
+        } else
           mapOfTargetedObject = retrievedJSONCoded;
         return mapOfTargetedObject;
       }
@@ -105,4 +119,15 @@ enum FilesAvailable {
   firstTime,
 
   consoleOnlyVariables,
+}
+
+class JSONSaverException extends SkywardError {
+  JSONSaverException(String cause) : super(cause);
+
+  @override
+  String toString() {
+    return kIsWeb
+        ? 'File saving is not supported on web applications!'
+        : 'A file saving error has occured.' + '\n' + super.toString();
+  }
 }
