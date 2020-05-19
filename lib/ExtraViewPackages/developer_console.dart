@@ -2,11 +2,11 @@ import 'dart:async';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:skymobile/SupportWidgets/biometric_blur_view.dart';
-import 'package:skymobile/HelperUtilities/global.dart';
 import 'package:skymobile/HelperUtilities/DataPersist/manage_sky_vars.dart';
+import 'package:skymobile/HelperUtilities/global.dart';
 import 'package:skymobile/Settings/theme_color_manager.dart';
-import 'package:skyscrapeapi/data_types.dart';
+import 'package:skymobile/SupportWidgets/biometric_blur_view.dart';
+import 'package:skyscrapeapi/sky_core.dart';
 
 class DeveloperConsole extends StatefulWidget {
   DeveloperConsole({Key key}) : super(key: key);
@@ -61,14 +61,7 @@ class _DeveloperConsoleState extends BiometricBlur<DeveloperConsole> {
 
   static _setObjInList(List listObj, int ind, String changeTo) {
     Object thing = listObj[ind];
-    switch (thing.runtimeType) {
-      case Behavior:
-        (thing as Behavior).behavior = changeTo;
-        break;
-      case Grade:
-        (thing as Grade).grade = changeTo;
-        break;
-    }
+    (thing as GradebookNode).grade = changeTo;
   }
 
   _runCommand(String command) {

@@ -2,11 +2,12 @@ import 'dart:collection';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:skymobile/SupportWidgets/biometric_blur_view.dart';
 import 'package:skymobile/ExtraViewPackages/hunty_dialogs.dart';
-import 'package:skymobile/Settings/theme_color_manager.dart';
-import 'package:skyscrapeapi/data_types.dart';
 import 'package:skymobile/HelperUtilities/global.dart';
+import 'package:skymobile/Settings/theme_color_manager.dart';
+import 'package:skymobile/SupportWidgets/biometric_blur_view.dart';
+import 'package:skyscrapeapi/sky_core.dart';
+
 import '../HelperUtilities/gpa_calculator_support_utils.dart';
 
 class GPACalculatorSchoolYear extends StatefulWidget {
@@ -39,21 +40,18 @@ class GPACalculatorSchoolYearState
     SchoolYear first = SchoolYear();
     first.classes = [];
     first.description = 'Current Year';
-    first.terms = gradebook.terms;
+    first.terms = gradebook.getAllTerms();
     HistoricalClass tmpClass;
-    for (Class gridBox in gradebook.classes) {
+    for (Class gridBox in gradebook.getAllClasses()) {
       if (tmpClass != null) first.classes.add(tmpClass);
       tmpClass = HistoricalClass(gridBox.courseName);
-      tmpClass.grades = List.filled(gradebook.terms.length, "\n");
+      tmpClass.grades = List.filled(gradebook
+          .getAllTerms()
+          .length, "\n");
 
       for (GradebookNode node in gridBox.grades) {
-        if (gridBox is Grade) {
-          tmpClass.grades[gradebook.terms.indexOf(node.term)] =
+        tmpClass.grades[gradebook.getAllTerms().indexOf(node.term)] =
               (node as Grade).grade;
-        } else if (gridBox is Behavior) {
-          tmpClass.grades[gradebook.terms.indexOf(node.term)] =
-              (node as Behavior).behavior;
-        }
       }
     }
     if (tmpClass != null) first.classes.add(tmpClass);

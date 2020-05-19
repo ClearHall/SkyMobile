@@ -2,8 +2,7 @@ import 'package:flutter/foundation.dart'
     show debugDefaultTargetPlatformOverride, kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:skymobile/Settings/theme_color_manager.dart';
-import 'package:skyscrapeapi/data_types.dart';
-import 'package:skyscrapeapi/district_searcher.dart';
+import 'package:skyscrapeapi/sky_core.dart';
 
 import '../HelperUtilities/global.dart';
 import '../main.dart';

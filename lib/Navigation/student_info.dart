@@ -3,7 +3,7 @@ import 'package:skymobile/HelperUtilities/global.dart';
 import 'package:skymobile/Settings/theme_color_manager.dart';
 import 'package:skymobile/SupportWidgets/biometric_blur_view.dart';
 import 'package:skymobile/main.dart';
-import 'package:skyscrapeapi/data_types.dart';
+import 'package:skyscrapeapi/sky_core.dart';
 
 class StudentInfoPage extends StatefulWidget {
   final List args;

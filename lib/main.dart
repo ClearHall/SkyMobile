@@ -24,8 +24,6 @@ import 'package:skymobile/Settings/settings_viewer.dart';
 import 'package:skymobile/Settings/theme_color_manager.dart';
 import 'package:skymobile/SupportWidgets/biometric_blur_view.dart';
 import 'package:skymobile/SupportWidgets/custom_overscroll_behavior.dart';
-import 'package:skyscrapeapi/data_types.dart';
-import 'package:skyscrapeapi/district_searcher.dart';
 import 'package:skyscrapeapi/sky_core.dart';
 
 import 'ExtraViewPackages/hunty_dialogs.dart';
@@ -245,7 +243,7 @@ class MyHomePageState extends State<MyHomePage> {
   }
 
   _developerMode(String user, String pass) {
-    Gradebook gradebook = Gradebook();
+    Gradebook gradebook = Gradebook([GradebookSector()]);
     List<Term> terms = [
       Term('AC1', 'Application AC1'),
       Term('AC2', 'Application AC2'),
@@ -257,30 +255,30 @@ class MyHomePageState extends State<MyHomePage> {
 
     Random rand = Random();
     String studentID = '3099';
-    gradebook.classes = [
-      Class('Mr. Hayden', '6AM-6PM', 'Biology AP', grades: [
-        Grade('1', terms[0], rand.nextInt(101).toString(), studentID),
-        Grade('2', terms[1], rand.nextInt(101).toString(), studentID),
-        Grade('3', terms[2], rand.nextInt(101).toString(), studentID),
-        Grade('4', terms[3], rand.nextInt(101).toString(), studentID),
-        Grade('5', terms[4], rand.nextInt(101).toString(), studentID),
-        Grade('6', terms[5], rand.nextInt(101).toString(), studentID),
+    gradebook.gradebookSectors.first.classes = [
+      Class('Mr. Hayden', '6AM-6PM', 'Biology AP', "0", grades: [
+        Grade('1', terms[0], rand.nextInt(101).toString(), studentID, "0", "0"),
+        Grade('2', terms[1], rand.nextInt(101).toString(), studentID, "1", "0"),
+        Grade('3', terms[2], rand.nextInt(101).toString(), studentID, "2", "0"),
+        Grade('4', terms[3], rand.nextInt(101).toString(), studentID, "3", "0"),
+        Grade('5', terms[4], rand.nextInt(101).toString(), studentID, "4", "0"),
+        Grade('6', terms[5], rand.nextInt(101).toString(), studentID, "5", "0"),
       ]),
-      Class('Mr. Crenp', '6AM-6PM', 'Heat AP', grades: [
-        Grade('1', terms[0], rand.nextInt(101).toString(), studentID),
-        Grade('2', terms[1], rand.nextInt(101).toString(), studentID),
-        Grade('3', terms[2], rand.nextInt(101).toString(), studentID),
-        Grade('4', terms[3], rand.nextInt(101).toString(), studentID),
-        Grade('5', terms[4], rand.nextInt(101).toString(), studentID),
-        Grade('6', terms[5], rand.nextInt(101).toString(), studentID),
+      Class('Mr. Crenp', '6AM-6PM', 'Heat AP', "1", grades: [
+        Grade('1', terms[0], rand.nextInt(101).toString(), studentID, "0", "0"),
+        Grade('2', terms[1], rand.nextInt(101).toString(), studentID, "1", "0"),
+        Grade('3', terms[2], rand.nextInt(101).toString(), studentID, "2", "0"),
+        Grade('4', terms[3], rand.nextInt(101).toString(), studentID, "3", "0"),
+        Grade('5', terms[4], rand.nextInt(101).toString(), studentID, "4", "0"),
+        Grade('6', terms[5], rand.nextInt(101).toString(), studentID, "5", "0"),
       ]),
-      Class('Mrs. Applenack', '6AM-6PM', 'Chinese AP', grades: [
-        Grade('1', terms[0], rand.nextInt(101).toString(), studentID),
-        Grade('2', terms[1], rand.nextInt(101).toString(), studentID),
-        Grade('3', terms[2], rand.nextInt(101).toString(), studentID),
-        Grade('4', terms[3], rand.nextInt(101).toString(), studentID),
-        Grade('5', terms[4], rand.nextInt(101).toString(), studentID),
-        Grade('6', terms[5], rand.nextInt(101).toString(), studentID),
+      Class('Mrs. Applenack', '6AM-6PM', 'Chinese AP', "2", grades: [
+        Grade('1', terms[0], rand.nextInt(101).toString(), studentID, "0", "0"),
+        Grade('2', terms[1], rand.nextInt(101).toString(), studentID, "1", "0"),
+        Grade('3', terms[2], rand.nextInt(101).toString(), studentID, "2", "0"),
+        Grade('4', terms[3], rand.nextInt(101).toString(), studentID, "3", "0"),
+        Grade('5', terms[4], rand.nextInt(101).toString(), studentID, "4", "0"),
+        Grade('6', terms[5], rand.nextInt(101).toString(), studentID, "5", "0"),
       ]),
     ];
 

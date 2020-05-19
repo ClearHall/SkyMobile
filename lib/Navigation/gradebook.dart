@@ -4,11 +4,12 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:simple_animations/simple_animations.dart';
 import 'package:skymobile/ExtraViewPackages/hunty_dialogs.dart';
+import 'package:skymobile/ExtraViewPackages/selector.dart';
 import 'package:skymobile/HelperUtilities/global.dart';
 import 'package:skymobile/HelperUtilities/gpa_calculator_support_utils.dart';
 import 'package:skymobile/Settings/theme_color_manager.dart';
 import 'package:skymobile/SupportWidgets/biometric_blur_view.dart';
-import 'package:skyscrapeapi/data_types.dart';
+import 'package:skyscrapeapi/sky_core.dart';
 
 class TermViewerPage extends StatefulWidget {
   final List args;
@@ -21,23 +22,26 @@ class TermViewerPage extends StatefulWidget {
 
 class _TermViewer extends BiometricBlur<TermViewerPage> {
   int currentTermIndex = 0;
+  int indexOfGradebookSelected = 0;
   List<Message> messages;
   Gradebook gradebook;
   String currUser;
   bool developerModeEnabled = false;
 
   final tween = MultiTrackTween([
-    Track("color1").add(Duration(seconds: 2),
-        ColorTween(begin: Colors.red, end: Colors.yellow)).add(
-        Duration(seconds: 2),
-        ColorTween(begin: Colors.yellow, end: Colors.blue)).add(
-        Duration(seconds: 2),
+    Track("color1")
+        .add(Duration(seconds: 2),
+        ColorTween(begin: Colors.red, end: Colors.yellow))
+        .add(Duration(seconds: 2),
+        ColorTween(begin: Colors.yellow, end: Colors.blue))
+        .add(Duration(seconds: 2),
         ColorTween(begin: Colors.blue, end: Colors.purple)),
-    Track("color2").add(Duration(seconds: 2),
-        ColorTween(begin: Colors.orange, end: Colors.green)).add(
-        Duration(seconds: 2),
-        ColorTween(begin: Colors.green, end: Colors.indigo)).add(
-        Duration(seconds: 2),
+    Track("color2")
+        .add(Duration(seconds: 2),
+        ColorTween(begin: Colors.orange, end: Colors.green))
+        .add(Duration(seconds: 2),
+        ColorTween(begin: Colors.green, end: Colors.indigo))
+        .add(Duration(seconds: 2),
         ColorTween(begin: Colors.indigo, end: Colors.deepPurple))
   ]);
 
@@ -54,7 +58,6 @@ class _TermViewer extends BiometricBlur<TermViewerPage> {
   _retrieveMessagesInTheBackground() async {
     messages = await account.getMessages();
   }
-
 
   refreshGradebook() async {
     gradebook = await account.getGradebook(forceRefresh: true);
@@ -95,8 +98,8 @@ class _TermViewer extends BiometricBlur<TermViewerPage> {
       Navigator.of(context, rootNavigator: true).popUntil((result) {
         return result.settings.name == '/termviewer';
       });
-      Navigator.pushNamed(
-          context, '/gpacalculatorschoolyear', arguments: [result, gradebook]);
+      Navigator.pushNamed(context, '/gpacalculatorschoolyear',
+          arguments: [result, gradebook]);
     }
   }
 
@@ -175,20 +178,22 @@ class _TermViewer extends BiometricBlur<TermViewerPage> {
       Navigator.of(context, rootNavigator: true).popUntil((result) {
         return result.settings.name == '/termviewer';
       });
-      Navigator.pushNamed(context, '/studentinfo',
-          arguments: [result]);
+      Navigator.pushNamed(context, '/studentinfo', arguments: [result]);
     }
   }
 
   _setIntTerm() {
     Term currentTerm;
-    for (Class klassenzimmer in gradebook.classes)
+    for (Class klassenzimmer
+    in gradebook.gradebookSectors[indexOfGradebookSelected].classes)
       for (int i = 0; i < klassenzimmer.grades.length; i++) {
         if (klassenzimmer.grades[i] is Grade) {
           currentTerm = (klassenzimmer.grades[i] as Grade).term;
         }
       }
-    currentTermIndex = gradebook.terms.indexOf(currentTerm);
+    currentTermIndex = gradebook
+        .gradebookSectors[indexOfGradebookSelected].terms
+        .indexOf(currentTerm);
     if (currentTermIndex < 0) currentTermIndex = 0;
   }
 
@@ -229,12 +234,19 @@ class _TermViewer extends BiometricBlur<TermViewerPage> {
     }
   }
 
-  refresh() async{
-    var dialog = HuntyDialogLoading('Cancel', () {
-    }, title: 'Loading', description: ('Getting your grades..'),);
+  refresh() async {
+    var dialog = HuntyDialogLoading(
+      'Cancel',
+          () {},
+      title: 'Loading',
+      description: ('Getting your grades..'),
+    );
     dialog.restrictCancel = true;
 
-    showDialog(barrierDismissible: false, context: context, builder: (BuildContext context) => dialog);
+    showDialog(
+        barrierDismissible: false,
+        context: context,
+        builder: (BuildContext context) => dialog);
 
     await refreshGradebook();
     setState(() {
@@ -247,38 +259,31 @@ class _TermViewer extends BiometricBlur<TermViewerPage> {
   @override
   Widget generateBody(BuildContext context) {
     List<String> childNames = account.getChildrenNames();
-    if(!developerModeEnabled)
+    if (!developerModeEnabled)
       currentChild = account
           .retrieveAccountIfParent()
           ?.dataID;
-    final FixedExtentScrollController scrollController =
-    FixedExtentScrollController(initialItem: currentTermIndex);
-
-    List<Widget> cupPickerWid = [];
-    for (Term term in gradebook.terms) {
-      cupPickerWid.add(Container(
-        child: Text('${term.termCode} / ${term.termName}',
-            textAlign: TextAlign.center,
-            style: TextStyle(fontSize: 32, color: Colors.white)),
-        padding: EdgeInsets.only(top: 8),
-      ));
-    }
 
     List<Widget> body = [];
 
-    for (Class klass in gradebook.classes) {
-      GradebookNode gradeBox = klass.retrieveNodeByTerm(
-          gradebook.terms[currentTermIndex]);
+    if (gradebook.gradebookSectors[indexOfGradebookSelected].terms.length <=
+        currentTermIndex) currentTermIndex = 0;
 
-      String grade = gradeBox != null
-          ? (gradeBox is Grade)
-          ? gradeBox.grade
-          : (gradeBox as Behavior).behavior
-          : '';
+    List<String> cupPickerWid = [];
+    for (Term term
+    in gradebook.gradebookSectors[indexOfGradebookSelected].terms) {
+      cupPickerWid.add('${term.termCode} / ${term.termName}');
+    }
+
+    for (Class klass
+    in gradebook.gradebookSectors[indexOfGradebookSelected].classes) {
+      GradebookNode gradeBox = klass.retrieveNodeByTerm(gradebook
+          .gradebookSectors[indexOfGradebookSelected].terms[currentTermIndex]);
+
+      String grade = gradeBox != null ? gradeBox.grade : '';
 
       body.add(Card(
-        shape:
-        RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
         child: InkWell(
             borderRadius: BorderRadius.circular(20),
             onTap: () {
@@ -296,7 +301,10 @@ class _TermViewer extends BiometricBlur<TermViewerPage> {
                       Container(
                         constraints: BoxConstraints(
                             maxWidth:
-                            MediaQuery.of(context).size.width / 6 * 4),
+                            MediaQuery
+                                .of(context)
+                                .size
+                                .width / 6 * 4),
                         padding: EdgeInsets.only(
                             top: 15, left: 20, right: 20, bottom: 0),
                         alignment: Alignment.centerLeft,
@@ -334,34 +342,39 @@ class _TermViewer extends BiometricBlur<TermViewerPage> {
                   ),
                 ),
                 Container(
-                  constraints: BoxConstraints(minHeight: 60),
-                  padding: EdgeInsets.only(right: 20),
-                  alignment: Alignment.centerRight,
-                    child: grade == '100' ? ControlledAnimation(
+                    constraints: BoxConstraints(minHeight: 60),
+                    padding: EdgeInsets.only(right: 20),
+                    alignment: Alignment.centerRight,
+                    child: grade == '100'
+                        ? ControlledAnimation(
                       playback: Playback.MIRROR,
                       tween: tween,
                       duration: tween.duration,
                       builder: (context, anim) {
-                        final LinearGradient linearGradient = LinearGradient(
-                            colors: [
-                              anim['color1'],
-                              anim['color2']
-                            ]);
-                        return ShaderMask(shaderCallback: (bounds) =>
-                            linearGradient.createShader(
-                                Rect.fromLTWH(
+                        final LinearGradient linearGradient =
+                        LinearGradient(
+                            colors: [anim['color1'], anim['color2']]);
+                        return ShaderMask(
+                            shaderCallback: (bounds) =>
+                                linearGradient.createShader(Rect.fromLTWH(
                                     0, 0, bounds.width, bounds.height)),
-                            child: Text(grade, style: TextStyle(
-                                fontSize: 25,
-                                fontWeight: FontWeight.w700,
-                                color: Colors.white
-                            ),));
+                            child: Text(
+                              grade,
+                              style: TextStyle(
+                                  fontSize: 25,
+                                  fontWeight: FontWeight.w700,
+                                  color: Colors.white),
+                            ));
                       },
-                    ) : Text(grade, style: TextStyle(
-                      fontSize: 25,
-                      fontWeight: FontWeight.w700,
-                      color: getColorFrom(grade),
-                    ),))
+                    )
+                        : Text(
+                      grade,
+                      style: TextStyle(
+                        fontSize: 25,
+                        fontWeight: FontWeight.w700,
+                        color: getColorFrom(grade),
+                      ),
+                    ))
               ],
             )),
         color: themeManager.getColor(TypeOfWidget.subBackground),
@@ -373,8 +386,9 @@ class _TermViewer extends BiometricBlur<TermViewerPage> {
         child: FittedBox(
           fit: BoxFit.fitHeight,
           child: Text(
-            developerModeEnabled ? currentChild : currUser.replaceAll(
-                " ", "\n"),
+            developerModeEnabled
+                ? currentChild
+                : currUser.replaceAll(" ", "\n"),
             style: TextStyle(
               color: themeManager.getColor(TypeOfWidget.text),
             ),
@@ -383,24 +397,30 @@ class _TermViewer extends BiometricBlur<TermViewerPage> {
         ),
       ),
       ListTile(
-        leading: Container(padding: EdgeInsets.only(left: 10), child: Icon(
-          Icons.settings,
-          color: themeManager.getColor(TypeOfWidget.text),
-        ),),
+        leading: Container(
+          padding: EdgeInsets.only(left: 10),
+          child: Icon(
+            Icons.settings,
+            color: themeManager.getColor(TypeOfWidget.text),
+          ),
+        ),
         title: Text(
           'Settings',
           style: TextStyle(
               color: themeManager.getColor(TypeOfWidget.text), fontSize: 25),
         ),
         onTap: () {
-          Navigator.pushNamed(context, '/settings').then((value) => setState((){}));
+          Navigator.pushNamed(context, '/settings')
+              .then((value) => setState(() {}));
         },
       ),
       ListTile(
-        leading: Container(padding: EdgeInsets.only(left: 10), child: Icon(
-          Icons.assessment,
-          color: themeManager.getColor(TypeOfWidget.text),
-        )),
+        leading: Container(
+            padding: EdgeInsets.only(left: 10),
+            child: Icon(
+              Icons.assessment,
+              color: themeManager.getColor(TypeOfWidget.text),
+            )),
         title: Text(
           'GPA Calculator',
           style: TextStyle(
@@ -411,10 +431,12 @@ class _TermViewer extends BiometricBlur<TermViewerPage> {
         },
       ),
       ListTile(
-        leading: Container(padding: EdgeInsets.only(left: 10), child: Icon(
-          Icons.person,
-          color: themeManager.getColor(TypeOfWidget.text),
-        )),
+        leading: Container(
+            padding: EdgeInsets.only(left: 10),
+            child: Icon(
+              Icons.person,
+              color: themeManager.getColor(TypeOfWidget.text),
+            )),
         title: Text(
           'My Info',
           style: TextStyle(
@@ -422,14 +444,16 @@ class _TermViewer extends BiometricBlur<TermViewerPage> {
         ),
         onTap: () {
           _goToStudentInfo();
-          },
+        },
       ),
       (developerModeEnabled ? false : childNames != null)
           ? ListTile(
-        leading: Container(padding: EdgeInsets.only(left: 10), child: Icon(
-          expanded ? Icons.arrow_drop_down : Icons.arrow_drop_up,
-          color: themeManager.getColor(TypeOfWidget.text),
-        )),
+        leading: Container(
+            padding: EdgeInsets.only(left: 10),
+            child: Icon(
+              expanded ? Icons.arrow_drop_down : Icons.arrow_drop_up,
+              color: themeManager.getColor(TypeOfWidget.text),
+            )),
         title: Text(
           'Change Child',
           style: TextStyle(
@@ -444,9 +468,10 @@ class _TermViewer extends BiometricBlur<TermViewerPage> {
       )
           : Container(),
       ListTile(
-        leading: Container(padding: EdgeInsets.only(left: 10), child: Icon(
-            Icons.message,
-            color: themeManager.getColor(TypeOfWidget.text))),
+        leading: Container(
+            padding: EdgeInsets.only(left: 10),
+            child: Icon(Icons.message,
+                color: themeManager.getColor(TypeOfWidget.text))),
         title: Text(
           'Messages',
           style: TextStyle(
@@ -481,10 +506,12 @@ class _TermViewer extends BiometricBlur<TermViewerPage> {
 //        },
 //      ),
       ListTile(
-        leading: Container(padding: EdgeInsets.only(left: 10), child: Icon(
-          Icons.info,
-          color: themeManager.getColor(TypeOfWidget.text),
-        )),
+        leading: Container(
+            padding: EdgeInsets.only(left: 10),
+            child: Icon(
+              Icons.info,
+              color: themeManager.getColor(TypeOfWidget.text),
+            )),
         title: Text(
           'Credits',
           style: TextStyle(
@@ -495,10 +522,12 @@ class _TermViewer extends BiometricBlur<TermViewerPage> {
         },
       ),
       ListTile(
-        leading: Container(padding: EdgeInsets.only(left: 10), child: Icon(
-          Icons.arrow_back,
-          color: themeManager.getColor(TypeOfWidget.text),
-        )),
+        leading: Container(
+            padding: EdgeInsets.only(left: 10),
+            child: Icon(
+              Icons.arrow_back,
+              color: themeManager.getColor(TypeOfWidget.text),
+            )),
         title: Text(
           'Logout',
           style: TextStyle(
@@ -527,10 +556,12 @@ class _TermViewer extends BiometricBlur<TermViewerPage> {
                   SizedBox(
                     width: 20,
                   ),
-                  Container(padding: EdgeInsets.only(left: 10), child: Icon(
-                    Icons.person,
-                    color: themeManager.getColor(TypeOfWidget.text),
-                  )),
+                  Container(
+                      padding: EdgeInsets.only(left: 10),
+                      child: Icon(
+                        Icons.person,
+                        color: themeManager.getColor(TypeOfWidget.text),
+                      )),
                 ]),
                 title: Text(
                   childNames[j],
@@ -547,6 +578,10 @@ class _TermViewer extends BiometricBlur<TermViewerPage> {
         break;
       }
     }
+
+    List<String> gradebookString = [];
+    for (GradebookSector sec in gradebook.gradebookSectors)
+      gradebookString.add(sec.name);
 
     return Scaffold(
       drawer: Theme(
@@ -571,11 +606,13 @@ class _TermViewer extends BiometricBlur<TermViewerPage> {
         actions: <Widget>[
           IconButton(
             icon: Icon(Icons.refresh),
-            onPressed: (){
+            onPressed: () {
               refresh();
             },
           ),
-          SizedBox(width: 10,)
+          SizedBox(
+            width: 10,
+          )
         ],
       ),
       backgroundColor: themeManager.getColor(TypeOfWidget.background),
@@ -583,40 +620,20 @@ class _TermViewer extends BiometricBlur<TermViewerPage> {
           child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: <Widget>[
+                gradebook.gradebookSectors.length > 1 ? Container(
+                  child: Selector(gradebookString, 'Gradebook', (int changed) {
+                    setState(() {
+                      indexOfGradebookSelected = changed;
+                    });
+                  }, indexOfGradebookSelected),
+                  padding: EdgeInsets.only(top: 10, left: 20, right: 20),
+                ) : Container(),
                 Container(
-                  child: InkWell(
-                    child: Card(
-                      color: themeManager.getColor(TypeOfWidget.text),
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(30)),
-                      child: Container(
-                        child: Text(
-                          'Term: ${gradebook.terms[currentTermIndex]
-                              .termCode} / ${gradebook.terms[currentTermIndex]
-                              .termName}',
-                          style:
-                          TextStyle(fontSize: 18, fontWeight: FontWeight.w700),
-                          textAlign: TextAlign.center,
-                        ),
-                        padding:
-                        EdgeInsets.only(top: 20, bottom: 20, left: 0, right: 0),
-                      ),
-                    ),
-                    onTap: () {
-                      showModalBottomSheet(
-                          context: context,
-                          builder: (BuildContext context) => CupertinoPicker(
-                              scrollController: scrollController,
-                              backgroundColor: Colors.black,
-                              children: cupPickerWid,
-                              itemExtent: 50,
-                              onSelectedItemChanged: (int changeTo) {
-                                setState(() {
-                                  currentTermIndex = changeTo;
-                                });
-                              }));
-                    },
-                  ),
+                  child: Selector(cupPickerWid, 'Term', (int changed) {
+                    setState(() {
+                      currentTermIndex = changed;
+                    });
+                  }, currentTermIndex),
                   padding:
                   EdgeInsets.only(top: 10, left: 20, right: 20, bottom: 10),
                 ),
