@@ -10,19 +10,17 @@ dependencies:
   flutter:
     sdk: flutter
 
-  skyscrapeapi: ^4.1.0
-  simple_animations: ^1.3.11
-  flutter_colorpicker: ^0.3.2
-  url_launcher: ^5.4.2
-  path_provider: ^1.6.5
-  local_auth: ^0.6.1+3
-  flutter_reorderable_list: ^0.1.3
+  skyscrapeapi: ^4.1.0+1
+  simple_animations: ^2.2.2
+  flutter_colorpicker: ^0.3.4
+  url_launcher: ^5.6.0
+  path_provider: ^1.6.14
+  local_auth: ^0.6.3+1
 
 cupertino_icons: ^0.1.3
 
 dev_dependencies:
-  flutter_launcher_icons: ^0.7.4
-  dapackages: ^1.1.1
+  flutter_launcher_icons: ^0.8.0
   flutter_test:
     sdk: flutter
 

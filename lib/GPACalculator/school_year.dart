@@ -36,7 +36,8 @@ class GPACalculatorSchoolYearState
         basedOn: historyGrades.length > 0 ? historyGrades.first : null);
   }
 
-  _updateFirstInList({SchoolYear basedOn}) {
+  @override
+  void _updateFirstInList({SchoolYear basedOn}) {
     SchoolYear first = SchoolYear();
     first.classes = [];
     first.description = 'Current Year';
@@ -45,13 +46,11 @@ class GPACalculatorSchoolYearState
     for (Class gridBox in gradebook.getAllClasses()) {
       if (tmpClass != null) first.classes.add(tmpClass);
       tmpClass = HistoricalClass(gridBox.courseName);
-      tmpClass.grades = List.filled(gradebook
-          .getAllTerms()
-          .length, "\n");
+      tmpClass.grades = List.filled(gradebook.getAllTerms().length, "\n");
 
       for (GradebookNode node in gridBox.grades) {
         tmpClass.grades[gradebook.getAllTerms().indexOf(node.term)] =
-              (node as Grade).grade;
+            node.grade;
       }
     }
     if (tmpClass != null) first.classes.add(tmpClass);
@@ -339,7 +338,8 @@ class GPACalculatorSchoolYearState
                           color: themeManager.getColor(null)),
                       onPressed: () {
                         Navigator.pushNamed(context, '/gpacalculatorclasses',
-                            arguments: [historyGrades[i], historyGrades]);
+                            arguments: [historyGrades[i], historyGrades]).then((
+                            value) => this.setState(() {}));
                       },
                     ),
                   ])))));

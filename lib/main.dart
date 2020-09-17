@@ -5,7 +5,6 @@ import 'package:flutter/foundation.dart'
     show debugDefaultTargetPlatformOverride, kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_reorderable_list/flutter_reorderable_list.dart';
 import 'package:local_auth/local_auth.dart';
 import 'package:skymobile/ExtraViewPackages/credits.dart';
 import 'package:skymobile/ExtraViewPackages/developer_console.dart';
@@ -24,6 +23,7 @@ import 'package:skymobile/Settings/settings_viewer.dart';
 import 'package:skymobile/Settings/theme_color_manager.dart';
 import 'package:skymobile/SupportWidgets/biometric_blur_view.dart';
 import 'package:skymobile/SupportWidgets/custom_overscroll_behavior.dart';
+import 'package:skymobile/SupportWidgets/flutter_reorderable_list.dart';
 import 'package:skyscrapeapi/sky_core.dart';
 
 import 'ExtraViewPackages/hunty_dialogs.dart';
