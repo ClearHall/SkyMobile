@@ -30,7 +30,7 @@ class _AssignmentsViewerState extends BiometricBlur<AssignmentsViewer> {
       bool isCancelled = false;
       var dialog = HuntyDialogLoading('Cancel', () {
         isCancelled = true;
-      }, title: 'Loading', description: ('Getting your grades..'));
+      }, title: 'Loading', description: ('Please wait...'));
 
       showDialog(context: context, builder: (BuildContext context) => dialog)
           .then((val) {
@@ -269,7 +269,7 @@ class _AssignmentsViewerState extends BiometricBlur<AssignmentsViewer> {
                         builder: (c) => HuntyDialog(
                             title: 'Sorry',
                             description:
-                                'Mock assignments currently does not work on semesters, please try in a term!',
+                                'Mock assignments are only available for terms, not semesters.',
                             buttonText: 'Got it!'));
                   } else {
                     showDialog(
@@ -277,7 +277,7 @@ class _AssignmentsViewerState extends BiometricBlur<AssignmentsViewer> {
                         builder: (c) => HuntyDialog(
                             title: 'Reminder!',
                             description:
-                                'Double tap on an assignment to remove it! Press and hold to move an assignment around.',
+                                'Double tap on an assignment to remove it. Press and hold to move an assignment around.',
                             buttonText: 'Got it!'));
                     setState(() {
                       _enterEditingMode();

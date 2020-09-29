@@ -67,7 +67,7 @@ class _TermViewer extends BiometricBlur<TermViewerPage> {
     bool isCancelled = false;
     var dialog = HuntyDialogLoading('Cancel', () {
       isCancelled = true;
-    }, title: 'Loading', description: ('Getting your grades..'));
+    }, title: 'Loading', description: ('Please wait...'));
 
     showDialog(context: context, builder: (BuildContext context) => dialog)
         .then((val) {
@@ -107,7 +107,7 @@ class _TermViewer extends BiometricBlur<TermViewerPage> {
     bool isCancelled = false;
     var dialog = HuntyDialogLoading('Cancel', () {
       isCancelled = true;
-    }, title: 'Loading', description: ('Getting your grades..'));
+    }, title: 'Loading', description: ('Please wait...'));
 
     showDialog(context: context, builder: (BuildContext context) => dialog)
         .then((val) {
@@ -147,7 +147,7 @@ class _TermViewer extends BiometricBlur<TermViewerPage> {
     bool isCancelled = false;
     var dialog = HuntyDialogLoading('Cancel', () {
       isCancelled = true;
-    }, title: 'Loading', description: ('Getting your info..'));
+    }, title: 'Loading', description: ('Please wait...'));
 
     showDialog(context: context, builder: (BuildContext context) => dialog)
         .then((val) {
@@ -201,7 +201,7 @@ class _TermViewer extends BiometricBlur<TermViewerPage> {
     account.switchUserIndex(ind);
 
     var dialog1 = HuntyDialogLoading('Cancel', () {},
-        title: 'Loading', description: ('Getting your grades..'));
+        title: 'Loading', description: ('Please wait...'));
 
     dialog1.restrictCancel = true;
     showDialog(
@@ -228,7 +228,7 @@ class _TermViewer extends BiometricBlur<TermViewerPage> {
             return HuntyDialog(
                 title: 'Oh No!',
                 description:
-                    'An error occured and we could not get your grades. Please report this to a developer! An error occured while parsing your grades.',
+                    'An error occurred while parsing your grades. Please report this to the developers!',
                 buttonText: 'Ok');
           });
     }
@@ -239,7 +239,7 @@ class _TermViewer extends BiometricBlur<TermViewerPage> {
       'Cancel',
           () {},
       title: 'Loading',
-      description: ('Getting your grades..'),
+      description: ('Please wait...'),
     );
     dialog.restrictCancel = true;
 
@@ -482,9 +482,9 @@ class _TermViewer extends BiometricBlur<TermViewerPage> {
             showDialog(
                 context: context,
                 builder: (b) => HuntyDialog(
-                    title: 'Uh-Oh',
+                    title: 'Loading Messages',
                     description:
-                    ('Messages hasn\'t finished loading yet. Please wait'),
+                    ('Message loading in progress, please wait.'),
                     buttonText: 'Ok'));
           } else {
             Navigator.pushNamed(context, '/messages', arguments: messages);

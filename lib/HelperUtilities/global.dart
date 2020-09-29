@@ -14,17 +14,17 @@ Map<String, dynamic> settings = Map.fromIterables([
   'Theme',
   'Custom Theme',
   'Dark Mode',
-  'Re-Authenticate With Biometrics',
-  'Automatically Re-Load Last Saved Session',
+  'Re-authenticate with Biometrics',
+  'Fast Login',
   'Default to Account Chooser',
-  'Hidden Empty Assignment Properties',
+  'Hide Empty Assignment Properties',
   'Hierarchical Grades'
 ], [
   Map.fromIterables([
     'description',
     'option'
   ], [
-    'Biometric authentication to protect your gradebook! Biometric authentication will only be required for logging into a saved account.',
+    'Require biometric authentication for logging into saved accounts.',
     false
   ]),
   Map.fromIterables([
@@ -46,22 +46,22 @@ Map<String, dynamic> settings = Map.fromIterables([
     'description',
     'option'
   ], [
-    'SkyMobile will block your grades from being seen in the app switcher. Though, if you want an extra layer of security, you can force biometric authentication when you come back into the app.',
+    'SkyMobile prevents grades from being seen in the app switcher. For an extra layer of security, you can force biometric authentication when the app is reopened.',
     true
   ]),
   Map.fromIterables([
     'description',
     'option'
   ], [
-    'Reload last saved session if there is one. This will skip the login screen altogether if there is a session saved.',
+    'Use the last Skyward session if one exists, speeding up the login process.',
     false
   ]),
   Map.fromIterables(['description', 'option'],
       ['Show account retriever as default instead of login screen.', false]),
   Map.fromIterables(['description', 'option'],
-      ['Hides assignment property if the description is empty.', true]),
+      ['Hides assignment properties with empty descriptions.', true]),
   Map.fromIterables(['description', 'option'],
-      ['Displays assignment grades as a hiearchy.', true]),
+      ['Displays assignment grades as a hierarchy.', true]),
 ]);
 
 List<String> termIdentifiersCountingTowardGPA = ['S1', 'S2'];

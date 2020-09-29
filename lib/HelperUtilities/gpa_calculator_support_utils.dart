@@ -14,7 +14,7 @@ Map<String, dynamic> extraGPASettings = Map.fromIterables([
     'description',
     'option'
   ], [
-    'Change how many points are added for different class levels.',
+    'Change class level point weights.',
     {"AP": 10, "PreAP": 5, "Regular": 0}
   ]),
   Map.fromIterables([

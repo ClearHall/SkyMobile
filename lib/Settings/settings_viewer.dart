@@ -128,7 +128,7 @@ class _SettingsViewerState extends BiometricBlur<SettingsViewer> {
                         builder: (bc) => HuntyDialog(
                             title: 'Authentication Error',
                             description: e.message +
-                                '\nSkyMobile will disable authentication for you.',
+                                '\nSkyMobile will disable authentication.',
                             buttonText: 'Ok'));
                     setState(() {
                       settings['Biometric Authentication']['option'] = false;

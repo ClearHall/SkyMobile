@@ -119,7 +119,7 @@ class GPACalculatorSchoolYearState
                     builder: (bC) => HuntyDialogForMoreText(
                       title: 'Confused?',
                       description:
-                      'The GPA Calculator contains many aspects. First, different districts use different TERMS to calculate your GPA. You should select the terms based on what your district uses. Note: Fort Bend ISD uses S1 and S2. Below the term selector, there is a school year selector. Choose which school years contain classes that count toward GPA. To modify the level of your classes in a school year, click the edit in each school year box. You may see your grades from that school year with the TERM Selector and you can also let SkyMobile autoselect levels for the classes. There is also a Deselect All button for convenience.\n4.0 Scale is based off of College Board scale.',
+                      'The GPA Calculator is very complicated. Different districts use different terms to calculate GPA. You should select the terms based on what your district uses (Fort Bend ISD uses S1 and S2). Below the term selector, the school year selector lets you choose which school years should count toward GPA. SkyMobile attempts to automatically determine class levels based on names. Clicking the edit button by each school year allows you to manually modify class levels or drop them entirely.\nThe 4.0 Scale is based on College Board\'s scale.',
                       buttonText: 'Got it!',
                     ));
               },

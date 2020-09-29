@@ -193,7 +193,7 @@ class MyHomePageState extends State<MyHomePage> {
               HuntyDialog(
                   title: 'Account Saving',
                   description:
-                  'It looks like you are using SkyMobile demo. Account saving will be local.',
+                  'It looks like you are using the SkyMobile demo. Account saving will be local.',
                   buttonText: 'Ok!'));
     setState(() {});
   }
@@ -207,7 +207,7 @@ class MyHomePageState extends State<MyHomePage> {
           builder: (c) => HuntyDialogForMoreText(
               title: 'Welcome!',
               description:
-              'Welcome to SkyMobile! To start off, login like you would login on regular Skyward, but make sure you have selected the correct district and inputted the corrct credentials. The search icon on the top is to search and select districts. If you have anymore questions you can press the information icon.',
+              'Welcome to SkyMobile! To start off, login like you would on regular Skyward, but make sure you have selected the correct district. The search icon on the top allows you to search and select districts. For more information, press the info icon.',
               buttonText: 'Ok!'));
       try {
         jsonSaver.saveListData([false]);
@@ -307,7 +307,7 @@ class MyHomePageState extends State<MyHomePage> {
       isCancelled[0] = true;
     },
         title: 'Loading',
-        description: ('Getting your grades..' +
+        description: ('Please wait...' +
             (kIsWeb
                 ? '\nThis will take longer because you are using the web demo!'
                 : '')));
@@ -330,7 +330,7 @@ class MyHomePageState extends State<MyHomePage> {
               return HuntyDialogForConfirmation(
                 title: 'New Account',
                 description:
-                'New account detected, would you like to save this account?.',
+                'Would you like to save this account?',
                 runIfUserConfirms: () {
                   setState(() {
                     acc.nick = meinName ?? acc.user;
@@ -368,9 +368,9 @@ class MyHomePageState extends State<MyHomePage> {
             context: context,
             builder: (_) {
               return HuntyDialogForConfirmation(
-                title: 'Uh-Oh',
+                title: 'Login Error',
                 description:
-                'Invalid Credentials or Internet Failure. Would you like to remove this account?.',
+                'Invalid Credentials or Internet Failure. Would you like to remove this account?',
                 runIfUserConfirms: () {
                   setState(() {
                     accounts.remove(acc);
@@ -386,7 +386,7 @@ class MyHomePageState extends State<MyHomePage> {
             context: context,
             builder: (_) {
               return HuntyDialog(
-                  title: 'Uh-Oh',
+                  title: 'Login Error',
                   description:
                   e.toString() + ' Check your internet connection!',
                   buttonText: 'Ok');
@@ -468,7 +468,7 @@ class MyHomePageState extends State<MyHomePage> {
                 builder: (bc) => HuntyDialog(
                     title: 'Authentication Error',
                     description: e.message +
-                        '\nSkyMobile will disable authentication for you.',
+                        '\nSkyMobile will disable authentication.',
                     buttonText: 'Ok'));
             settings['Biometric Authentication']['option'] = false;
             saveSettingsData();
@@ -510,8 +510,8 @@ class MyHomePageState extends State<MyHomePage> {
               builder: (c) => HuntyDialogForMoreText(
                   title: 'Information',
                   description: isInAccountChooserStatus
-                      ? 'Long press to reorder accounts!'
-                      : 'SkyMobile login page has a simple and intuitive design. The search button on the top indicates the district searcher. Use it to search and select different districts. The settings icon brings you to settings and the info dialog shows this dialog. Login like you would normally and press Choose Accounts to access your saved accounts.',
+                      ? 'Long press to reorder accounts.'
+                      : 'The login page is designed to be simple and intuitive. The search button allows you to search and select different districts, the settings icon brings you to the settings page, and the info button shows this dialog. Select Choose Accounts to access your saved accounts.',
                   buttonText: 'Ok!'));
         },
       ),
@@ -612,7 +612,7 @@ class MyHomePageState extends State<MyHomePage> {
                                                             title:
                                                             'Account Deletion',
                                                             description:
-                                                            'Are you sure you want to remove this account from your device?',
+                                                            'Are you sure you want to remove this account?',
                                                             runIfUserConfirms:
                                                                 () {
                                                               setState(() {
