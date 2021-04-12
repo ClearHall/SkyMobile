@@ -39,7 +39,6 @@ class SkyVars {
   }
 
   static bool modifyVar(String a, dynamic b) {
-    neiceban = skyVars['neiceban'] == 'true';
     if (skyVars.containsKey(a)) {
       skyVars[a] = b.toString();
       saveVars();

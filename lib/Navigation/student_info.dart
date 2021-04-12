@@ -77,7 +77,7 @@ class _StudentInfo extends BiometricBlur<StudentInfoPage> {
           title: Align(
               alignment: Alignment.center,
               child: FittedBox(
-                  child: Text(neiceban ? '内测版' : info.name,
+                  child: Text(info.name,
                       style: TextStyle(
                         color: themeManager.getColor(TypeOfWidget.text),
                         fontSize: 30,

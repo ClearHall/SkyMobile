@@ -597,7 +597,7 @@ class _TermViewer extends BiometricBlur<TermViewerPage> {
         backgroundColor: themeManager.getColor(TypeOfWidget.background),
         title: Align(
             alignment: Alignment.center,
-            child: Text(neiceban ? '内测版' : 'Gradebook',
+            child: Text('Gradebook',
                 style: TextStyle(
                   color: themeManager.getColor(TypeOfWidget.text),
                   fontSize: 30,

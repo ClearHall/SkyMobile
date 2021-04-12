@@ -101,7 +101,7 @@ class GPACalculatorSchoolYearState
           backgroundColor: themeManager.getColor(TypeOfWidget.background),
           title: Align(
               alignment: Alignment.center,
-              child: Text(neiceban ? '内测版' : 'GPA Calculator',
+              child: Text('GPA Calculator',
                   textAlign: TextAlign.left,
                   style: TextStyle(
                       color: themeManager.getColor(TypeOfWidget.text),

@@ -207,8 +207,6 @@ class _AssignmentsViewerState extends BiometricBlur<AssignmentsViewer> {
               child: Text(
                   editingMode
                       ? 'Final: ${finalAverage.toStringAsFixed(2)}'
-                      : neiceban
-                      ? '内测版'
                       : (courseName != null ? courseName : 'Assignments'),
                   textAlign: TextAlign.center,
                   style: TextStyle(

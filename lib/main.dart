@@ -56,21 +56,27 @@ void main() async {
         retrieved = tmp;
       }
       for (int i = 0; i < retrieved.length; i++) {
-        retrieved[retrieved.keys.toList()[i]]['description'] =
-        settings[retrieved.keys.toList()[i]]['description'];
+        try {
+          retrieved[retrieved.keys.toList()[i]]['description'] =
+              settings[retrieved.keys.toList()[i]]['description'];
+        } catch (_) {
+          runApp(MyApp(themeManager.currentTheme));
+        }
       }
       settings.addAll(retrieved);
       bool found = false;
       (settings['Theme']['option']).forEach((k, v) {
         found = found || v;
         if (v == true)
-          runApp(MyApp(ThemeManager.colorNameToThemes.keys.toList()[
-          ThemeManager.colorNameToThemes.values.toList().indexOf(k)]));
+          runApp(
+            MyApp(ThemeManager.colorNameToThemes.keys.toList()[
+                ThemeManager.colorNameToThemes.values.toList().indexOf(k)]),
+          );
       });
       if (!found) runApp(MyApp(settings['Custom Theme']['option']));
     } else {
       settings['Theme']['option']
-      [ThemeManager.colorNameToThemes[themeManager.currentTheme]] = true;
+          [ThemeManager.colorNameToThemes[themeManager.currentTheme]] = true;
       runApp(MyApp(themeManager.currentTheme));
     }
   } else {
@@ -90,10 +96,11 @@ class MyApp extends StatelessWidget {
 
     return MaterialApp(
       builder: (context, child) {
-        return ScrollConfiguration(
-          behavior: RemoveScrollGlow(),
-          child: child,
-        );
+        // return ScrollConfiguration(
+        //   behavior: RemoveScrollGlow(),
+        //   child: child,
+        // );
+        return child;
       },
       title: 'SkyMobile',
       theme: ThemeData(
@@ -121,17 +128,18 @@ class MyApp extends StatelessWidget {
             MessageViewer(ModalRoute.of(context).settings.arguments),
         '/credits': (context) => Credits(),
         '/studentinfo': (context) =>
-            StudentInfoPage(ModalRoute
-                .of(context)
-                .settings
-                .arguments)
+            StudentInfoPage(ModalRoute.of(context).settings.arguments)
       },
     );
   }
 }
 
+
 class MyHomePage extends StatefulWidget {
-  MyHomePage({Key key, this.title}) : super(key: key);
+  MyHomePage({
+    Key key,
+    this.title,
+  }) : super(key: key);
   final String title;
 
   @override
@@ -140,7 +148,7 @@ class MyHomePage extends StatefulWidget {
 
 class MyHomePageState extends State<MyHomePage> {
   static final String skywardURLPrefix =
-  kIsWeb ? 'https://cors-anywhere.herokuapp.com/' : '';
+      kIsWeb ? 'https://cors-anywhere.herokuapp.com/' : '';
   JSONSaver jsonSaver = JSONSaver(FilesAvailable.accounts);
   static SkywardDistrict district = SkywardDistrict('FORT BEND ISD',
       'https://skyward-fbprod.iscorp.com/scripts/wsisa.dll/WService=wsedufortbendtx/seplog01.w');
@@ -164,7 +172,7 @@ class MyHomePageState extends State<MyHomePage> {
       if (!SkyVars.skyVars
           .containsKey(SkyVars.skyVarsDefault.keys.toList()[i])) {
         SkyVars.skyVars[SkyVars.skyVarsDefault.keys.toList()[i]] =
-        SkyVars.skyVarsDefault.values.toList()[i];
+            SkyVars.skyVarsDefault.values.toList()[i];
       }
     }
     SkyVars.saveVars();
@@ -189,12 +197,11 @@ class MyHomePageState extends State<MyHomePage> {
     if (kIsWeb)
       showDialog(
           context: context,
-          builder: (c) =>
-              HuntyDialog(
-                  title: 'Account Saving',
-                  description:
+          builder: (c) => HuntyDialog(
+              title: 'Account Saving',
+              description:
                   'It looks like you are using the SkyMobile demo. Account saving will be local.',
-                  buttonText: 'Ok!'));
+              buttonText: 'Ok!'));
     setState(() {});
   }
 
@@ -207,7 +214,7 @@ class MyHomePageState extends State<MyHomePage> {
           builder: (c) => HuntyDialogForMoreText(
               title: 'Welcome!',
               description:
-              'Welcome to SkyMobile! To start off, login like you would on regular Skyward, but make sure you have selected the correct district. The search icon on the top allows you to search and select districts. For more information, press the info icon.',
+                  'Welcome to SkyMobile! To start off, login like you would on regular Skyward, but make sure you have selected the correct district. The search icon on the top allows you to search and select districts. For more information, press the info icon.',
               buttonText: 'Ok!'));
       try {
         jsonSaver.saveListData([false]);
@@ -218,7 +225,7 @@ class MyHomePageState extends State<MyHomePage> {
   }
 
   _determineWhetherToLoginToPreviouslySavedAccount() async {
-    if (settings['Automatically Re-Load Last Saved Session']['option']) {
+    if (settings['Fast Login']['option']) {
       var retrieved = await prevSavedAccount.readListData();
       if (retrieved.runtimeType != 0) {
         district = SkywardDistrict('No Name', retrieved['link']);
@@ -285,7 +292,7 @@ class MyHomePageState extends State<MyHomePage> {
     currentChild = user;
     currentSessionIdentifier = pass;
     Navigator.pushNamed(context, '/termviewer',
-        arguments: [gradebook, 'Tester Dev', true])
+            arguments: [gradebook, 'Tester Dev', true])
         .then((value) => setState(() {}));
   }
 
@@ -329,8 +336,7 @@ class MyHomePageState extends State<MyHomePage> {
             builder: (_) {
               return HuntyDialogForConfirmation(
                 title: 'New Account',
-                description:
-                'Would you like to save this account?',
+                description: 'Would you like to save this account?',
                 runIfUserConfirms: () {
                   setState(() {
                     acc.nick = meinName ?? acc.user;
@@ -353,12 +359,11 @@ class MyHomePageState extends State<MyHomePage> {
         });
         account = person;
         Navigator.pushNamed(context, '/termviewer',
-            arguments: [gradebookRes, meinName, false])
-            .then((value) =>
-            setState(() {
-              Navigator.of(context)
-                  .popUntil((route) => route.settings.name == '/');
-            }));
+                arguments: [gradebookRes, meinName, false])
+            .then((value) => setState(() {
+                  Navigator.of(context)
+                      .popUntil((route) => route.settings.name == '/');
+                }));
       }
     } catch (e) {
       Navigator.of(context).popUntil((route) => route.settings.name == '/');
@@ -370,7 +375,7 @@ class MyHomePageState extends State<MyHomePage> {
               return HuntyDialogForConfirmation(
                 title: 'Login Error',
                 description:
-                'Invalid Credentials or Internet Failure. Would you like to remove this account?',
+                    'Invalid Credentials or Internet Failure. Would you like to remove this account?',
                 runIfUserConfirms: () {
                   setState(() {
                     accounts.remove(acc);
@@ -388,7 +393,7 @@ class MyHomePageState extends State<MyHomePage> {
               return HuntyDialog(
                   title: 'Login Error',
                   description:
-                  e.toString() + ' Check your internet connection!',
+                      e.toString() + ' Check your internet connection!',
                   buttonText: 'Ok');
             });
       }
@@ -410,7 +415,7 @@ class MyHomePageState extends State<MyHomePage> {
           return HuntyDistrictSearcherWidget(
               title: 'District Searcher',
               description:
-              "Select your state and enter your district's name. (Ex: Fort Bend ISD)",
+                  "Select your state and enter your district's name. (Ex: Fort Bend ISD)",
               buttonText: 'OK');
         })).then((val) {
       setState(() {});
@@ -422,7 +427,7 @@ class MyHomePageState extends State<MyHomePage> {
   TextEditingController _controllerUsername = TextEditingController();
   TextEditingController _controllerPassword = TextEditingController();
   bool isInAccountChooserStatus =
-  settings['Default to Account Chooser']['option'];
+      settings['Default to Account Chooser']['option'];
 
   //NOTE: USING THIS IS VERY BUGGY!!!!!
 //  void _debugUseGenerateFakeAccounts(int numOfFakeAccounts) {
@@ -467,8 +472,8 @@ class MyHomePageState extends State<MyHomePage> {
                 context: context,
                 builder: (bc) => HuntyDialog(
                     title: 'Authentication Error',
-                    description: e.message +
-                        '\nSkyMobile will disable authentication.',
+                    description:
+                        e.message + '\nSkyMobile will disable authentication.',
                     buttonText: 'Ok'));
             settings['Biometric Authentication']['option'] = false;
             saveSettingsData();
@@ -546,45 +551,45 @@ class MyHomePageState extends State<MyHomePage> {
               '${acc.user}${acc.district != null ? acc.district.districtName : acc.district}${acc.pass.hashCode}'),
           childBuilder: (BuildContext context, ReorderableItemState state) =>
               DelayedReorderableListener(
-                child: Opacity(
-                  opacity: state == ReorderableItemState.placeholder ? 0.0 : 1.0,
-                  child: Container(
-                      padding:
+            child: Opacity(
+              opacity: state == ReorderableItemState.placeholder ? 0.0 : 1.0,
+              child: Container(
+                  padding:
                       EdgeInsets.only(top: 10, left: 20, right: 20, bottom: 10),
-                      child: ConstrainedBox(
-                        constraints: BoxConstraints(maxHeight: 65),
-                        child: Material(
-                          color: Colors.transparent,
-                          child: InkWell(
-                              splashColor:
+                  child: ConstrainedBox(
+                    constraints: BoxConstraints(maxHeight: 65),
+                    child: Material(
+                      color: Colors.transparent,
+                      child: InkWell(
+                          splashColor:
                               themeManager.getColor(TypeOfWidget.button),
-                              borderRadius: BorderRadius.circular(16),
-                              onTap: !(accounts.length > 0 &&
+                          borderRadius: BorderRadius.circular(16),
+                          onTap: !(accounts.length > 0 &&
                                   accounts.first.district == null)
-                                  ? () {
-                                focus.unfocus();
-                                _shouldAuthenticateAndContinue(acc, _login);
-                              }
-                                  : () => {},
-                              child: Container(
-                                alignment: Alignment.center,
-                                decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(16.0),
-                                    border: Border.all(
-                                        color: themeManager
-                                            .getColor(TypeOfWidget.text),
-                                        width: 2)),
-                                child: accounts.length > 0 &&
+                              ? () {
+                                  focus.unfocus();
+                                  _shouldAuthenticateAndContinue(acc, _login);
+                                }
+                              : () => {},
+                          child: Container(
+                            alignment: Alignment.center,
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(16.0),
+                                border: Border.all(
+                                    color: themeManager
+                                        .getColor(TypeOfWidget.text),
+                                    width: 2)),
+                            child: accounts.length > 0 &&
                                     accounts.first.district == null
-                                    ? ListTile(
+                                ? ListTile(
                                     title: Text(
-                                      acc.nick,
-                                      style: new TextStyle(
-                                          fontSize: 20.0,
-                                          color: themeManager
-                                              .getColor(TypeOfWidget.text)),
-                                    ))
-                                    : ListTile(
+                                    acc.nick,
+                                    style: new TextStyle(
+                                        fontSize: 20.0,
+                                        color: themeManager
+                                            .getColor(TypeOfWidget.text)),
+                                  ))
+                                : ListTile(
                                     title: Text(
                                       acc.nick,
                                       style: new TextStyle(
@@ -599,7 +604,7 @@ class MyHomePageState extends State<MyHomePage> {
                                             icon: Icon(
                                               Icons.delete_forever,
                                               color:
-                                              themeManager.getColor(null),
+                                                  themeManager.getColor(null),
                                             ),
                                             onPressed: () {
                                               _shouldAuthenticateAndContinue(
@@ -607,12 +612,12 @@ class MyHomePageState extends State<MyHomePage> {
                                                 showDialog(
                                                     context: context,
                                                     builder: (BuildContext
-                                                    context) =>
+                                                            context) =>
                                                         HuntyDialogForConfirmation(
                                                             title:
-                                                            'Account Deletion',
+                                                                'Account Deletion',
                                                             description:
-                                                            'Are you sure you want to remove this account?',
+                                                                'Are you sure you want to remove this account?',
                                                             runIfUserConfirms:
                                                                 () {
                                                               setState(() {
@@ -620,13 +625,13 @@ class MyHomePageState extends State<MyHomePage> {
                                                                     acc);
                                                                 jsonSaver
                                                                     .saveListData(
-                                                                    accounts);
+                                                                        accounts);
                                                               });
                                                             },
                                                             btnTextForConfirmation:
-                                                            'Yes',
+                                                                'Yes',
                                                             btnTextForCancel:
-                                                            'No'));
+                                                                'No'));
                                               });
                                             }),
                                         IconButton(
@@ -634,50 +639,50 @@ class MyHomePageState extends State<MyHomePage> {
                                           color: themeManager.getColor(null),
                                           onPressed: () {
                                             _shouldAuthenticateAndContinue(acc,
-                                                    (acc) {
-                                                  TextEditingController
+                                                (acc) {
+                                              TextEditingController
                                                   accountEditor =
                                                   TextEditingController();
-                                                  showDialog(
-                                                      context: context,
-                                                      builder: (BuildContext
-                                                      context) =>
-                                                          HuntyDialogWithText(
-                                                              hint: 'Edit Account',
-                                                              textController:
+                                              showDialog(
+                                                  context: context,
+                                                  builder: (BuildContext
+                                                          context) =>
+                                                      HuntyDialogWithText(
+                                                          hint: 'Edit Account',
+                                                          textController:
                                                               accountEditor,
-                                                              okPressed: () {
-                                                                setState(() {
-                                                                  acc.nick =
-                                                                      accountEditor
-                                                                          .text;
-                                                                  jsonSaver
-                                                                      .saveListData(
+                                                          okPressed: () {
+                                                            setState(() {
+                                                              acc.nick =
+                                                                  accountEditor
+                                                                      .text;
+                                                              jsonSaver
+                                                                  .saveListData(
                                                                       accounts);
-                                                                });
-                                                              },
-                                                              title:
+                                                            });
+                                                          },
+                                                          title:
                                                               'Edit Account Name',
-                                                              description:
+                                                          description:
                                                               'Type in a new account name to be displayed. This does not affect logging in and logging out.',
-                                                              buttonText:
+                                                          buttonText:
                                                               'Submit'));
-                                                });
+                                            });
                                           },
                                         )
                                       ],
                                     )),
-                              )),
-                        ),
-                      )),
-                ),
-              ),
+                          )),
+                    ),
+                  )),
+            ),
+          ),
         ));
       }
       listView = ListView(shrinkWrap: true, children: <Widget>[
         ListTile(
             title: Container(
-              child: Text(neiceban ? '内测版' : 'Accounts',
+              child: Text('Accounts',
                   style: TextStyle(
                       color: themeManager.getColor(null),
                       fontSize: 27,
@@ -712,7 +717,7 @@ class MyHomePageState extends State<MyHomePage> {
                             onReorder: (Key item, Key newPosition) {
                               int draggingIndex = indexOfKey(widget, item);
                               int newPositionIndex =
-                              indexOfKey(widget, newPosition);
+                                  indexOfKey(widget, newPosition);
 
                               final draggedItem = accounts[draggingIndex];
                               setState(() {
@@ -725,7 +730,7 @@ class MyHomePageState extends State<MyHomePage> {
                             },
                             onReorderDone: (Key item) {
                               final draggedItem =
-                              widget[indexOfKey(widget, item)];
+                                  widget[indexOfKey(widget, item)];
                               debugPrint(
                                   "Reordering finished for ${draggedItem.key}}");
                             },
@@ -737,7 +742,7 @@ class MyHomePageState extends State<MyHomePage> {
                                           .bottom),
                                   sliver: SliverList(
                                     delegate: SliverChildBuilderDelegate(
-                                          (BuildContext context, int index) {
+                                      (BuildContext context, int index) {
                                         return widget.elementAt(index);
                                       },
                                       childCount: widget.length,
@@ -762,14 +767,14 @@ class MyHomePageState extends State<MyHomePage> {
                           color: Colors.transparent,
                           child: InkWell(
                               splashColor:
-                              themeManager.getColor(TypeOfWidget.text),
+                                  themeManager.getColor(TypeOfWidget.text),
                               borderRadius: BorderRadius.circular(16),
                               onTap: () => {
-                                setState(() {
-                                  isInAccountChooserStatus =
-                                  !isInAccountChooserStatus;
-                                })
-                              },
+                                    setState(() {
+                                      isInAccountChooserStatus =
+                                          !isInAccountChooserStatus;
+                                    })
+                                  },
                               child: Container(
                                 alignment: Alignment.center,
                                 padding: EdgeInsets.all(10),
@@ -798,7 +803,7 @@ class MyHomePageState extends State<MyHomePage> {
           children: <Widget>[
             ListTile(
                 title: Container(
-                  child: Text(neiceban ? '内测版' : 'Login',
+                  child: Text('Login',
                       style: TextStyle(
                           color: themeManager.getColor(null),
                           fontSize: 40,
@@ -829,8 +834,7 @@ class MyHomePageState extends State<MyHomePage> {
                             alignment: Alignment.center,
                             padding: EdgeInsets.all(10),
                             child: new Text(
-                              'Enter your Skyward Credentials for ${district
-                                  .districtName}.',
+                              'Enter your Skyward Credentials for ${district.districtName}.',
                               style: new TextStyle(
                                   fontSize: 20.0,
                                   color: themeManager.getColor(null)),
@@ -844,7 +848,7 @@ class MyHomePageState extends State<MyHomePage> {
                             autofocus: false,
                             controller: _controllerUsername,
                             style:
-                            TextStyle(color: themeManager.getColor(null)),
+                                TextStyle(color: themeManager.getColor(null)),
                             decoration: InputDecoration(
                                 contentPadding: const EdgeInsets.all(18),
                                 labelText: "Username",
@@ -876,7 +880,7 @@ class MyHomePageState extends State<MyHomePage> {
                             obscureText: true,
                             textInputAction: TextInputAction.next,
                             style:
-                            TextStyle(color: themeManager.getColor(null)),
+                                TextStyle(color: themeManager.getColor(null)),
                             decoration: InputDecoration(
                                 contentPadding: const EdgeInsets.all(18),
                                 labelText: "Password",
@@ -908,17 +912,16 @@ class MyHomePageState extends State<MyHomePage> {
                             color: Colors.transparent,
                             child: InkWell(
                                 splashColor:
-                                themeManager.getColor(TypeOfWidget.button),
+                                    themeManager.getColor(TypeOfWidget.button),
                                 borderRadius: BorderRadius.circular(16),
-                                onTap: () =>
-                                {
-                                  focus.unfocus(),
-                                  _login(Account(
-                                      null,
-                                      _controllerUsername.text,
-                                      _controllerPassword.text,
-                                      district))
-                                },
+                                onTap: () => {
+                                      focus.unfocus(),
+                                      _login(Account(
+                                          null,
+                                          _controllerUsername.text,
+                                          _controllerPassword.text,
+                                          district))
+                                    },
                                 child: Container(
                                   alignment: Alignment.center,
                                   padding: EdgeInsets.all(10),
@@ -944,16 +947,15 @@ class MyHomePageState extends State<MyHomePage> {
                             color: Colors.transparent,
                             child: InkWell(
                                 splashColor:
-                                themeManager.getColor(TypeOfWidget.text),
+                                    themeManager.getColor(TypeOfWidget.text),
                                 borderRadius: BorderRadius.circular(16),
-                                onTap: () =>
-                                {
-                                  setState(() {
-                                    isInAccountChooserStatus =
-                                    !isInAccountChooserStatus;
-                                    timesPressedSwitch += 1;
-                                  })
-                                },
+                                onTap: () => {
+                                      setState(() {
+                                        isInAccountChooserStatus =
+                                            !isInAccountChooserStatus;
+                                        timesPressedSwitch += 1;
+                                      })
+                                    },
                                 child: Container(
                                   alignment: Alignment.center,
                                   padding: EdgeInsets.all(10),
@@ -989,7 +991,9 @@ class MyHomePageState extends State<MyHomePage> {
         body: Center(
             child: kIsWeb || debugDefaultTargetPlatformOverride != null
                 ? ConstrainedBox(
-              constraints: BoxConstraints(maxWidth: 650), child: wid,)
+                    constraints: BoxConstraints(maxWidth: 650),
+                    child: wid,
+                  )
                 : wid));
   }
 }

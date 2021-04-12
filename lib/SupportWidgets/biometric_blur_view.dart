@@ -26,7 +26,7 @@ class BiometricBlur<T extends StatefulWidget> extends State<T>
         return route.settings.name != null;
       });
     }
-    if (settings['Re-Authenticate With Biometrics']
+    if (settings['Re-authenticate with Biometrics']
         ['option']) if (state == AppLifecycleState.paused) {
       setState(() {
         shouldBlur = true;
@@ -92,7 +92,7 @@ class BiometricBlur<T extends StatefulWidget> extends State<T>
                 buttonText: 'Ok'));
         setState(() {
           settings['Biometric Authentication']['option'] = false;
-          settings['Re-Authenticate With Biometrics']['option'] = false;
+          settings['Re-authenticate with Biometrics']['option'] = false;
           shouldBlur = false;
           saveSettingsData();
         });
@@ -106,7 +106,7 @@ class BiometricBlur<T extends StatefulWidget> extends State<T>
 //                    '\nSkyMobile will disable authentication for you.',
 //                buttonText: 'Ok'));
 //        settings['Biometric Authentication']['option'] = false;
-//        settings['Re-Authenticate With Biometrics']['option'] = false;
+//        settings['Re-authenticate with Biometrics']['option'] = false;
 //        saveSettingsData();
 //      }
     }

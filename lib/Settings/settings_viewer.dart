@@ -16,7 +16,7 @@ import 'theme_color_manager.dart';
 
 void saveSettingsData() {
   if (!settings['Biometric Authentication']['option'])
-    settings['Re-Authenticate With Biometrics']['option'] = false;
+    settings['Re-authenticate with Biometrics']['option'] = false;
   JSONSaver jsonSaver = JSONSaver(FilesAvailable.settings);
   jsonSaver.saveListData(settings);
   int i = settings['Theme']['option'].values.toList().indexOf(true);
@@ -136,7 +136,7 @@ class _SettingsViewerState extends BiometricBlur<SettingsViewer> {
                   }
                 }
               },
-              force: (k == 'Re-Authenticate With Biometrics' &&
+              force: (k == 'Re-authenticate with Biometrics' &&
                   !settings['Biometric Authentication']['option'])
                   ? false
                   : null),
@@ -205,7 +205,7 @@ class _SettingsViewerState extends BiometricBlur<SettingsViewer> {
           backgroundColor: themeManager.getColor(TypeOfWidget.background),
           title: Align(
             alignment: Alignment.centerLeft,
-            child: Text(neiceban ? '内测版' : 'Settings',
+            child: Text('Settings',
                 textAlign: TextAlign.center,
                 style: TextStyle(
                     color: themeManager.getColor(TypeOfWidget.text),

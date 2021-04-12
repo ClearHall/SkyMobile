@@ -29,7 +29,7 @@ class _AssignmentInfoViewerState extends BiometricBlur<AssignmentInfoViewer> {
     List<Widget> body = [];
     int ind = 0;
     for (AssignmentProperty box in props) {
-      if(ind <= 1 || (!settings['Hidden Empty Assignment Properties']['option'] || (box.info != null && box.info.trim().isNotEmpty))) {
+      if(ind <= 1 || (!settings['Hide Empty Assignment Properties']['option'] || (box.info != null && box.info.trim().isNotEmpty))) {
         String uiMessage = box.toString();
         body.add(Card(
           shape: RoundedRectangleBorder(
@@ -65,7 +65,7 @@ class _AssignmentInfoViewerState extends BiometricBlur<AssignmentInfoViewer> {
         backgroundColor: themeManager.getColor(TypeOfWidget.background),
         title: Align(
           alignment: Alignment.centerLeft,
-          child: Text(neiceban ? '内测版' : (courseName != null ? courseName : 'Assignments'),
+          child: Text((courseName != null ? courseName : 'Assignments'),
               textAlign: TextAlign.center,
               style: TextStyle(
                   color: themeManager.getColor(TypeOfWidget.text),
