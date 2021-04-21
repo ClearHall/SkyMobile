@@ -10,6 +10,9 @@ Join the SkyMobile discord server [here](https://discord.gg/Hqvann5).
 
 # Changelog
 
+### V2.1.0 Release
+- Updated Flutter
+
 ### V2.0.1 Release
 
 - Fixes bug where a decimal name would be shown in grade
