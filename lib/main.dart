@@ -23,7 +23,8 @@ import 'package:skymobile/Settings/settings_viewer.dart';
 import 'package:skymobile/Settings/theme_color_manager.dart';
 import 'package:skymobile/SupportWidgets/biometric_blur_view.dart';
 import 'package:skymobile/SupportWidgets/custom_overscroll_behavior.dart';
-import 'package:skymobile/SupportWidgets/flutter_reorderable_list.dart';
+import 'package:skymobile/SupportWidgets/flutter_reorderable_list.dart'
+    as CustomReorderableList;
 import 'package:skyscrapeapi/sky_core.dart';
 
 import 'ExtraViewPackages/hunty_dialogs.dart';
@@ -133,7 +134,6 @@ class MyApp extends StatelessWidget {
     );
   }
 }
-
 
 class MyHomePage extends StatefulWidget {
   MyHomePage({
@@ -546,13 +546,17 @@ class MyHomePageState extends State<MyHomePage> {
       List<Widget> widget = [];
 
       for (Account acc in accounts) {
-        widget.add(ReorderableItem(
+        widget.add(CustomReorderableList.ReorderableItem(
           key: ValueKey(
               '${acc.user}${acc.district != null ? acc.district.districtName : acc.district}${acc.pass.hashCode}'),
-          childBuilder: (BuildContext context, ReorderableItemState state) =>
-              DelayedReorderableListener(
+          childBuilder: (BuildContext context,
+                  CustomReorderableList.ReorderableItemState state) =>
+              CustomReorderableList.DelayedReorderableListener(
             child: Opacity(
-              opacity: state == ReorderableItemState.placeholder ? 0.0 : 1.0,
+              opacity: state ==
+                      CustomReorderableList.ReorderableItemState.placeholder
+                  ? 0.0
+                  : 1.0,
               child: Container(
                   padding:
                       EdgeInsets.only(top: 10, left: 20, right: 20, bottom: 10),
@@ -713,7 +717,7 @@ class MyHomePageState extends State<MyHomePage> {
                         constraints: const BoxConstraints(maxHeight: 300),
                         child: Padding(
                           padding: EdgeInsets.only(bottom: 20, top: 20),
-                          child: ReorderableList(
+                          child: CustomReorderableList.ReorderableList(
                             onReorder: (Key item, Key newPosition) {
                               int draggingIndex = indexOfKey(widget, item);
                               int newPositionIndex =

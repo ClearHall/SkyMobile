@@ -4,7 +4,8 @@ import 'package:skymobile/ExtraViewPackages/hunty_dialogs.dart';
 import 'package:skymobile/HelperUtilities/global.dart';
 import 'package:skymobile/Settings/theme_color_manager.dart';
 import 'package:skymobile/SupportWidgets/biometric_blur_view.dart';
-import 'package:skymobile/SupportWidgets/flutter_reorderable_list.dart';
+import 'package:skymobile/SupportWidgets/flutter_reorderable_list.dart'
+    as CustomReorderableList;
 import 'package:skyscrapeapi/sky_core.dart';
 
 class AssignmentsViewer extends StatefulWidget {
@@ -217,15 +218,15 @@ class _AssignmentsViewerState extends BiometricBlur<AssignmentsViewer> {
         actions: <Widget>[
           editingMode
               ? IconButton(
-              icon: Icon(Icons.add),
-              onPressed: () {
-                setState(() {
-                  tmpAssignments.assignments.values.first
-                      .add(CustomAssignment(tmpAssignID));
-                  tmpAssignID++;
-                  _recalculateTmp();
-                });
-              })
+                  icon: Icon(Icons.add),
+                  onPressed: () {
+                    setState(() {
+                      tmpAssignments.assignments.values.first
+                          .add(CustomAssignment(tmpAssignID));
+                      tmpAssignID++;
+                      _recalculateTmp();
+                    });
+                  })
               : Container(),
           IconButton(
               icon: Icon(Icons.edit),
@@ -293,7 +294,7 @@ class _AssignmentsViewerState extends BiometricBlur<AssignmentsViewer> {
         child: Container(
           padding: EdgeInsets.all(10),
           child: editingMode
-              ? ReorderableList(
+              ? CustomReorderableList.ReorderableList(
                   onReorder: (Key item, Key newPosition) {
                     int draggingIndex = indexOfKey(body, item);
                     int newPositionIndex = indexOfKey(body, newPosition);
@@ -356,9 +357,7 @@ class _AssignmentsViewerState extends BiometricBlur<AssignmentsViewer> {
         ? box.attributes['Score(%)']
         : box.getDecimal();
     if (!editingMode &&
-        (((grade != null && grade
-            .trim()
-            .isEmpty) || grade == null) &&
+        (((grade != null && grade.trim().isEmpty) || grade == null) &&
             box.attributes.containsKey("Points Earned"))) {
       grade = box.attributes["Points Earned"];
     }
@@ -417,10 +416,7 @@ class _AssignmentsViewerState extends BiometricBlur<AssignmentsViewer> {
                         Container(
                           constraints: BoxConstraints(
                               maxWidth:
-                              MediaQuery
-                                  .of(context)
-                                  .size
-                                  .width / 6 * 3.5),
+                                  MediaQuery.of(context).size.width / 6 * 3.5),
                           padding: EdgeInsets.only(
                               top: 15,
                               left: 15,
@@ -429,52 +425,52 @@ class _AssignmentsViewerState extends BiometricBlur<AssignmentsViewer> {
                           alignment: Alignment.centerLeft,
                           child: (box is CustomAssignment && editingMode)
                               ? ConstrainedBox(
-                              constraints: BoxConstraints(
-                                  maxWidth: 200, maxHeight: 40),
-                              child: TextField(
-                                controller: box.namecontroller,
-                                style: standard,
-                                textAlign: TextAlign.center,
-                                decoration: InputDecoration(
-                                    contentPadding: const EdgeInsets.all(5),
-                                    labelStyle: TextStyle(
-                                        color: themeManager
-                                            .getColor(TypeOfWidget.text)),
-                                    enabledBorder: OutlineInputBorder(
-                                        borderSide: BorderSide(
-                                            color: themeManager.getColor(
-                                                TypeOfWidget.text),
-                                            width: 2),
-                                        borderRadius:
-                                        BorderRadius.circular(16)),
-                                    focusedBorder: OutlineInputBorder(
-                                        borderSide: BorderSide(
-                                            color: themeManager.getColor(
-                                                TypeOfWidget.text),
-                                            width: 2),
-                                        borderRadius:
-                                        BorderRadius.circular(16))),
-                                onChanged: (String a) {
-                                  setState(() {
-                                    box.name = a;
-                                  });
-                                },
-                              ))
+                                  constraints: BoxConstraints(
+                                      maxWidth: 200, maxHeight: 40),
+                                  child: TextField(
+                                    controller: box.namecontroller,
+                                    style: standard,
+                                    textAlign: TextAlign.center,
+                                    decoration: InputDecoration(
+                                        contentPadding: const EdgeInsets.all(5),
+                                        labelStyle: TextStyle(
+                                            color: themeManager
+                                                .getColor(TypeOfWidget.text)),
+                                        enabledBorder: OutlineInputBorder(
+                                            borderSide: BorderSide(
+                                                color: themeManager.getColor(
+                                                    TypeOfWidget.text),
+                                                width: 2),
+                                            borderRadius:
+                                                BorderRadius.circular(16)),
+                                        focusedBorder: OutlineInputBorder(
+                                            borderSide: BorderSide(
+                                                color: themeManager.getColor(
+                                                    TypeOfWidget.text),
+                                                width: 2),
+                                            borderRadius:
+                                                BorderRadius.circular(16))),
+                                    onChanged: (String a) {
+                                      setState(() {
+                                        box.name = a;
+                                      });
+                                    },
+                                  ))
                               : Text(
-                            box.name,
-                            maxLines: 2,
-                            overflow: TextOverflow.ellipsis,
-                            style: TextStyle(
-                                color: isBoxCatHeader
-                                    ? secondContNeeded
-                                    ? themeManager
-                                    .getColor(TypeOfWidget.text)
-                                    : themeManager
-                                    .getColor(TypeOfWidget.button)
-                                    : themeManager.getColor(null),
-                                fontSize: isBoxCatHeader ? 20 : 15),
-                            textAlign: TextAlign.start,
-                          ),
+                                  box.name,
+                                  maxLines: 2,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: TextStyle(
+                                      color: isBoxCatHeader
+                                          ? secondContNeeded
+                                              ? themeManager
+                                                  .getColor(TypeOfWidget.text)
+                                              : themeManager
+                                                  .getColor(TypeOfWidget.button)
+                                          : themeManager.getColor(null),
+                                      fontSize: isBoxCatHeader ? 20 : 15),
+                                  textAlign: TextAlign.start,
+                                ),
                         ),
                         secondContNeeded
                             ? Container(
@@ -485,17 +481,17 @@ class _AssignmentsViewerState extends BiometricBlur<AssignmentsViewer> {
                                             4.3),
                                 padding: EdgeInsets.only(
                                     top: 5, left: 15, right: 10, bottom: 15),
-                          alignment: Alignment.centerLeft,
-                          child: Text((box as CategoryHeader).weight,
-                              style: TextStyle(
-                                  color: themeManager
-                                      .getColor(TypeOfWidget.text),
-                                  fontSize: 15),
-                              textAlign: TextAlign.start),
-                        )
+                                alignment: Alignment.centerLeft,
+                                child: Text((box as CategoryHeader).weight,
+                                    style: TextStyle(
+                                        color: themeManager
+                                            .getColor(TypeOfWidget.text),
+                                        fontSize: 15),
+                                    textAlign: TextAlign.start),
+                              )
                             : Container(
-                          height: 0,
-                        ),
+                                height: 0,
+                              ),
                       ],
                     ),
                   ),
@@ -506,55 +502,61 @@ class _AssignmentsViewerState extends BiometricBlur<AssignmentsViewer> {
                       alignment: Alignment.centerRight,
                       child: (editingMode && box is Assignment)
                           ? ConstrainedBox(
-                          constraints:
-                          BoxConstraints(maxWidth: 80, maxHeight: 40),
-                          child: TextField(
-                            keyboardType: TextInputType.number,
-                            controller: controller,
-                            style: standard,
-                            textAlign: TextAlign.center,
-                            decoration: InputDecoration(
-                                contentPadding: const EdgeInsets.all(5),
-                                labelStyle: TextStyle(
-                                    color: themeManager
-                                        .getColor(TypeOfWidget.text)),
-                                enabledBorder: OutlineInputBorder(
-                                    borderSide: BorderSide(
+                              constraints:
+                                  BoxConstraints(maxWidth: 80, maxHeight: 40),
+                              child: TextField(
+                                keyboardType: TextInputType.number,
+                                controller: controller,
+                                style: standard,
+                                textAlign: TextAlign.center,
+                                decoration: InputDecoration(
+                                    contentPadding: const EdgeInsets.all(5),
+                                    labelStyle: TextStyle(
                                         color: themeManager
-                                              .getColor(TypeOfWidget.text),
-                                          width: 2),
-                                      borderRadius: BorderRadius.circular(16)),
-                                  focusedBorder: OutlineInputBorder(
-                                      borderSide: BorderSide(
-                                          color: themeManager
-                                              .getColor(TypeOfWidget.text),
-                                          width: 2),
-                                      borderRadius: BorderRadius.circular(16))),
-                            onChanged: (String a) {
-                              setState(() {
-                                box.attributes['Score(%)'] = a;
-                                _recalculateTmp();
-                              });
-                            },
-                          ))
+                                            .getColor(TypeOfWidget.text)),
+                                    enabledBorder: OutlineInputBorder(
+                                        borderSide: BorderSide(
+                                            color: themeManager
+                                                .getColor(TypeOfWidget.text),
+                                            width: 2),
+                                        borderRadius:
+                                            BorderRadius.circular(16)),
+                                    focusedBorder: OutlineInputBorder(
+                                        borderSide: BorderSide(
+                                            color: themeManager
+                                                .getColor(TypeOfWidget.text),
+                                            width: 2),
+                                        borderRadius:
+                                            BorderRadius.circular(16))),
+                                onChanged: (String a) {
+                                  setState(() {
+                                    box.attributes['Score(%)'] = a;
+                                    _recalculateTmp();
+                                  });
+                                },
+                              ))
                           : Text(
-                        grade ?? '',
-                        style: standard,
-                        overflow: TextOverflow.ellipsis,
-                        maxLines: 1,
-                      ),
-                    ),)
+                              grade ?? '',
+                              style: standard,
+                              overflow: TextOverflow.ellipsis,
+                              maxLines: 1,
+                            ),
+                    ),
+                  )
                 ],
               )),
           color: themeManager.getColor(TypeOfWidget.subBackground),
         ));
     body.add(editingMode
-        ? ReorderableItem(
+        ? CustomReorderableList.ReorderableItem(
             key: Key(key),
-            childBuilder: (BuildContext context, ReorderableItemState state) =>
-                DelayedReorderableListener(
+            childBuilder: (BuildContext context,
+                    CustomReorderableList.ReorderableItemState state) =>
+                CustomReorderableList.DelayedReorderableListener(
                     child: Opacity(
-                        opacity: state == ReorderableItemState.placeholder
+                        opacity: state ==
+                                CustomReorderableList
+                                    .ReorderableItemState.placeholder
                             ? 0.0
                             : 1.0,
                         child: a)))
@@ -567,7 +569,7 @@ class CustomAssignment extends Assignment {
 
   CustomAssignment(int ind)
       : super('0', 'CustomAssign$ind', '0', 'Assignment',
-      {'Score(%)': '100.00'}) {
+            {'Score(%)': '100.00'}) {
     namecontroller.text = 'Assignment';
   }
 }

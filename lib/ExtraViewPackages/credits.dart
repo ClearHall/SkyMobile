@@ -38,8 +38,10 @@ class _CreditsState extends BiometricBlur<Credits> {
               alignment: Alignment.center,
               child: Text(
                 'Main Developers',
-                style:
-                    TextStyle(fontSize: 30, color: themeManager.getColor(null), fontWeight: FontWeight.bold),
+                style: TextStyle(
+                    fontSize: 30,
+                    color: themeManager.getColor(null),
+                    fontWeight: FontWeight.bold),
               ),
             ),
             Align(
@@ -47,7 +49,7 @@ class _CreditsState extends BiometricBlur<Credits> {
               child: Text(
                 '\nHunter Han',
                 style:
-                TextStyle(fontSize: 20, color: themeManager.getColor(null)),
+                    TextStyle(fontSize: 20, color: themeManager.getColor(null)),
               ),
             ),
             Align(
@@ -55,15 +57,17 @@ class _CreditsState extends BiometricBlur<Credits> {
               child: Text(
                 '\nDamian Lall\n',
                 style:
-                TextStyle(fontSize: 20, color: themeManager.getColor(null)),
+                    TextStyle(fontSize: 20, color: themeManager.getColor(null)),
               ),
             ),
             Align(
               alignment: Alignment.center,
               child: Text(
                 'Graphic Designer',
-                style:
-                TextStyle(fontSize: 30, color: themeManager.getColor(null), fontWeight: FontWeight.bold),
+                style: TextStyle(
+                    fontSize: 30,
+                    color: themeManager.getColor(null),
+                    fontWeight: FontWeight.bold),
               ),
             ),
             Align(
@@ -71,55 +75,17 @@ class _CreditsState extends BiometricBlur<Credits> {
               child: Text(
                 '\nAlbon Wu\n',
                 style:
-                TextStyle(fontSize: 20, color: themeManager.getColor(null)),
-              ),
-            ),
-            Align(
-              alignment: Alignment.center,
-              child: Text(
-                'Beta Testers',
-                style:
-                TextStyle(fontSize: 30, color: themeManager.getColor(null), fontWeight: FontWeight.bold),
-              ),
-            ),
-            Align(
-              alignment: Alignment.center,
-              child: Text(
-                '\nEvelyn N.\n',
-                style:
-                TextStyle(fontSize: 20, color: themeManager.getColor(null)),
-              ),
-            ),
-            Align(
-              alignment: Alignment.center,
-              child: Text(
-                'Damian L.\n',
-                style:
-                TextStyle(fontSize: 20, color: themeManager.getColor(null)),
-              ),
-            ),
-            Align(
-              alignment: Alignment.center,
-              child: Text(
-                'Kishlaya R.\n',
-                style:
-                TextStyle(fontSize: 20, color: themeManager.getColor(null)),
-              ),
-            ),
-            Align(
-              alignment: Alignment.center,
-              child: Text(
-                'Yifan M.\n',
-                style:
-                TextStyle(fontSize: 20, color: themeManager.getColor(null)),
+                    TextStyle(fontSize: 20, color: themeManager.getColor(null)),
               ),
             ),
             Align(
               alignment: Alignment.center,
               child: Text(
                 'Play Store & App Store Graphics',
-                style:
-                TextStyle(fontSize: 30, color: themeManager.getColor(null), fontWeight: FontWeight.bold),
+                style: TextStyle(
+                    fontSize: 30,
+                    color: themeManager.getColor(null),
+                    fontWeight: FontWeight.bold),
                 textAlign: TextAlign.center,
               ),
             ),
@@ -128,7 +94,7 @@ class _CreditsState extends BiometricBlur<Credits> {
               child: Text(
                 '\nYifan M.\n',
                 style:
-                TextStyle(fontSize: 20, color: themeManager.getColor(null)),
+                    TextStyle(fontSize: 20, color: themeManager.getColor(null)),
               ),
             ),
           ],

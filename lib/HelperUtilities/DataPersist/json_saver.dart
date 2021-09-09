@@ -119,6 +119,8 @@ enum FilesAvailable {
   firstTime,
 
   consoleOnlyVariables,
+
+  lastTermSelectedOnAccount
 }
 
 class JSONSaverException extends SkywardError {
